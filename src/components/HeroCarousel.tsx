@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { gsap } from 'gsap';
+import React, { useState, useEffect, useRef } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { gsap } from "gsap";
 
 interface CarouselSlide {
   id: number;
@@ -13,25 +13,34 @@ const HeroCarousel: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
 
+  // Refs for achievements animation
+  const projectsRef = useRef<HTMLParagraphElement>(null);
+  const clientsRef = useRef<HTMLParagraphElement>(null);
+  const awardsRef = useRef<HTMLParagraphElement>(null);
+  const yearsRef = useRef<HTMLParagraphElement>(null);
+
   const slides: CarouselSlide[] = [
     {
       id: 1,
-      title: 'Turning dream homes',
-      subtitle: 'into reality.',
-      backgroundImage: 'https://images.pexels.com/photos/2227832/pexels-photo-2227832.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop'
+      title: "Turning dream homes",
+      subtitle: "into reality.",
+      backgroundImage:
+        "https://images.pexels.com/photos/2227832/pexels-photo-2227832.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop",
     },
     {
       id: 2,
-      title: 'Innovation Meets',
-      subtitle: 'Elegance.',
-      backgroundImage: 'https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop'
+      title: "Innovation Meets",
+      subtitle: "Elegance.",
+      backgroundImage:
+        "https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop",
     },
     {
       id: 3,
-      title: 'Crafting Modern',
-      subtitle: 'Environments.',
-      backgroundImage: 'https://images.pexels.com/photos/2467558/pexels-photo-2467558.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop'
-    }
+      title: "Crafting Modern",
+      subtitle: "Environments.",
+      backgroundImage:
+        "https://images.pexels.com/photos/2467558/pexels-photo-2467558.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop",
+    },
   ];
 
   const nextSlide = () => {
@@ -40,83 +49,111 @@ const HeroCarousel: React.FC = () => {
 
     const nextIndex = (currentSlide + 1) % slides.length;
 
-    gsap.to('.hero-content', {
+    gsap.to(".hero-content", {
       duration: 0.3,
       opacity: 0,
       y: 30,
-      ease: 'power2.in',
+      ease: "power2.in",
       onComplete: () => {
         setCurrentSlide(nextIndex);
-        gsap.fromTo('.hero-content',
+        gsap.fromTo(
+          ".hero-content",
           { opacity: 0, y: 30 },
           {
             duration: 0.6,
             opacity: 1,
             y: 0,
-            ease: 'power2.out',
-            onComplete: () => setIsAnimating(false)
+            ease: "power2.out",
+            onComplete: () => setIsAnimating(false),
           }
         );
-      }
+      },
     });
   };
 
   const prevSlide = () => {
-    console.log("prevSlide");
     if (isAnimating) return;
     setIsAnimating(true);
 
-    const prevIndex = currentSlide === 0 ? slides.length - 1 : currentSlide - 1;
+    const prevIndex =
+      currentSlide === 0 ? slides.length - 1 : currentSlide - 1;
 
-    gsap.to('.hero-content', {
+    gsap.to(".hero-content", {
       duration: 0.3,
       opacity: 0,
       y: 30,
-      ease: 'power2.in',
+      ease: "power2.in",
       onComplete: () => {
         setCurrentSlide(prevIndex);
-        gsap.fromTo('.hero-content',
+        gsap.fromTo(
+          ".hero-content",
           { opacity: 0, y: 30 },
           {
             duration: 0.6,
             opacity: 1,
             y: 0,
-            ease: 'power2.out',
-            onComplete: () => setIsAnimating(false)
+            ease: "power2.out",
+            onComplete: () => setIsAnimating(false),
           }
         );
-      }
+      },
     });
   };
 
+  // Auto slide
   useEffect(() => {
     const interval = setInterval(nextSlide, 6000);
     return () => clearInterval(interval);
   }, [currentSlide, isAnimating]);
 
+  // First load animations
   useEffect(() => {
-    gsap.fromTo('.hero-content',
+    gsap.fromTo(
+      ".hero-content",
       { opacity: 0, y: 50 },
-      { duration: 1, opacity: 1, y: 0, ease: 'power2.out', delay: 0.5 }
+      { duration: 1, opacity: 1, y: 0, ease: "power2.out", delay: 0.5 }
     );
-    gsap.fromTo('.hero-nav',
+    gsap.fromTo(
+      ".hero-nav",
       { opacity: 0, scale: 0.8 },
-      { duration: 0.8, opacity: 1, scale: 1, ease: 'back.out(1.7)', delay: 1 }
+      { duration: 0.8, opacity: 1, scale: 1, ease: "back.out(1.7)", delay: 1 }
     );
+
+    // Count-up animation
+    const animateCount = (
+      ref: React.RefObject<HTMLParagraphElement>,
+      endValue: number
+    ) => {
+      if (!ref.current) return;
+      gsap.fromTo(
+        ref.current,
+        { innerText: 0 },
+        {
+          innerText: endValue,
+          duration: 2,
+          ease: "power1.out",
+          snap: { innerText: 1 },
+        }
+      );
+    };
+
+    animateCount(projectsRef, 400);
+    animateCount(clientsRef, 250);
+    animateCount(awardsRef, 10);
+    animateCount(yearsRef, 15);
   }, []);
 
   const currentSlideData = slides[currentSlide];
 
   return (
-
-
     <div className="relative h-[90vh] w-full overflow-hidden">
       {/* Background Slides */}
       {slides.map((slide, index) => (
         <div
           key={slide.id}
-          className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentSlide ? "opacity-100" : "opacity-0"
-            }`}
+          className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+            index === currentSlide ? "opacity-100" : "opacity-0"
+          }`}
         >
           <div
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -127,8 +164,6 @@ const HeroCarousel: React.FC = () => {
       ))}
 
       {/* Arc Section */}
-
-
       <div
         className="absolute left-0 w-full z-10 pointer-events-none
          top-[30%] sm:top-[25%] md:top-[20%] lg:top-[12%]"
@@ -147,7 +182,7 @@ const HeroCarousel: React.FC = () => {
             />
           </svg>
 
-          {/* Orange projecting rectangles (with gap below arc) */}
+          {/* Orange projecting rectangles */}
           <div className="absolute top-[calc(100%+6.5rem)] left-[20.5%] z-20">
             <div className="w-8 sm:w-10 md:w-12 lg:w-16 h-40 sm:h-48 md:h-56 lg:h-64 bg-orange-400 opacity-80"></div>
           </div>
@@ -157,39 +192,38 @@ const HeroCarousel: React.FC = () => {
         </div>
       </div>
 
+      {/* Content Section */}
+      <div className="relative z-20 flex items-center h-full">
+        <div className="hero-content text-left px-4 sm:px-6 lg:px-8 max-w-xl ml-[10%] sm:ml-[12%] md:ml-[15%] mt-[15%]">
+          {/* Title */}
+          <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-light text-white leading-tight opacity-90">
+            {currentSlideData.title}
+          </h1>
+          <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-light text-white leading-tight mt-2 opacity-90">
+            {currentSlideData.subtitle}
+          </h2>
 
-      {/* Content inside Arc */}
-      <div className="absolute inset-0 flex flex-col justify-center items-center z-20 px-4">
-        {/* Title */}
-        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-light text-black leading-tight text-center opacity-90">
-          {currentSlideData.title}
-        </h1>
-        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-black leading-tight mt-2 text-center opacity-80">
-          {currentSlideData.subtitle}
-        </h2>
-
-        {/* Achievements */}
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-6 mt-10 w-full max-w-5xl text-center">
-          <div>
-            <p className="text-4xl font-bold text-black">400+</p>
-            <p className="text-lg font-medium text-gray-600">Projects</p>
-          </div>
-          <div>
-            <p className="text-4xl font-bold text-black">250+</p>
-            <p className="text-lg font-medium text-gray-600">Clients</p>
-          </div>
-          <div>
-            <p className="text-4xl font-bold text-black">10+</p>
-            <p className="text-lg font-medium text-gray-600">Awards</p>
-          </div>
-          <div>
-            <p className="text-4xl font-bold text-black">15+</p>
-            <p className="text-lg font-medium text-gray-600">Years Exp.</p>
+          {/* Achievements */}
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-6 mt-10 w-full text-center">
+            <div>
+              <p ref={projectsRef} className="text-3xl sm:text-4xl md:text-5xl font-bold text-white"></p>
+              <p className="text-lg font-medium text-gray-200">Projects</p>
+            </div>
+            <div>
+              <p ref={clientsRef} className="text-3xl sm:text-4xl md:text-5xl font-bold text-white"></p>
+              <p className="text-lg font-medium text-gray-200">Clients</p>
+            </div>
+            <div>
+              <p ref={awardsRef} className="text-3xl sm:text-4xl md:text-5xl font-bold text-white"></p>
+              <p className="text-lg font-medium text-gray-200">Awards</p>
+            </div>
+            <div>
+              <p ref={yearsRef} className="text-3xl sm:text-4xl md:text-5xl font-bold text-white"></p>
+              <p className="text-lg font-medium text-gray-200">Years Exp.</p>
+            </div>
           </div>
         </div>
       </div>
-
-
 
       {/* Navigation buttons */}
       <div className="z-50 hero-nav absolute inset-y-0 left-0 right-0 flex items-center justify-between px-4 sm:px-8 md:px-12 pointer-events-none">
@@ -228,15 +262,15 @@ const HeroCarousel: React.FC = () => {
           <button
             key={index}
             onClick={() => !isAnimating && setCurrentSlide(index)}
-            className={`w-4 h-4 rounded-full transition-all duration-300 border-2 ${index === currentSlide
+            className={`w-4 h-4 rounded-full transition-all duration-300 border-2 ${
+              index === currentSlide
                 ? "bg-orange-400 border-orange-400 scale-125"
                 : "bg-transparent border-white/60 hover:border-white hover:bg-white/20"
-              }`}
+            }`}
           />
         ))}
       </div>
     </div>
-
   );
 };
 

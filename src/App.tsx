@@ -17,10 +17,12 @@ function App() {
     <div className="min-h-screen bg-gray-100">
       <Navbar isScrolled={isScrolled} />
       <main>
-        <div className="relative z-10">
+        <div className="relative z-20">
   <HeroCarousel />
 </div>
-        <AboutSection />
+        <div className="relative z-10">
+  <AboutSection />
+</div>
         <ServicesSection />
       </main>
     </div>
