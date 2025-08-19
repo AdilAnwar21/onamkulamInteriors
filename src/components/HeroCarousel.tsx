@@ -54,7 +54,7 @@ const HeroCarousel: React.FC = () => {
       heroContent.style.opacity = '0';
       heroContent.style.transform = 'translateY(30px)';
       heroContent.style.transition = 'all 0.3s ease-in';
-      
+
       setTimeout(() => {
         setCurrentSlide(nextIndex);
         // Animate in new content
@@ -72,14 +72,14 @@ const HeroCarousel: React.FC = () => {
 
     const prevIndex =
       currentSlide === 0 ? slides.length - 1 : currentSlide - 1;
-    
+
     // Animate out current content
     const heroContent = document.querySelector('.hero-content') as HTMLElement | null;
     if (heroContent) {
       heroContent.style.opacity = '0';
       heroContent.style.transform = 'translateY(30px)';
       heroContent.style.transition = 'all 0.3s ease-in';
-      
+
       setTimeout(() => {
         setCurrentSlide(prevIndex);
         // Animate in new content
@@ -113,7 +113,7 @@ const HeroCarousel: React.FC = () => {
           clearInterval(timer);
         }
         if (ref.current) {
-          ref.current.innerText = Math.floor(current).toString();
+          ref.current.innerText = Math.floor(current).toString() + '+';
         }
       }, 20);
     };
@@ -134,9 +134,8 @@ const HeroCarousel: React.FC = () => {
       {slides.map((slide, index) => (
         <div
           key={slide.id}
-          className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-            index === currentSlide ? "opacity-100" : "opacity-0"
-          }`}
+          className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentSlide ? "opacity-100" : "opacity-0"
+            }`}
         >
           <div
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -175,8 +174,8 @@ const HeroCarousel: React.FC = () => {
           </div>
 
           {/* Achievements positioned with minimal gaps on mobile */}
-          <div className="absolute top-full mt-4 sm:mt-8 md:mt-12 lg:mt-16 xl:mt-18 left-1/2 transform -translate-x-1/2 w-full max-w-4xl">
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 md:gap-8 text-center px-4">
+          <div className="absolute top-full mt-4 sm:mt-8 md:mt-12 lg:mt-16 xl:mt-18 left-0 right-0 w-full px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 md:gap-8 text-center max-w-4xl mx-auto">
               <div>
                 <p ref={projectsRef} className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white">0</p>
                 <p className="text-sm sm:text-base md:text-lg font-medium text-gray-200 mt-1">Projects</p>
@@ -198,23 +197,24 @@ const HeroCarousel: React.FC = () => {
 
           {/* Orange rectangles - proper width matching arc, mobile-specific positioning */}
           <div className="absolute top-full mt-40 sm:mt-28 md:mt-36 lg:mt-40 xl:mt-44 left-[20.8%] transform -translate-x-1/2 z-50">
-            <div className="w-10 sm:w-12 md:w-14 lg:w-16 xl:w-18 h-56 sm:h-64 md:h-72 lg:h-80 xl:h-88 bg-orange-400 opacity-80"></div>
+            <div className="w-16 sm:w-16 md:w-14 lg:w-16 xl:w-18 h-64 sm:h-72 md:h-72 lg:h-80 xl:h-88 bg-orange-400 opacity-80"></div>
           </div>
           <div className="absolute top-full mt-40 sm:mt-28 md:mt-36 lg:mt-40 xl:mt-44 right-[20.8%] transform translate-x-1/2 z-50">
-            <div className="w-10 sm:w-12 md:w-14 lg:w-16 xl:w-18 h-56 sm:h-64 md:h-72 lg:h-80 xl:h-88 bg-orange-400 opacity-80"></div>
+            <div className="w-16 sm:w-16 md:w-14 lg:w-16 xl:w-18 h-64 sm:h-72 md:h-72 lg:h-80 xl:h-88 bg-orange-400 opacity-80"></div>
           </div>
         </div>
       </div>
 
       {/* Navigation buttons */}
-      <div className="z-50 hero-nav absolute inset-y-0 left-0 right-0 flex items-center justify-between px-4 sm:px-6 md:px-8 lg:px-12 pointer-events-none">
+      <div className="z-50 hero-nav absolute inset-y-0 left-0 right-0 
+        hidden lg:flex items-center justify-between px-4 sm:px-6 md:px-8 lg:px-12 pointer-events-none">
         <button
           onClick={prevSlide}
           disabled={isAnimating}
           className="pointer-events-auto group bg-white/20 backdrop-blur-sm border border-white/30 
-             rounded-full p-2 sm:p-3 md:p-4 
-             transition-all duration-300 hover:bg-white/30 hover:scale-110 
-             disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+       rounded-full p-2 sm:p-3 md:p-4 
+       transition-all duration-300 hover:bg-white/30 hover:scale-110 
+       disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
         >
           <ChevronLeft
             className="text-white transition-transform duration-300 group-hover:-translate-x-1 w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7"
@@ -225,15 +225,16 @@ const HeroCarousel: React.FC = () => {
           onClick={nextSlide}
           disabled={isAnimating}
           className="pointer-events-auto group bg-white/20 backdrop-blur-sm border border-white/30 
-             rounded-full p-2 sm:p-3 md:p-4 
-             transition-all duration-300 hover:bg-white/30 hover:scale-110 
-             disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+       rounded-full p-2 sm:p-3 md:p-4 
+       transition-all duration-300 hover:bg-white/30 hover:scale-110 
+       disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
         >
           <ChevronRight
             className="text-white transition-transform duration-300 group-hover:translate-x-1 w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7"
           />
         </button>
       </div>
+
 
       {/* Contact Us Button - Bottom Right */}
       <div className="absolute bottom-6 sm:bottom-8 md:bottom-10 lg:bottom-12 right-4 sm:right-6 md:right-8 lg:right-12 z-50">
@@ -253,11 +254,10 @@ const HeroCarousel: React.FC = () => {
           <button
             key={index}
             onClick={() => !isAnimating && setCurrentSlide(index)}
-            className={`w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 rounded-full transition-all duration-300 border-2 ${
-              index === currentSlide
+            className={`w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 rounded-full transition-all duration-300 border-2 ${index === currentSlide
                 ? "bg-orange-400 border-orange-400 scale-125"
                 : "bg-transparent border-white/60 hover:border-white hover:bg-white/20"
-            }`}
+              }`}
           />
         ))}
       </div>
