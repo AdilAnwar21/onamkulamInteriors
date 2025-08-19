@@ -33,10 +33,10 @@ const Navbar: React.FC<NavbarProps> = ({ isScrolled }) => {
   return (
     <nav 
   className={`navbar fixed z-50 transition-all duration-500 ${
-    isScrolled 
-      ? 'top-4 left-2 right-2 sm:left-6 sm:right-6 md:left-12 md:right-12 lg:left-24 lg:right-24 xl:left-40 xl:right-40 backdrop-blur-md bg-black/20 border border-white/10 shadow-2xl rounded-2xl' 
-      : 'top-0 left-0 right-0 bg-transparent'
-  }`}
+  isScrolled 
+    ? 'top-4 left-2 right-2 sm:left-6 sm:right-6 md:left-10 md:right-10 lg:left-16 lg:right-16 xl:left-24 xl:right-24 backdrop-blur-md bg-black/20 border border-white/10 shadow-2xl rounded-2xl' 
+    : 'top-0 left-0 right-0 bg-transparent'
+}`}
   style={{
     backdropFilter: isScrolled ? 'blur(20px) saturate(180%)' : 'none',
     WebkitBackdropFilter: isScrolled ? 'blur(20px) saturate(180%)' : 'none',
