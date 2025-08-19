@@ -129,7 +129,7 @@ const HeroCarousel: React.FC = () => {
   const currentSlideData = slides[currentSlide];
 
   return (
-    <div className="relative h-[100vh] w-full overflow-hidden">
+    <div className="relative h-[100vh] w-full overflow-visible">
       {/* Background Slides */}
       {slides.map((slide, index) => (
         <div
@@ -174,8 +174,8 @@ const HeroCarousel: React.FC = () => {
             </div>
           </div>
 
-          {/* Achievements positioned with adjusted gaps */}
-          <div className="absolute top-full mt-8 sm:mt-12 md:mt-16 lg:mt-18 xl:mt-20 left-1/2 transform -translate-x-1/2 w-full max-w-4xl">
+          {/* Achievements positioned with minimal gaps on mobile */}
+          <div className="absolute top-full mt-4 sm:mt-8 md:mt-12 lg:mt-16 xl:mt-18 left-1/2 transform -translate-x-1/2 w-full max-w-4xl">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 md:gap-8 text-center px-4">
               <div>
                 <p ref={projectsRef} className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white">0</p>
@@ -196,12 +196,12 @@ const HeroCarousel: React.FC = () => {
             </div>
           </div>
 
-          {/* Orange rectangles - longer and positioned to avoid overlap */}
-          <div className="absolute top-full mt-24 sm:mt-32 md:mt-40 lg:mt-44 xl:mt-48 left-[20.8%] transform -translate-x-1/2">
-            <div className="w-8 sm:w-10 md:w-12 lg:w-14 xl:w-18 h-48 sm:h-56 md:h-64 lg:h-72 xl:h-80 bg-orange-400 opacity-80"></div>
+          {/* Orange rectangles - proper width matching arc, mobile-specific positioning */}
+          <div className="absolute top-full mt-40 sm:mt-28 md:mt-36 lg:mt-40 xl:mt-44 left-[20.8%] transform -translate-x-1/2 z-50">
+            <div className="w-10 sm:w-12 md:w-14 lg:w-16 xl:w-18 h-56 sm:h-64 md:h-72 lg:h-80 xl:h-88 bg-orange-400 opacity-80"></div>
           </div>
-          <div className="absolute top-full mt-24 sm:mt-32 md:mt-40 lg:mt-44 xl:mt-48 right-[20.8%] transform translate-x-1/2">
-            <div className="w-8 sm:w-10 md:w-12 lg:w-14 xl:w-18 h-48 sm:h-56 md:h-64 lg:h-72 xl:h-80 bg-orange-400 opacity-80"></div>
+          <div className="absolute top-full mt-40 sm:mt-28 md:mt-36 lg:mt-40 xl:mt-44 right-[20.8%] transform translate-x-1/2 z-50">
+            <div className="w-10 sm:w-12 md:w-14 lg:w-16 xl:w-18 h-56 sm:h-64 md:h-72 lg:h-80 xl:h-88 bg-orange-400 opacity-80"></div>
           </div>
         </div>
       </div>
