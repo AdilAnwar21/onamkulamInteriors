@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { gsap } from "gsap";
+import { ChevronLeft, ChevronRight, MessageCircle } from "lucide-react";
 
 interface CarouselSlide {
   id: number;
@@ -49,26 +48,22 @@ const HeroCarousel: React.FC = () => {
 
     const nextIndex = (currentSlide + 1) % slides.length;
 
-    gsap.to(".hero-content", {
-      duration: 0.3,
-      opacity: 0,
-      y: 30,
-      ease: "power2.in",
-      onComplete: () => {
+    // Animate out current content
+    const heroContent = document.querySelector('.hero-content') as HTMLElement | null;
+    if (heroContent) {
+      heroContent.style.opacity = '0';
+      heroContent.style.transform = 'translateY(30px)';
+      heroContent.style.transition = 'all 0.3s ease-in';
+      
+      setTimeout(() => {
         setCurrentSlide(nextIndex);
-        gsap.fromTo(
-          ".hero-content",
-          { opacity: 0, y: 30 },
-          {
-            duration: 0.6,
-            opacity: 1,
-            y: 0,
-            ease: "power2.out",
-            onComplete: () => setIsAnimating(false),
-          }
-        );
-      },
-    });
+        // Animate in new content
+        heroContent.style.opacity = '1';
+        heroContent.style.transform = 'translateY(2px) sm:translateY(3px) md:translateY(4px) lg:translateY(6px)';
+        heroContent.style.transition = 'all 0.6s ease-out';
+        setTimeout(() => setIsAnimating(false), 600);
+      }, 300);
+    }
   };
 
   const prevSlide = () => {
@@ -77,27 +72,23 @@ const HeroCarousel: React.FC = () => {
 
     const prevIndex =
       currentSlide === 0 ? slides.length - 1 : currentSlide - 1;
-
-    gsap.to(".hero-content", {
-      duration: 0.3,
-      opacity: 0,
-      y: 30,
-      ease: "power2.in",
-      onComplete: () => {
+    
+    // Animate out current content
+    const heroContent = document.querySelector('.hero-content') as HTMLElement | null;
+    if (heroContent) {
+      heroContent.style.opacity = '0';
+      heroContent.style.transform = 'translateY(30px)';
+      heroContent.style.transition = 'all 0.3s ease-in';
+      
+      setTimeout(() => {
         setCurrentSlide(prevIndex);
-        gsap.fromTo(
-          ".hero-content",
-          { opacity: 0, y: 30 },
-          {
-            duration: 0.6,
-            opacity: 1,
-            y: 0,
-            ease: "power2.out",
-            onComplete: () => setIsAnimating(false),
-          }
-        );
-      },
-    });
+        // Animate in new content
+        heroContent.style.opacity = '1';
+        heroContent.style.transform = 'translateY(2px) sm:translateY(3px) md:translateY(4px) lg:translateY(6px)';
+        heroContent.style.transition = 'all 0.6s ease-out';
+        setTimeout(() => setIsAnimating(false), 600);
+      }, 300);
+    }
   };
 
   // Auto slide
@@ -106,47 +97,39 @@ const HeroCarousel: React.FC = () => {
     return () => clearInterval(interval);
   }, [currentSlide, isAnimating]);
 
-  // First load animations
+  // Count-up animation
   useEffect(() => {
-    gsap.fromTo(
-      ".hero-content",
-      { opacity: 0, y: 50 },
-      { duration: 1, opacity: 1, y: 0, ease: "power2.out", delay: 0.5 }
-    );
-    gsap.fromTo(
-      ".hero-nav",
-      { opacity: 0, scale: 0.8 },
-      { duration: 0.8, opacity: 1, scale: 1, ease: "back.out(1.7)", delay: 1 }
-    );
-
-    // Count-up animation
     const animateCount = (
       ref: React.RefObject<HTMLParagraphElement>,
       endValue: number
     ) => {
       if (!ref.current) return;
-      gsap.fromTo(
-        ref.current,
-        { innerText: 0 },
-        {
-          innerText: endValue,
-          duration: 2,
-          ease: "power1.out",
-          snap: { innerText: 1 },
+      let current = 0;
+      const increment = endValue / 100;
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= endValue) {
+          current = endValue;
+          clearInterval(timer);
         }
-      );
+        if (ref.current) {
+          ref.current.innerText = Math.floor(current).toString();
+        }
+      }, 20);
     };
 
-    animateCount(projectsRef, 400);
-    animateCount(clientsRef, 250);
-    animateCount(awardsRef, 10);
-    animateCount(yearsRef, 15);
+    setTimeout(() => {
+      animateCount(projectsRef, 400);
+      animateCount(clientsRef, 250);
+      animateCount(awardsRef, 10);
+      animateCount(yearsRef, 15);
+    }, 1000);
   }, []);
 
   const currentSlideData = slides[currentSlide];
 
   return (
-    <div className="relative h-[90vh] w-full overflow-hidden">
+    <div className="relative h-[100vh] w-full overflow-hidden">
       {/* Background Slides */}
       {slides.map((slide, index) => (
         <div
@@ -163,70 +146,68 @@ const HeroCarousel: React.FC = () => {
         </div>
       ))}
 
-      {/* Arc Section */}
-      <div
-        className="absolute left-0 w-full z-10 pointer-events-none
-         top-[30%] sm:top-[25%] md:top-[20%] lg:top-[12%]"
-      >
-        <div className="relative w-full">
+      {/* Arc Section - Extended outside hero */}
+      <div className="absolute left-1/2 transform -translate-x-1/2 w-[120%] sm:w-[110%] md:w-full max-w-7xl z-10 top-[15%] sm:top-[18%] md:top-[20%] lg:top-[22%] overflow-visible">
+        <div className="relative w-full px-4 sm:px-6 lg:px-8">
           <svg
-            className="w-[115%] sm:w-full h-auto"
-            viewBox="0 0 1920 400"
-            preserveAspectRatio="none"
+            className="w-full h-auto overflow-visible"
+            viewBox="0 0 1200 350"
+            preserveAspectRatio="xMidYMid meet"
             xmlns="http://www.w3.org/2000/svg"
           >
             <path
-              d="M400,400 L400,260 Q400,60 600,60 L1320,60 Q1520,60 1520,260 L1520,400 L1450,400 L1450,260 Q1450,120 1320,120 L600,120 Q470,120 470,260 L470,400 Z"
+              d="M200,350 L200,160 Q200,20 400,20 L800,20 Q1000,20 1000,160 L1000,350 L950,350 L950,160 Q950,70 800,70 L400,70 Q250,70 250,160 L250,350 Z"
               fill="white"
               opacity="0.95"
             />
           </svg>
 
-          {/* Orange projecting rectangles */}
-          <div className="absolute top-[calc(100%+6.5rem)] left-[20.5%] z-20">
-            <div className="w-8 sm:w-10 md:w-12 lg:w-16 h-40 sm:h-48 md:h-56 lg:h-64 bg-orange-400 opacity-80"></div>
+          {/* Title positioned in the center of the arc */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="hero-content text-center px-4 transform translate-y-2 sm:translate-y-3 md:translate-y-4 lg:translate-y-6">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-tight">
+                {currentSlideData.title}
+              </h1>
+              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-white leading-tight mt-1 sm:mt-2">
+                {currentSlideData.subtitle}
+              </h2>
+            </div>
           </div>
-          <div className="absolute top-[calc(100%+6.5rem)] right-[20.5%] z-20">
-            <div className="w-8 sm:w-10 md:w-12 lg:w-16 h-40 sm:h-48 md:h-56 lg:h-64 bg-orange-400 opacity-80"></div>
+
+          {/* Achievements positioned with adjusted gaps */}
+          <div className="absolute top-full mt-8 sm:mt-12 md:mt-16 lg:mt-18 xl:mt-20 left-1/2 transform -translate-x-1/2 w-full max-w-4xl">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 md:gap-8 text-center px-4">
+              <div>
+                <p ref={projectsRef} className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white">0</p>
+                <p className="text-sm sm:text-base md:text-lg font-medium text-gray-200 mt-1">Projects</p>
+              </div>
+              <div>
+                <p ref={clientsRef} className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white">0</p>
+                <p className="text-sm sm:text-base md:text-lg font-medium text-gray-200 mt-1">Clients</p>
+              </div>
+              <div>
+                <p ref={awardsRef} className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white">0</p>
+                <p className="text-sm sm:text-base md:text-lg font-medium text-gray-200 mt-1">Awards</p>
+              </div>
+              <div>
+                <p ref={yearsRef} className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white">0</p>
+                <p className="text-sm sm:text-base md:text-lg font-medium text-gray-200 mt-1">Years Exp.</p>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
 
-      {/* Content Section */}
-      <div className="relative z-20 flex items-center h-full">
-        <div className="hero-content text-left px-4 sm:px-6 lg:px-8 max-w-xl ml-[10%] sm:ml-[12%] md:ml-[15%] mt-[15%]">
-          {/* Title */}
-          <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-light text-white leading-tight opacity-90">
-            {currentSlideData.title}
-          </h1>
-          <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-light text-white leading-tight mt-2 opacity-90">
-            {currentSlideData.subtitle}
-          </h2>
-
-          {/* Achievements */}
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-6 mt-10 w-full text-center">
-            <div>
-              <p ref={projectsRef} className="text-3xl sm:text-4xl md:text-5xl font-bold text-white"></p>
-              <p className="text-lg font-medium text-gray-200">Projects</p>
-            </div>
-            <div>
-              <p ref={clientsRef} className="text-3xl sm:text-4xl md:text-5xl font-bold text-white"></p>
-              <p className="text-lg font-medium text-gray-200">Clients</p>
-            </div>
-            <div>
-              <p ref={awardsRef} className="text-3xl sm:text-4xl md:text-5xl font-bold text-white"></p>
-              <p className="text-lg font-medium text-gray-200">Awards</p>
-            </div>
-            <div>
-              <p ref={yearsRef} className="text-3xl sm:text-4xl md:text-5xl font-bold text-white"></p>
-              <p className="text-lg font-medium text-gray-200">Years Exp.</p>
-            </div>
+          {/* Orange rectangles - longer and positioned to avoid overlap */}
+          <div className="absolute top-full mt-24 sm:mt-32 md:mt-40 lg:mt-44 xl:mt-48 left-[20.8%] transform -translate-x-1/2">
+            <div className="w-8 sm:w-10 md:w-12 lg:w-14 xl:w-18 h-48 sm:h-56 md:h-64 lg:h-72 xl:h-80 bg-orange-400 opacity-80"></div>
+          </div>
+          <div className="absolute top-full mt-24 sm:mt-32 md:mt-40 lg:mt-44 xl:mt-48 right-[20.8%] transform translate-x-1/2">
+            <div className="w-8 sm:w-10 md:w-12 lg:w-14 xl:w-18 h-48 sm:h-56 md:h-64 lg:h-72 xl:h-80 bg-orange-400 opacity-80"></div>
           </div>
         </div>
       </div>
 
       {/* Navigation buttons */}
-      <div className="z-50 hero-nav absolute inset-y-0 left-0 right-0 flex items-center justify-between px-4 sm:px-8 md:px-12 pointer-events-none">
+      <div className="z-50 hero-nav absolute inset-y-0 left-0 right-0 flex items-center justify-between px-4 sm:px-6 md:px-8 lg:px-12 pointer-events-none">
         <button
           onClick={prevSlide}
           disabled={isAnimating}
@@ -236,8 +217,7 @@ const HeroCarousel: React.FC = () => {
              disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
         >
           <ChevronLeft
-            className="text-white transition-transform duration-300 group-hover:-translate-x-1"
-            style={{ fontSize: "clamp(20px, 2vw, 28px)" }}
+            className="text-white transition-transform duration-300 group-hover:-translate-x-1 w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7"
           />
         </button>
 
@@ -250,19 +230,30 @@ const HeroCarousel: React.FC = () => {
              disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
         >
           <ChevronRight
-            className="text-white transition-transform duration-300 group-hover:translate-x-1"
-            style={{ fontSize: "clamp(20px, 2vw, 28px)" }}
+            className="text-white transition-transform duration-300 group-hover:translate-x-1 w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7"
           />
         </button>
       </div>
 
+      {/* Contact Us Button - Bottom Right */}
+      <div className="absolute bottom-6 sm:bottom-8 md:bottom-10 lg:bottom-12 right-4 sm:right-6 md:right-8 lg:right-12 z-50">
+        <button className="group bg-orange-400 hover:bg-orange-500 text-white font-semibold 
+                         px-4 py-2 sm:px-6 sm:py-3 md:px-8 md:py-4 
+                         rounded-full shadow-lg hover:shadow-xl 
+                         transition-all duration-300 hover:scale-105 
+                         flex items-center gap-2 sm:gap-3">
+          <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 transition-transform group-hover:rotate-12" />
+          <span className="text-xs sm:text-sm md:text-base lg:text-lg">Contact Us</span>
+        </button>
+      </div>
+
       {/* Slide indicators */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-4 z-20">
+      <div className="absolute bottom-6 sm:bottom-8 md:bottom-10 lg:bottom-12 left-1/2 transform -translate-x-1/2 flex space-x-2 sm:space-x-3 md:space-x-4 z-20">
         {slides.map((_, index) => (
           <button
             key={index}
             onClick={() => !isAnimating && setCurrentSlide(index)}
-            className={`w-4 h-4 rounded-full transition-all duration-300 border-2 ${
+            className={`w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 rounded-full transition-all duration-300 border-2 ${
               index === currentSlide
                 ? "bg-orange-400 border-orange-400 scale-125"
                 : "bg-transparent border-white/60 hover:border-white hover:bg-white/20"
