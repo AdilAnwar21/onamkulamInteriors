@@ -155,7 +155,7 @@ const HeroCarousel: React.FC = () => {
         </div>
       ))}
 
-      {/* Arc Section - Extended outside hero */}
+      {/* Arc Section - Extended arc with wider curves */}
       <div className="absolute left-1/2 transform -translate-x-1/2 w-[100%] sm:w-[100%] md:w-full max-w-7xl z-10 top-[15%] sm:top-[18%] md:top-[20%] lg:top-[22%] overflow-visible">
         <div className="relative w-full px-0 sm:px-6 lg:px-8">
           <svg
@@ -164,8 +164,9 @@ const HeroCarousel: React.FC = () => {
             preserveAspectRatio="xMidYMid meet"
             xmlns="http://www.w3.org/2000/svg"
           >
+            {/* Extended arc - made wider by extending the horizontal sections and adjusting curve points */}
             <path
-              d="M200,350 L200,160 Q200,20 400,20 L800,20 Q1000,20 1000,160 L1000,350 L950,350 L950,160 Q950,70 800,70 L400,70 Q250,70 250,160 L250,350 Z"
+              d="M120,350 L120,160 Q120,20 350,20 L850,20 Q1080,20 1080,160 L1080,350 L1030,350 L1030,160 Q1030,70 850,70 L350,70 Q170,70 170,160 L170,350 Z"
               fill="white"
               opacity="0.95"
             />
@@ -205,14 +206,14 @@ const HeroCarousel: React.FC = () => {
             </div>
           </div>
 
-          {/* Orange rectangles - Fixed width consistent with arc, improved height for tablet and mobile */}
-          {/* Left Orange Rectangle - Using correct alignment from first code + correct thickness from second code */}
-          <div className="absolute top-full mt-40 sm:mt-28 md:mt-36 lg:mt-40 xl:mt-44 left-[20.8%] transform -translate-x-1/2 z-50">
+          {/* Orange rectangles - Repositioned to align with extended arc endpoints */}
+          {/* Left Orange Rectangle - Aligned with new arc start point (120 in viewBox = 10% of 1200) */}
+          <div className="absolute top-full mt-40 sm:mt-28 md:mt-36 lg:mt-40 xl:mt-44 left-[14.2%] transform -translate-x-1/2 z-50">
             <div className="w-5 sm:w-6 md:w-8 lg:w-12 xl:w-14 h-80 sm:h-96 md:h-80 lg:h-80 xl:h-88 bg-orange-300 opacity-80"></div>
           </div>
 
-          {/* Right Orange Rectangle - Using correct alignment from first code + correct thickness from second code */}
-          <div className="absolute top-full mt-40 sm:mt-28 md:mt-36 lg:mt-40 xl:mt-44 right-[20.8%] transform translate-x-1/2 z-50">
+          {/* Right Orange Rectangle - Aligned with new arc end point (1080 in viewBox = 90% of 1200) */}
+          <div className="absolute top-full mt-40 sm:mt-28 md:mt-36 lg:mt-40 xl:mt-44 right-[14.2%] transform translate-x-1/2 z-50">
             <div className="w-5 sm:w-6 md:w-8 lg:w-12 xl:w-14 h-80 sm:h-96 md:h-80 lg:h-80 xl:h-88 bg-orange-300 opacity-80"></div>
           </div>
         </div>
