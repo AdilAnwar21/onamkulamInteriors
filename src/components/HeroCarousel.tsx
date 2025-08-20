@@ -129,7 +129,17 @@ const HeroCarousel: React.FC = () => {
   const currentSlideData = slides[currentSlide];
 
   return (
-    <div className="relative h-[100vh] w-full overflow-visible">
+    <div
+      className="
+        relative
+        h-[100vh]      
+        sm:h-[70vh]    
+        md:h-[70vh]    
+        lg:h-[100vh]
+        w-full
+        overflow-visible
+      "
+    >
       {/* Background Slides */}
       {slides.map((slide, index) => (
         <div
@@ -146,8 +156,8 @@ const HeroCarousel: React.FC = () => {
       ))}
 
       {/* Arc Section - Extended outside hero */}
-      <div className="absolute left-1/2 transform -translate-x-1/2 w-[120%] sm:w-[110%] md:w-full max-w-7xl z-10 top-[15%] sm:top-[18%] md:top-[20%] lg:top-[22%] overflow-visible">
-        <div className="relative w-full px-4 sm:px-6 lg:px-8">
+      <div className="absolute left-1/2 transform -translate-x-1/2 w-[100%] sm:w-[100%] md:w-full max-w-7xl z-10 top-[15%] sm:top-[18%] md:top-[20%] lg:top-[22%] overflow-visible">
+        <div className="relative w-full px-0 sm:px-6 lg:px-8">
           <svg
             className="w-full h-auto overflow-visible"
             viewBox="0 0 1200 350"
@@ -174,7 +184,7 @@ const HeroCarousel: React.FC = () => {
           </div>
 
           {/* Achievements positioned with minimal gaps on mobile */}
-          <div className="absolute top-full mt-4 sm:mt-8 md:mt-12 lg:mt-16 xl:mt-18 left-0 right-0 w-full px-4 sm:px-6 lg:px-8">
+          <div className="absolute top-full mt-4 sm:mt-8 md:mt-12 lg:mt-16 xl:mt-18 left-0 right-0 w-full px-8 sm:px-6 lg:px-8">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 md:gap-8 text-center max-w-4xl mx-auto">
               <div>
                 <p ref={projectsRef} className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white">0</p>
@@ -195,12 +205,12 @@ const HeroCarousel: React.FC = () => {
             </div>
           </div>
 
-          {/* Orange rectangles - proper width matching arc, mobile-specific positioning */}
-          <div className="absolute top-full mt-40 sm:mt-28 md:mt-36 lg:mt-40 xl:mt-44 left-[20.8%] transform -translate-x-1/2 z-50">
-            <div className="w-16 sm:w-16 md:w-14 lg:w-16 xl:w-18 h-64 sm:h-72 md:h-72 lg:h-80 xl:h-88 bg-orange-400 opacity-80"></div>
+          {/* Orange rectangles - Fixed width consistent with arc, improved height for tablet and mobile */}
+          <div className="absolute top-full mt-40 sm:mt-28 md:mt-36 lg:mt-40 xl:mt-44 left-[16.67%] transform -translate-x-1/2 z-50">
+            <div className="w-16 h-80 sm:h-96 md:h-80 lg:h-80 xl:h-88 bg-orange-300 opacity-80"></div>
           </div>
-          <div className="absolute top-full mt-40 sm:mt-28 md:mt-36 lg:mt-40 xl:mt-44 right-[20.8%] transform translate-x-1/2 z-50">
-            <div className="w-16 sm:w-16 md:w-14 lg:w-16 xl:w-18 h-64 sm:h-72 md:h-72 lg:h-80 xl:h-88 bg-orange-400 opacity-80"></div>
+          <div className="absolute top-full mt-40 sm:mt-28 md:mt-36 lg:mt-40 xl:mt-44 right-[16.67%] transform translate-x-1/2 z-50">
+            <div className="w-16 h-80 sm:h-96 md:h-80 lg:h-80 xl:h-88 bg-orange-300 opacity-80"></div>
           </div>
         </div>
       </div>
@@ -235,16 +245,15 @@ const HeroCarousel: React.FC = () => {
         </button>
       </div>
 
-
-      {/* Contact Us Button - Bottom Right */}
-      <div className="absolute bottom-6 sm:bottom-8 md:bottom-10 lg:bottom-12 right-4 sm:right-6 md:right-8 lg:right-12 z-50">
+      {/* Contact Us Button - Bottom Right (Only show on lg and above) */}
+      <div className="hidden lg:block absolute bottom-12 right-12 z-50">
         <button className="group bg-orange-400 hover:bg-orange-500 text-white font-semibold 
-                         px-4 py-2 sm:px-6 sm:py-3 md:px-8 md:py-4 
-                         rounded-full shadow-lg hover:shadow-xl 
-                         transition-all duration-300 hover:scale-105 
-                         flex items-center gap-2 sm:gap-3">
-          <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 transition-transform group-hover:rotate-12" />
-          <span className="text-xs sm:text-sm md:text-base lg:text-lg">Contact Us</span>
+                            px-6 py-3 md:px-8 md:py-4 
+                            rounded-full shadow-lg hover:shadow-xl 
+                            transition-all duration-300 hover:scale-105 
+                            flex items-center gap-3">
+          <MessageCircle className="w-5 h-5 md:w-6 md:h-6 transition-transform group-hover:rotate-12" />
+          <span className="text-sm md:text-base lg:text-lg">Contact Us</span>
         </button>
       </div>
 
