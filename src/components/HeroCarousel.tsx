@@ -132,7 +132,7 @@ const HeroCarousel: React.FC = () => {
     <div
       className="
         relative
-        h-[100vh]      
+        h-[80vh]      
         sm:h-[70vh]    
         md:h-[70vh]    
         lg:h-[100vh]
@@ -206,11 +206,14 @@ const HeroCarousel: React.FC = () => {
           </div>
 
           {/* Orange rectangles - Fixed width consistent with arc, improved height for tablet and mobile */}
-          <div className="absolute top-full mt-40 sm:mt-28 md:mt-36 lg:mt-40 xl:mt-44 left-[16.67%] transform -translate-x-1/2 z-50">
-            <div className="w-16 h-80 sm:h-96 md:h-80 lg:h-80 xl:h-88 bg-orange-300 opacity-80"></div>
+          {/* Left Orange Rectangle - Using correct alignment from first code + correct thickness from second code */}
+          <div className="absolute top-full mt-40 sm:mt-28 md:mt-36 lg:mt-40 xl:mt-44 left-[20.8%] transform -translate-x-1/2 z-50">
+            <div className="w-5 sm:w-6 md:w-8 lg:w-12 xl:w-14 h-80 sm:h-96 md:h-80 lg:h-80 xl:h-88 bg-orange-300 opacity-80"></div>
           </div>
-          <div className="absolute top-full mt-40 sm:mt-28 md:mt-36 lg:mt-40 xl:mt-44 right-[16.67%] transform translate-x-1/2 z-50">
-            <div className="w-16 h-80 sm:h-96 md:h-80 lg:h-80 xl:h-88 bg-orange-300 opacity-80"></div>
+
+          {/* Right Orange Rectangle - Using correct alignment from first code + correct thickness from second code */}
+          <div className="absolute top-full mt-40 sm:mt-28 md:mt-36 lg:mt-40 xl:mt-44 right-[20.8%] transform translate-x-1/2 z-50">
+            <div className="w-5 sm:w-6 md:w-8 lg:w-12 xl:w-14 h-80 sm:h-96 md:h-80 lg:h-80 xl:h-88 bg-orange-300 opacity-80"></div>
           </div>
         </div>
       </div>
