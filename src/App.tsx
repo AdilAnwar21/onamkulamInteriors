@@ -1,4 +1,4 @@
-import React from 'react';
+// import React from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Navbar from './components/Navbar';
@@ -6,6 +6,7 @@ import HeroCarousel from './components/HeroCarousel';
 import AboutSection from './components/AboutSection';
 import ServicesSection from './components/ServicesSection';
 import useScrollPosition from './hooks/useScrollPosition';
+import PartnersCarousel from './components/Partners';
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
@@ -18,6 +19,7 @@ function App() {
       <Navbar isScrolled={isScrolled} />
       <main>
         <HeroCarousel />
+        <PartnersCarousel />
         <AboutSection />
         <ServicesSection />
       </main>
