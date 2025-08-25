@@ -1,74 +1,82 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 
-interface Partner {
-  id: number;
-  name: string;
-  logo: string;
-}
+// Replace with your logo paths
+const logos = [
+  "/img/logo/logo-1.png",
+  "/img/logo/logo-2.png",
+  "/img/logo/logo-3.png",
+  "/img/logo/logo-4.png",
+  "/img/logo/logo-5.png",
+  "/img/logo/logo-6.png",
+];
 
-const PartnersCarousel: React.FC = () => {
-  const partners: Partner[] = [
-    { id: 1, name: "CraftGenic", logo: "https://dummyimage.com/200x100/ccc/000&text=CraftGenic" },
-    { id: 2, name: "Design Ripple", logo: "https://dummyimage.com/200x100/ccc/000&text=DesignRipple" },
-    { id: 3, name: "Neural Construct", logo: "https://dummyimage.com/200x100/ccc/000&text=Neural" },
-    { id: 4, name: "Rebel Architect", logo: "https://dummyimage.com/200x100/ccc/000&text=Rebel" },
-    { id: 5, name: "ModernSpace", logo: "https://dummyimage.com/200x100/ccc/000&text=Modern" },
-    { id: 6, name: "UrbanFlow", logo: "https://dummyimage.com/200x100/ccc/000&text=Urban" },
-  ];
+const TrustedPartners: React.FC = () => {
+  const [index, setIndex] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const loopedPartners = [...partners, ...partners];
+  // Auto slide like Owl (every 3s)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % logos.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Number of visible logos depending on screen size
+  const getVisibleCount = () => {
+    if (window.innerWidth < 480) return 1; // mobile
+    if (window.innerWidth < 768) return 2; // tablet
+    if (window.innerWidth < 1024) return 3; // small laptop
+    return 4; // desktop
+  };
+
+  const visibleCount = getVisibleCount();
 
   return (
-    <div className="relative bg-white py-16 overflow-hidden">
-      {/* Section wrapper inside orange bars */}
-      <div className="relative w-[71.6%] mx-auto">
-        {/* Heading */}
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-800">
-            OUR TRUSTED PARTNERS
-          </h2>
-          {/* Orange underline (SVG curve) */}
-          <div className="flex justify-center mt-3">
-            <svg
-              width="220"
-              height="20"
-              viewBox="0 0 220 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M5 15C60 5 160 5 215 15"
-                stroke="#C9732A"
-                strokeWidth="4"
-                strokeLinecap="round"
-              />
-            </svg>
-          </div>
-        </div>
+    <section
+      className="relative py-16 px-6 bg-cover bg-center"
+      style={{
+        backgroundImage: "url('/img/partners-bg.png')", // <-- replace with your background
+      }}
+    >
+      {/* Heading */}
+      <div className="text-center mb-12">
+        <h2 className="text-2xl md:text-4xl font-bold text-white">
+          OUR TRUSTED PARTNERS
+        </h2>
+      </div>
 
-        {/* Carousel */}
+      {/* Carousel wrapper */}
+      <div
+        ref={containerRef}
+        className="overflow-hidden relative max-w-6xl mx-auto cursor-grab active:cursor-grabbing"
+      >
         <motion.div
-          className="flex space-x-16"
-          animate={{ x: ["0%", "-50%"] }}
-          transition={{ ease: "linear", duration: 15, repeat: Infinity }}
+          drag="x"
+          dragConstraints={containerRef}
+          className="flex transition-transform duration-[1200ms] ease-in-out"
+          style={{
+            transform: `translateX(-${index * (100 / visibleCount)}%)`,
+          }}
         >
-          {loopedPartners.map((partner, index) => (
+          {logos.concat(logos).map((logo, i) => (
             <div
-              key={index}
-              className="flex items-center justify-center flex-none w-40 h-20"
+              key={i}
+              className="flex-shrink-0 flex items-center justify-center px-6 logo-item"
+              style={{ width: `${100 / visibleCount}%` }}
             >
               <img
-                src={partner.logo}
-                alt={partner.name}
-                className="max-h-14 object-contain filter grayscale opacity-70 hover:opacity-100 hover:grayscale-0 transition-all duration-300"
+                src={logo}
+                alt={`Partner ${i}`}
+                className="h-20 w-auto object-contain grayscale hover:grayscale-0 transition duration-300"
               />
             </div>
           ))}
         </motion.div>
       </div>
-    </div>
+    </section>
   );
 };
 
-export default PartnersCarousel;
+export default TrustedPartners;
