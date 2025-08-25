@@ -145,7 +145,7 @@ const TrustedPartners: React.FC<Props> = ({ partners = DEFAULT_PARTNERS, autopla
   return (
     <section
       className="relative py-16 md:py-24 bg-cover bg-center"
-      style={{ backgroundImage: "url('/partners-bg.png')" }} // put your bg in /public
+      style={{ backgroundImage: "url('/testimonial-bg.jpg')" }} // put your bg in /public
       onMouseEnter={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}
     >
