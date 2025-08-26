@@ -209,12 +209,12 @@ const HeroCarousel: React.FC = () => {
           {/* Orange rectangles - Repositioned to align with extended arc endpoints */}
           {/* Left Orange Rectangle - Aligned with new arc start point (120 in viewBox = 10% of 1200) */}
           <div className="absolute top-full mt-40 sm:mt-28 md:mt-36 lg:mt-40 xl:mt-44 left-[14.2%] transform -translate-x-1/2 z-50">
-            <div className="w-5 sm:w-6 md:w-8 lg:w-12 xl:w-14 h-80 sm:h-96 md:h-80 lg:h-80 xl:h-88 bg-orange-300 opacity-80"></div>
+            <div className="w-5 sm:w-6 md:w-8 lg:w-12 xl:w-14 h-80 sm:h-96 md:h-88 lg:h-80 xl:h-88 bg-orange-300 opacity-80"></div>
           </div>
 
           {/* Right Orange Rectangle - Aligned with new arc end point (1080 in viewBox = 90% of 1200) */}
           <div className="absolute top-full mt-40 sm:mt-28 md:mt-36 lg:mt-40 xl:mt-44 right-[14.2%] transform translate-x-1/2 z-50">
-            <div className="w-5 sm:w-6 md:w-8 lg:w-12 xl:w-14 h-80 sm:h-96 md:h-80 lg:h-80 xl:h-88 bg-orange-300 opacity-80"></div>
+            <div className="w-5 sm:w-6 md:w-8 lg:w-12 xl:w-14 h-80 sm:h-96 md:h-88 lg:h-80 xl:h-88 bg-orange-300 opacity-80"></div>
           </div>
         </div>
       </div>

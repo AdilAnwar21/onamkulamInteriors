@@ -66,16 +66,12 @@ const TrustedPartners: React.FC<Props> = ({ partners = DEFAULT_PARTNERS, autopla
       if (index >= START_INDEX + baseLen) {
         setWithTransition(false);
         setIndex((prev) => prev - baseLen);
-        requestAnimationFrame(() => {
-          setWithTransition(true);
-        });
+        requestAnimationFrame(() => setWithTransition(true));
       }
       if (index < START_INDEX) {
         setWithTransition(false);
         setIndex((prev) => prev + baseLen);
-        requestAnimationFrame(() => {
-          setWithTransition(true);
-        });
+        requestAnimationFrame(() => setWithTransition(true));
       }
     };
     el.addEventListener("transitionend", onEnd);
@@ -134,6 +130,10 @@ const TrustedPartners: React.FC<Props> = ({ partners = DEFAULT_PARTNERS, autopla
       onMouseEnter={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}
     >
+      {/* --- ALIGN EXACTLY WITH HERO RECTANGLES (same 14.2% positions),
+            but no extra top gap (start at the very top of this section) --- */}
+      
+
       <div className="relative w-[65%] mx-auto">
         <div className="text-center mb-10 md:mb-14">
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-gray-900">
@@ -146,7 +146,7 @@ const TrustedPartners: React.FC<Props> = ({ partners = DEFAULT_PARTNERS, autopla
           </div>
         </div>
 
-        {/* Carousel with reduced width (added px padding) */}
+        {/* Carousel */}
         <div
           ref={containerRef}
           className="overflow-hidden select-none cursor-grab active:cursor-grabbing px-6 md:px-10"
@@ -178,7 +178,23 @@ const TrustedPartners: React.FC<Props> = ({ partners = DEFAULT_PARTNERS, autopla
           </div>
         </div>
       </div>
+
+      <div className="absolute left-1/2 transform -translate-x-1/2 w-[100%] sm:w-[100%] md:w-full max-w-7xl z-10 top-[30%] sm:top-[30%] md:top-[40%] lg:top-[40%] overflow-visible">
+        <div className="relative w-full px-0 sm:px-6 lg:px-8">
+          
+          {/* Left Orange Rectangle - Aligned with new arc start point (120 in viewBox = 10% of 1200) */}
+          <div className="absolute top-full mt-40 sm:mt-28 md:mt-36 lg:mt-40 xl:mt-44 left-[14.2%] transform -translate-x-1/2 z-50">
+            <div className="w-5 sm:w-6 md:w-8 lg:w-12 xl:w-14 h-80 sm:h-96 md:h-90 lg:h-88 xl:h-88 bg-orange-300 opacity-80"></div>
+          </div>
+
+          {/* Right Orange Rectangle - Aligned with new arc end point (1080 in viewBox = 90% of 1200) */}
+          <div className="absolute top-full mt-40 sm:mt-28 md:mt-36 lg:mt-40 xl:mt-44 right-[14.2%] transform translate-x-1/2 z-50">
+            <div className="w-5 sm:w-6 md:w-8 lg:w-12 xl:w-14 h-80 sm:h-96 md:h-90 lg:h-88 xl:h-88 bg-orange-300 opacity-80"></div>
+          </div>
+        </div>
+      </div>
     </section>
+
   );
 };
 
