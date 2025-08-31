@@ -156,3 +156,10 @@ button:focus-visible, a:focus-visible {
   background-color: #f97316;
   color: white;
 }
+
+
+@media (min-width: 1024px) and (max-width: 1366px) {
+  .ipad-pro-rect {
+    height: 780px !important;
+  }
+}
