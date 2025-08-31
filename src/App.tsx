@@ -7,6 +7,7 @@ import AboutSection from './components/AboutSection';
 import ServicesSection from './components/ServicesSection';
 import useScrollPosition from './hooks/useScrollPosition';
 import PartnersCarousel from './components/Partners';
+import Testimonials from './components/Testimonials';
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
@@ -20,7 +21,8 @@ function App() {
       <main>
         <HeroCarousel />
         <PartnersCarousel />
-        <AboutSection />
+        <Testimonials />
+        {/* <AboutSection /> */}
         <ServicesSection />
       </main>
     </div>
