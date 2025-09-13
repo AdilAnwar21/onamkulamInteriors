@@ -69,22 +69,23 @@ const FloatingNavbar = () => {
   if (isMobile) {
     return (
       <>
-        <nav className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50">
-          <div className="bg-white backdrop-blur-xl rounded-full border border-black/20 shadow-2xl px-4 py-3">
-            <div className="flex items-center justify-between space-x-4">
-              {/* Logo */}
-              <div className="text-black font-bold text-lg tracking-wider">
-                HOUSEMOOD
-              </div>
-              
-              {/* Hamburger Menu */}
-              <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="text-black p-2 hover:bg-black/10 rounded-full transition-all duration-300"
-              >
-                {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-              </button>
+        {/* Mobile Sticky Navbar */}
+        <nav className="fixed top-0 left-0 right-0 z-50 bg-white/10 backdrop-blur-md border-b border-white/20">
+          <div className="flex items-center justify-between px-6 py-4">
+            {/* Logo */}
+            <div className="text-black font-bold text-lg tracking-wider">
+              HOUSEMOOD
             </div>
+            
+            {/* Hamburger Menu */}
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="text-black p-2 hover:bg-white/20 rounded-full transition-all duration-300 hover:scale-110 active:scale-95"
+            >
+              <div className={`transition-transform duration-300 ${isMenuOpen ? 'rotate-180' : 'rotate-0'}`}>
+                {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              </div>
+            </button>
           </div>
         </nav>
 
@@ -92,31 +93,35 @@ const FloatingNavbar = () => {
         {isMenuOpen && (
           <>
             <div 
-              className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
+              className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 animate-in fade-in duration-200"
               onClick={() => setIsMenuOpen(false)}
             />
             
-            <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 bg-white backdrop-blur-xl rounded-2xl border border-black/20 shadow-2xl p-6 min-w-[250px]">
+            <div className="fixed top-16 left-4 right-4 z-50 bg-white/95 backdrop-blur-xl rounded-2xl border border-white/30 shadow-2xl p-6 animate-in slide-in-from-top-4 fade-in duration-300">
               <div className="space-y-3">
-                {navItems.map((item) => {
+                {navItems.map((item, index) => {
                   const Icon = item.icon;
                   return (
                     <button
                       key={item.name}
-                      className="flex items-center space-x-3 w-full text-left px-4 py-3 text-black hover:text-[#8B4513] hover:bg-black/5 rounded-lg transition-all duration-200"
+                      className="flex items-center space-x-3 w-full text-left px-4 py-3 text-black hover:text-[#8B4513] hover:bg-black/5 rounded-lg transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] animate-in slide-in-from-left-2 fade-in duration-400"
+                      style={{ 
+                        animationDelay: `${index * 50 + 100}ms`,
+                        animationFillMode: 'both'
+                      }}
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      <Icon className="w-5 h-5" />
+                      <Icon className="w-5 h-5 transition-transform duration-200 group-hover:scale-110" />
                       <span className="font-medium">{item.name}</span>
                     </button>
                   );
                 })}
                 
                 {/* Say Hello Button */}
-                <div className="pt-3 border-t border-black/20">
-                  <button className="w-full bg-black/10 text-black px-6 py-3 rounded-full flex items-center justify-center space-x-3 hover:bg-black/20 transition-all duration-300">
+                <div className="pt-3 border-t border-black/20 animate-in slide-in-from-bottom-2 fade-in duration-400 delay-400">
+                  <button className="w-full bg-black/10 text-black px-6 py-3 rounded-full flex items-center justify-center space-x-3 hover:bg-black/20 transition-all duration-300 hover:scale-105 active:scale-95">
                     <span className="font-medium">Say "Hello"</span>
-                    <div className="bg-yellow-400 rounded-full p-1">
+                    <div className="bg-yellow-400 rounded-full p-1 transition-all duration-300 hover:rotate-12">
                       <ArrowRight className="w-4 h-4 text-black" />
                     </div>
                   </button>
@@ -181,7 +186,7 @@ const FloatingNavbar = () => {
                 return (
                   <button
                     key={item.name}
-                    className="flex items-center space-x-2 px-4 py-2.5 text-black hover:text-[#8B4513] hover:bg-black/5 rounded-full group whitespace-nowrap text-sm font-medium"
+                    className="flex items-center space-x-2 px-4 py-2.5 text-black hover:text-[#8B4513] hover:bg-black/5 rounded-full group whitespace-nowrap text-sm font-medium transition-all duration-300"
                     style={{
                       opacity: smoothItemProgress,
                       transform: `translateY(${(1 - smoothItemProgress) * 2}px)`,
@@ -189,7 +194,7 @@ const FloatingNavbar = () => {
                     }}
                   >
                     <Icon className="w-4 h-4 group-hover:scale-110 transition-transform duration-300" />
-                    <span>{item.name}</span>
+                    <span className="group-hover:translate-x-0.5 transition-transform duration-200">{item.name}</span>
                   </button>
                 );
               })}
