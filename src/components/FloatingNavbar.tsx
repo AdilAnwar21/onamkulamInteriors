@@ -25,7 +25,7 @@ const FloatingNavbar = () => {
     };
   }, []);
 
-  // Calculate navbar expansion based on scroll - complete expansion at 60% of hero height
+  // Calculate navbar expansion based on scroll
   const heroHeight = window.innerHeight;
   const scrollProgress = Math.min(scrollY / (heroHeight * 0.6), 1);
 
@@ -36,7 +36,7 @@ const FloatingNavbar = () => {
     { name: 'Contact', icon: Mail },
   ];
 
-  // Smooth easing function
+  // Easing
   const easeInOutCubic = (t: any) => {
     return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
   };
@@ -48,8 +48,8 @@ const FloatingNavbar = () => {
     if (scrollProgress === 0) return 'auto';
     if (scrollProgress < 0.2) return `${220 + smoothProgress * 120}px`;
     if (scrollProgress < 0.4) return `${420 + smoothProgress * 180}px`;
-    if (scrollProgress < 0.7) return `${650 + smoothProgress * 100}px`;
-    return '800px'; // increased from 720px → 800px
+    if (scrollProgress < 0.7) return `${650 + smoothProgress * 120}px`;
+    return '880px'; // Increased from 800 → 880
   };
 
   const getDesktopNavbarTransform = () => {
@@ -65,7 +65,7 @@ const FloatingNavbar = () => {
     return scrollProgress > 0.25 ? 'border border-black/20' : '';
   };
 
-  // Mobile navbar (only logo + hamburger)
+  // -------------------- MOBILE NAVBAR --------------------
   if (isMobile) {
     return (
       <>
@@ -88,7 +88,7 @@ const FloatingNavbar = () => {
           </div>
         </nav>
 
-        {/* Mobile Dropdown Menu */}
+        {/* Mobile Dropdown */}
         {isMenuOpen && (
           <>
             <div 
@@ -103,7 +103,7 @@ const FloatingNavbar = () => {
                   return (
                     <button
                       key={item.name}
-                      className="flex items-center space-x-3 w-full text-left px-4 py-3 text-black hover:text-brown-700 hover:bg-black/5 rounded-lg transition-all duration-200"
+                      className="flex items-center space-x-3 w-full text-left px-4 py-3 text-black hover:text-[#8B4513] hover:bg-black/5 rounded-lg transition-all duration-200"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       <Icon className="w-5 h-5" />
@@ -129,7 +129,7 @@ const FloatingNavbar = () => {
     );
   }
 
-  // Desktop navbar
+  // -------------------- DESKTOP NAVBAR --------------------
   return (
     <nav className="fixed top-6 right-6 z-50">
       <div 
@@ -167,7 +167,7 @@ const FloatingNavbar = () => {
             <div
               className="flex items-center space-x-1 overflow-hidden"
               style={{
-                width: scrollProgress > 0.1 ? `${Math.min(400, (scrollProgress - 0.1) * 500)}px` : '0px',
+                width: scrollProgress > 0.1 ? `${Math.min(450, (scrollProgress - 0.1) * 520)}px` : '0px', // widened
                 opacity: scrollProgress > 0.2 ? Math.min(1, (scrollProgress - 0.2) * 2.5) : 0,
                 transition: 'all 1.5s cubic-bezier(0.23, 1, 0.32, 1)'
               }}
@@ -181,7 +181,7 @@ const FloatingNavbar = () => {
                 return (
                   <button
                     key={item.name}
-                    className="flex items-center space-x-2 px-4 py-2.5 text-black hover:text-brown-700 hover:bg-black/5 rounded-full group whitespace-nowrap text-sm font-medium"
+                    className="flex items-center space-x-2 px-4 py-2.5 text-black hover:text-[#8B4513] hover:bg-black/5 rounded-full group whitespace-nowrap text-sm font-medium"
                     style={{
                       opacity: smoothItemProgress,
                       transform: `translateY(${(1 - smoothItemProgress) * 2}px)`,

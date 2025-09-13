@@ -17,7 +17,7 @@ const Hero = () => {
         <div className="flex justify-between items-center">
           {/* Logo */}
           <div className="text-white">
-            <h1 className="text-2xl lg:text-3xl font-bold tracking-wider">HOUSEMOOD</h1>
+            <h1 className="text-2xl lg:text-3xl font-bold tracking-wider">ONAMKULAM</h1>
           </div>
 
           {/* Say Hello Button */}
