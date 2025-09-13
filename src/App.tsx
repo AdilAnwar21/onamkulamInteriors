@@ -2,64 +2,81 @@ import { useState, useEffect } from 'react';
 import Hero from './components/Hero';
 import FloatingNavbar from './components/FloatingNavbar';
 import Achievements from './components/Achievements';
+import ExclusiveBrands from './components/partnersSection';
 
 function App() {
   const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
-
+    const handleScroll = () => setScrollY(window.scrollY);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   useEffect(() => {
-    // Smooth scrolling
-    // Disable smooth scrolling for better stacking effect
     document.documentElement.style.scrollBehavior = 'auto';
-    
-    // Update document title
     document.title = 'HouseMood - Interior Design Studio';
-    
     return () => {
       document.documentElement.style.scrollBehavior = 'auto';
     };
   }, []);
 
-  // Calculate stacking positions
   const heroHeight = window.innerHeight;
-  const achievementsOffset = Math.max(0, Math.min(heroHeight, scrollY - heroHeight * 0.3));
+
+  // Hero offset
+  const heroOffset = Math.min(scrollY * 0.5, heroHeight * 0.5);
+
+  // Achievements offset
+  const achievementsStart = heroHeight;
+  const achievementsOffset = Math.max(0, Math.min(heroHeight, scrollY - achievementsStart));
+
+  // Brands offset
+  const brandsStart = heroHeight * 2;
+  const brandsOffset = Math.max(0, Math.min(heroHeight, scrollY - brandsStart));
+  const brandsScrollProgress = Math.min(1, Math.max(0, (scrollY - brandsStart) / heroHeight));
 
   return (
     <div className="relative overflow-hidden">
       {/* Floating Navigation */}
       <FloatingNavbar />
-      
-      {/* Main Content */}
-      <main className="relative" style={{ height: `${heroHeight * 2}px` }}>
-        {/* Hero Section - Fixed positioning for stacking effect */}
-        <div 
-          className="fixed inset-0 w-full"
-          style={{ 
-            zIndex: 10,
-            transform: `translateY(${-Math.min(scrollY * 0.5, heroHeight * 0.3)}px)`
-          }}
-        >
-          <Hero />
-        </div>
-        
-        {/* Achievements Section - Moves up and stacks on top */}
-        <div 
-          className="absolute w-full"
-          style={{ 
+
+      {/* Scrollable container */}
+      <main style={{ height: `${heroHeight * 3}px` }}>
+        {/* Hero Layer (Hides after achievements take over) */}
+        {scrollY < achievementsStart + heroHeight && (
+          <div
+            className="fixed inset-0 w-full"
+            style={{
+              zIndex: 10,
+              transform: `translateY(${-heroOffset}px)`,
+            }}
+          >
+            <Hero />
+          </div>
+        )}
+
+        {/* Achievements Layer */}
+        <div
+          className="absolute inset-0 w-full"
+          style={{
             top: `${heroHeight}px`,
-            zIndex: 30,
-            transform: `translateY(${-achievementsOffset}px)`
+            zIndex: 20,
+            transform: `translateY(${-achievementsOffset}px)`,
           }}
         >
           <Achievements />
+        </div>
+
+        {/* Brands Layer */}
+        <div
+          className="absolute inset-0 w-full"
+          style={{
+            top: `${heroHeight * 2}px`,
+            zIndex: 30,
+            transform: `translateY(${-brandsOffset}px)`,
+          }}
+        >
+          <ExclusiveBrands scrollProgress={brandsScrollProgress} />
         </div>
       </main>
     </div>
