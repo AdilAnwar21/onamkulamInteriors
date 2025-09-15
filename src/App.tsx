@@ -36,8 +36,7 @@ function App() {
   // Exclusive Brands offset
   const brandsStart = heroHeight * 2;
   const brandsScroll = Math.max(0, scrollY - brandsStart);
-  const brandsHeight = heroHeight * 3; // ExclusiveBrands needs 3 screens
-  const brandsProgress = brandsScroll / heroHeight; // progress in screens (0 → 3)
+  const brandsProgress = brandsScroll / heroHeight; // progress in screens
 
   return (
     <div className="relative overflow-hidden">
@@ -45,7 +44,7 @@ function App() {
       <FloatingNavbar />
 
       {/* Scrollable container */}
-      <main style={{ height: `${heroHeight * 5}px` }}>
+      <main style={{ height: `${heroHeight * 6}px` }}>
         {/* Hero Layer */}
         {scrollY < achievementsStart + heroHeight && (
           <div
@@ -69,18 +68,19 @@ function App() {
           }}
         >
           <Achievements />
+          <ExclusiveBrands scrollProgress={brandsProgress} />
         </div>
 
-        {/* Brands Layer */}
+        {/* Exclusive Brands Layer */}
         <div
-          className="absolute w-full"
+          className="absolute inset-0 w-full"
           style={{
             top: `${heroHeight * 2}px`,
             zIndex: 30,
-            transform: `translateY(0)`,
+            transform: `translateY(${-brandsScroll}px)`,
           }}
         >
-          <ExclusiveBrands scrollProgress={brandsProgress} />
+          
         </div>
       </main>
     </div>
