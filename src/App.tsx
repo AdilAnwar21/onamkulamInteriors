@@ -3,6 +3,7 @@ import Hero from './components/Hero';
 import FloatingNavbar from './components/FloatingNavbar';
 import Achievements from './components/Achievements';
 import ExclusiveBrands from './components/partnersSection';
+import TestimonialScroll from './components/Testimonials';
 
 function App() {
   const [scrollY, setScrollY] = useState(0);
@@ -36,15 +37,23 @@ function App() {
   // Exclusive Brands offset
   const brandsStart = heroHeight * 2;
   const brandsScroll = Math.max(0, scrollY - brandsStart);
-  const brandsProgress = brandsScroll / heroHeight; // progress in screens
+  const brandsProgress = brandsScroll / heroHeight;
+
+  // Testimonials calculation - Smooth transition
+  const testimonialsStart = heroHeight * 3; // Start after brands section
+  const testimonialsScroll = Math.max(0, scrollY - testimonialsStart);
+  const testimonialsProgress = Math.min(1, testimonialsScroll / (heroHeight * 3)); // Spans 3 screen heights for ultra-smooth animation
+
+  // Show testimonials with smooth fade-in
+  const showTestimonials = scrollY >= testimonialsStart - heroHeight * 0.2; // Start showing slightly before for smoother transition
 
   return (
     <div className="relative overflow-hidden">
       {/* Floating Navigation */}
       <FloatingNavbar />
 
-      {/* Scrollable container */}
-      <main style={{ height: `${heroHeight * 6}px` }}>
+      {/* Scrollable container - Extended for testimonials */}
+      <main style={{ height: `${heroHeight * 7}px` }}>
         {/* Hero Layer */}
         {scrollY < achievementsStart + heroHeight && (
           <div
@@ -59,29 +68,37 @@ function App() {
         )}
 
         {/* Achievements Layer */}
-        <div
-          className="absolute inset-0 w-full"
-          style={{
-            top: `${heroHeight}px`,
-            zIndex: 20,
-            transform: `translateY(${-achievementsOffset}px)`,
-          }}
-        >
-          <Achievements />
-          <ExclusiveBrands scrollProgress={brandsProgress} />
-        </div>
+        {scrollY < brandsStart + heroHeight && (
+          <div
+            className="absolute inset-0 w-full"
+            style={{
+              top: `${heroHeight}px`,
+              zIndex: 20,
+              transform: `translateY(${-achievementsOffset}px)`,
+            }}
+          >
+            <Achievements />
+          </div>
+        )}
 
         {/* Exclusive Brands Layer */}
-        <div
-          className="absolute inset-0 w-full"
-          style={{
-            top: `${heroHeight * 2}px`,
-            zIndex: 30,
-            transform: `translateY(${-brandsScroll}px)`,
-          }}
-        >
-          
-        </div>
+        {scrollY < testimonialsStart + heroHeight && (
+          <div
+            className="absolute inset-0 w-full"
+            style={{
+              top: `${heroHeight * 2}px`,
+              zIndex: 30,
+              transform: `translateY(${-brandsScroll}px)`,
+            }}
+          >
+            <ExclusiveBrands scrollProgress={brandsProgress} />
+          </div>
+        )}
+
+        {/* Testimonials Layer - Only appears after scrolling past previous sections */}
+        {showTestimonials && (
+          <TestimonialScroll scrollProgress={testimonialsProgress} />
+        )}
       </main>
     </div>
   );

@@ -49,7 +49,7 @@ const FloatingNavbar = () => {
     if (scrollProgress < 0.2) return `${220 + smoothProgress * 120}px`;
     if (scrollProgress < 0.4) return `${420 + smoothProgress * 180}px`;
     if (scrollProgress < 0.7) return `${650 + smoothProgress * 120}px`;
-    return '880px'; // Increased from 800 → 880
+    return '880px';
   };
 
   const getDesktopNavbarTransform = () => {
@@ -57,12 +57,22 @@ const FloatingNavbar = () => {
     return `translateX(-${moveDistance}px)`;
   };
 
-  const getNavbarOpacity = () => {
-    return Math.min(0.95, 0.75 + scrollProgress * 0.2);
+  // Updated background and border styles for transparent initial state
+  const getNavbarBackground = () => {
+    if (scrollProgress === 0) return 'transparent';
+    return `rgba(255, 255, 255, ${Math.min(0.95, 0.75 + scrollProgress * 0.2)})`;
   };
 
   const getBorderStyle = () => {
-    return scrollProgress > 0.25 ? 'border border-black/20' : '';
+    return scrollProgress > 0 ? 'border border-white/30' : '';
+  };
+
+  const getBackdropBlur = () => {
+    return scrollProgress > 0 ? 'backdrop-blur-xl' : '';
+  };
+
+  const getShadow = () => {
+    return scrollProgress > 0.1 ? 'shadow-2xl' : '';
   };
 
   // -------------------- MOBILE NAVBAR --------------------
@@ -74,7 +84,7 @@ const FloatingNavbar = () => {
           <div className="flex items-center justify-between px-6 py-4">
             {/* Logo */}
             <div className="text-black font-bold text-lg tracking-wider">
-              HOUSEMOOD
+              ONAMKULAM
             </div>
             
             {/* Hamburger Menu */}
@@ -146,9 +156,9 @@ const FloatingNavbar = () => {
         }}
       >
         <div 
-          className={`bg-white backdrop-blur-xl rounded-full ${getBorderStyle()} shadow-2xl overflow-hidden`}
+          className={`rounded-full ${getBorderStyle()} ${getBackdropBlur()} ${getShadow()} overflow-hidden`}
           style={{ 
-            opacity: getNavbarOpacity(),
+            backgroundColor: getNavbarBackground(),
             height: scrollProgress > 0.2 ? '68px' : '56px',
             transition: 'all 1.5s cubic-bezier(0.23, 1, 0.32, 1)'
           }}
@@ -164,7 +174,7 @@ const FloatingNavbar = () => {
               }}
             >
               <div className="px-6 py-2 text-black font-bold text-xl whitespace-nowrap tracking-wider">
-                HOUSEMOOD
+                ONAMKULAM
               </div>
             </div>
 
@@ -172,7 +182,7 @@ const FloatingNavbar = () => {
             <div
               className="flex items-center space-x-1 overflow-hidden"
               style={{
-                width: scrollProgress > 0.1 ? `${Math.min(450, (scrollProgress - 0.1) * 520)}px` : '0px', // widened
+                width: scrollProgress > 0.1 ? `${Math.min(450, (scrollProgress - 0.1) * 520)}px` : '0px',
                 opacity: scrollProgress > 0.2 ? Math.min(1, (scrollProgress - 0.2) * 2.5) : 0,
                 transition: 'all 1.5s cubic-bezier(0.23, 1, 0.32, 1)'
               }}
