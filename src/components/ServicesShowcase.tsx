@@ -31,6 +31,27 @@ const ServicesShowcase = ({ scrollProgress }) => {
       description: 'Custom furniture pieces crafted to perfection for your unique space. We design and create bespoke furniture that not only complements your interior but also serves your specific functional needs with unmatched quality and attention to craftsmanship.',
       image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=1200&h=800&fit=crop',
       secondaryImage: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600&h=800&fit=crop'
+    },
+    {
+      id: '05',
+      title: 'Landscape Design',
+      description: 'Transform outdoor spaces into stunning landscapes that harmonize with nature. We create beautiful gardens, patios, and outdoor living areas that extend your home into the natural environment with sustainable and aesthetic solutions.',
+      image: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=1200&h=800&fit=crop',
+      secondaryImage: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=600&h=800&fit=crop'
+    },
+    {
+      id: '06',
+      title: 'Renovation Services',
+      description: 'Breathe new life into existing spaces with our comprehensive renovation services. We specialize in updating and modernizing homes and commercial spaces while preserving their unique character and maximizing their potential.',
+      image: 'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=1200&h=800&fit=crop',
+      secondaryImage: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=600&h=800&fit=crop'
+    },
+    {
+      id: '07',
+      title: 'Consultation Services',
+      description: 'Professional design consultation to help you make informed decisions about your space. Our experts provide detailed analysis, recommendations, and design strategies tailored to your specific needs, budget, and lifestyle requirements.',
+      image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&h=800&fit=crop',
+      secondaryImage: 'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=600&h=800&fit=crop'
     }
   ];
 
@@ -43,12 +64,12 @@ const ServicesShowcase = ({ scrollProgress }) => {
         {/* Desktop Layout */}
         <div className="hidden lg:grid lg:grid-cols-5 h-screen">
           {/* Left Side - Service List & Description */}
-          <div className="bg-stone-50 flex flex-col justify-center px-8 xl:px-16 py-24 col-span-2">
-            <div className="space-y-6 xl:space-y-8 mb-12">
+          <div className="bg-stone-50 flex flex-col justify-center px-8 xl:px-16 py-16 col-span-2">
+            <div className="space-y-3 xl:space-y-4 mb-8">
               {services.map((service, index) => (
                 <div
                   key={service.id}
-                  className={`flex items-center gap-4 xl:gap-6 py-3 xl:py-4 cursor-pointer transition-all duration-300 ${
+                  className={`flex items-center gap-4 xl:gap-6 py-2 xl:py-3 cursor-pointer transition-all duration-300 ${
                     hoveredIndex === index 
                       ? 'text-gray-800' 
                       : 'text-gray-400 hover:text-gray-600'
@@ -60,7 +81,7 @@ const ServicesShowcase = ({ scrollProgress }) => {
                   </div>
                   
                   <div className="flex-1">
-                    <h3 className="text-xl xl:text-2xl font-light">
+                    <h3 className="text-lg xl:text-xl font-light">
                       {service.title}
                     </h3>
                   </div>
