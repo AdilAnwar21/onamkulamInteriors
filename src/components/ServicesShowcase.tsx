@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const ServicesShowcase = ({ scrollProgress }) => {
+const ServicesShowcase = ({ }) => {
   const [hoveredIndex, setHoveredIndex] = useState(0);
 
   const services = [

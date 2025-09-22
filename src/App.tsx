@@ -139,7 +139,7 @@ function App() {
             transition: 'opacity 0.4s ease-out',
           }}
         >
-          <ServicesShowcase scrollProgress={servicesProgress} />
+          <ServicesShowcase />
         </div>
       </main>
     </div>
