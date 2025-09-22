@@ -4,6 +4,7 @@ import FloatingNavbar from './components/FloatingNavbar';
 import Achievements from './components/Achievements';
 import ExclusiveBrands from './components/partnersSection';
 import TestimonialScroll from './components/Testimonials';
+import ServicesShowcase from './components/ServicesShowcase';
 
 function App() {
   const [scrollY, setScrollY] = useState(0);
@@ -39,21 +40,41 @@ function App() {
   const brandsScroll = Math.max(0, scrollY - brandsStart);
   const brandsProgress = brandsScroll / heroHeight;
 
-  // Testimonials calculation - Smooth transition
-  const testimonialsStart = heroHeight * 3; // Start after brands section
+  // Testimonials calculation
+  const testimonialsStart = heroHeight * 3;
   const testimonialsScroll = Math.max(0, scrollY - testimonialsStart);
-  const testimonialsProgress = Math.min(1, testimonialsScroll / (heroHeight * 3)); // Spans 3 screen heights for ultra-smooth animation
+  const testimonialsProgress = Math.min(
+    1,
+    testimonialsScroll / (heroHeight * 2.5) // smoother span
+  );
 
-  // Show testimonials with smooth fade-in
-  const showTestimonials = scrollY >= testimonialsStart - heroHeight * 0.2; // Start showing slightly before for smoother transition
+  // Smooth fade-in opacity
+  const testimonialsOpacity = Math.min(
+    1,
+    testimonialsScroll / (heroHeight * 0.5) // fade in over half-screen
+  );
+
+  // Services calculation
+  const servicesStart = heroHeight * 5.5; // Start after testimonials
+  const servicesScroll = Math.max(0, scrollY - servicesStart);
+  const servicesProgress = Math.min(
+    1,
+    servicesScroll / heroHeight
+  );
+
+  // Services opacity
+  const servicesOpacity = Math.min(
+    1,
+    servicesScroll / (heroHeight * 0.5) // fade in over half-screen
+  );
 
   return (
     <div className="relative overflow-hidden">
       {/* Floating Navigation */}
       <FloatingNavbar />
 
-      {/* Scrollable container - Extended for testimonials */}
-      <main style={{ height: `${heroHeight * 7}px` }}>
+      {/* Scrollable container - Extended for services */}
+      <main style={{ height: `${heroHeight * 8.5}px` }}>
         {/* Hero Layer */}
         {scrollY < achievementsStart + heroHeight && (
           <div
@@ -95,10 +116,31 @@ function App() {
           </div>
         )}
 
-        {/* Testimonials Layer - Only appears after scrolling past previous sections */}
-        {showTestimonials && (
+        {/* Testimonials Layer */}
+        <div
+          className="fixed inset-0 w-full"
+          style={{
+            zIndex: 40,
+            opacity: testimonialsOpacity,
+            pointerEvents: testimonialsOpacity > 0.05 ? 'auto' : 'none',
+            transition: 'opacity 0.4s ease-out',
+          }}
+        >
           <TestimonialScroll scrollProgress={testimonialsProgress} />
-        )}
+        </div>
+
+        {/* Services Layer - New Component */}
+        <div
+          className="fixed inset-0 w-full"
+          style={{
+            zIndex: 50,
+            opacity: servicesOpacity,
+            pointerEvents: servicesOpacity > 0.05 ? 'auto' : 'none',
+            transition: 'opacity 0.4s ease-out',
+          }}
+        >
+          <ServicesShowcase scrollProgress={servicesProgress} />
+        </div>
       </main>
     </div>
   );
