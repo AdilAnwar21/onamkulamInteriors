@@ -60,9 +60,9 @@ const ServicesShowcase = ({ scrollProgress }) => {
 
   return (
     <div className="min-h-screen bg-stone-50 flex items-center justify-center p-0">
-      <div className="max-w-none w-full">
+      <div className="max-w-none w-full h-screen">
         {/* Desktop Layout */}
-        <div className="hidden lg:grid lg:grid-cols-5 h-screen">
+        <div className="hidden lg:grid lg:grid-cols-5 h-full">
           {/* Left Side - Service List & Description */}
           <div className="bg-stone-50 flex flex-col justify-center px-8 xl:px-16 py-16 col-span-2">
             <div className="space-y-3 xl:space-y-4 mb-8">
@@ -120,14 +120,14 @@ const ServicesShowcase = ({ scrollProgress }) => {
         </div>
 
         {/* Mobile & Tablet Layout */}
-        <div className="lg:hidden min-h-screen">
+        <div className="lg:hidden h-full flex flex-col">
           {/* Service Navigation */}
-          <div className="bg-stone-50 px-4 sm:px-6 md:px-8 pt-16 pb-8">
-            <div className="space-y-4 sm:space-y-6">
+          <div className="bg-stone-50 flex-1 px-4 sm:px-6 md:px-8 py-8 overflow-y-auto">
+            <div className="space-y-3 sm:space-y-4 mb-6">
               {services.map((service, index) => (
                 <div
                   key={service.id}
-                  className={`flex items-center gap-3 sm:gap-4 py-3 cursor-pointer transition-all duration-300 ${
+                  className={`flex items-center gap-3 sm:gap-4 py-2 sm:py-3 cursor-pointer transition-all duration-300 ${
                     hoveredIndex === index 
                       ? 'text-gray-800' 
                       : 'text-gray-400'
@@ -139,7 +139,7 @@ const ServicesShowcase = ({ scrollProgress }) => {
                   </div>
                   
                   <div className="flex-1">
-                    <h3 className="text-lg sm:text-xl md:text-2xl font-light">
+                    <h3 className="text-base sm:text-lg md:text-xl font-light">
                       {service.title}
                     </h3>
                   </div>
@@ -148,7 +148,7 @@ const ServicesShowcase = ({ scrollProgress }) => {
             </div>
 
             {/* Description for Mobile */}
-            <div className="mt-8 max-w-none sm:max-w-md">
+            <div className="max-w-none">
               <p className="text-gray-600 text-sm sm:text-base leading-relaxed font-light">
                 {services[hoveredIndex].description}
               </p>
@@ -156,13 +156,15 @@ const ServicesShowcase = ({ scrollProgress }) => {
           </div>
 
           {/* Image Display for Mobile */}
-          <div className="relative h-64 sm:h-80 md:h-96 overflow-hidden bg-gray-100">
-            <img 
-              src={services[hoveredIndex].image}
-              alt={services[hoveredIndex].title} 
-              className="w-full h-full object-cover transition-all duration-700 ease-out"
-            />
-            <div className="absolute inset-0 bg-black/5"></div>
+          <div className="relative h-48 sm:h-64 md:h-80 bg-gray-100 p-4">
+            <div className="relative h-full w-full">
+              <img 
+                src={services[hoveredIndex].image}
+                alt={services[hoveredIndex].title} 
+                className="w-full h-full object-cover transition-all duration-700 ease-out"
+              />
+              <div className="absolute inset-0 bg-black/5"></div>
+            </div>
           </div>
         </div>
       </div>

@@ -43,31 +43,29 @@ function App() {
     Math.min(heroHeight, scrollY - achievementsStart)
   );
 
-  // Exclusive Brands offset
+  // Exclusive Brands offset - Extended duration
   const brandsStart = heroHeight * 2;
   const brandsScroll = Math.max(0, scrollY - brandsStart);
-  const brandsProgress = brandsScroll / heroHeight;
+  const brandsProgress = brandsScroll / (heroHeight * 2); // Extended for more content
 
-  // Testimonials calculation - Extended duration
-  const testimonialsStart = heroHeight * 3;
+  // Testimonials calculation - stacks on top of brands
+  const testimonialsStart = heroHeight * 3.5; // Start earlier for stacking
   const testimonialsScroll = Math.max(0, scrollY - testimonialsStart);
+  const testimonialsOffset = Math.min(heroHeight, testimonialsScroll * 0.8); // Slide up effect
   const testimonialsProgress = Math.min(
     1,
-    testimonialsScroll / (heroHeight * 3.5) // Extended span for all slides
+    testimonialsScroll / (heroHeight * 2) // Duration for all slides
   );
 
-  // Smooth fade-in opacity for testimonials
-  const testimonialsOpacity = Math.min(
-    1,
-    testimonialsScroll / (heroHeight * 0.5) // fade in over half-screen
-  );
+  // Testimonials visibility - stacking scroll
+  const testimonialsVisible = testimonialsScroll > 0;
 
-  // Services calculation - starts AFTER testimonials are completely done
-  const servicesStart = heroHeight * 6.5; // Start much later
+  // Services calculation - stacks on top of testimonials
+  const servicesStart = heroHeight * 6; // Start when testimonials are well established
   const servicesScroll = Math.max(0, scrollY - servicesStart);
-  const servicesOffset = Math.min(heroHeight, servicesScroll * 0.8); // Slower slide up
+  const servicesOffset = Math.min(heroHeight, servicesScroll * 0.8); // Slide up effect
 
-  // Services visibility - no fade, just slide up
+  // Services visibility - stacking scroll
   const servicesVisible = servicesScroll > 0;
 
   return (
@@ -77,8 +75,8 @@ function App() {
         <FloatingNavbar />
       </div>
 
-      {/* Scrollable container - Extended for services */}
-      <main style={{ height: `${heroHeight * 9}px` }}>
+      {/* Scrollable container - Optimized height */}
+      <main style={{ height: `${heroHeight * 8.5}px` }}>
         {/* Hero Layer */}
         {scrollY < achievementsStart + heroHeight && (
           <div
@@ -106,7 +104,7 @@ function App() {
           </div>
         )}
 
-        {/* Exclusive Brands Layer */}
+        {/* Exclusive Brands Layer - Extended visibility */}
         {scrollY < testimonialsStart + heroHeight && (
           <div
             className="absolute inset-0 w-full"
@@ -120,18 +118,19 @@ function App() {
           </div>
         )}
 
-        {/* Testimonials Layer */}
-        <div
-          className="fixed inset-0 w-full"
-          style={{
-            zIndex: 40,
-            opacity: testimonialsOpacity,
-            pointerEvents: testimonialsOpacity > 0.05 ? 'auto' : 'none',
-            transition: 'opacity 0.4s ease-out',
-          }}
-        >
-          <TestimonialScroll scrollProgress={testimonialsProgress} />
-        </div>
+        {/* Testimonials Layer - Slides up from bottom over brands */}
+        {testimonialsVisible && (
+          <div
+            className="fixed inset-0 w-full"
+            style={{
+              zIndex: 40,
+              transform: `translateY(${heroHeight - testimonialsOffset}px)`,
+              transition: 'transform 0.1s ease-out',
+            }}
+          >
+            <TestimonialScroll scrollProgress={testimonialsProgress} />
+          </div>
+        )}
 
         {/* Services Layer - Slides up from bottom */}
         {servicesVisible && (
