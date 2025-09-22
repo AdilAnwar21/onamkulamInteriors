@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const ServicesShowcase = ({ }) => {
+const ServicesShowcase = ({ scrollProgress }) => {
   const [hoveredIndex, setHoveredIndex] = useState(0);
 
   const services = [
@@ -31,8 +31,7 @@ const ServicesShowcase = ({ }) => {
       description: 'Custom furniture pieces crafted to perfection for your unique space. We design and create bespoke furniture that not only complements your interior but also serves your specific functional needs with unmatched quality and attention to craftsmanship.',
       image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=1200&h=800&fit=crop',
       secondaryImage: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600&h=800&fit=crop'
-    },
-    
+    }
   ];
 
   // Calculate the vertical offset for the content based on hovered item
@@ -78,18 +77,14 @@ const ServicesShowcase = ({ }) => {
           </div>
 
           {/* Right Side - Single Image Display */}
-          <div className="relative overflow-hidden bg-gray-100 col-span-3">
-            <div 
-              className="absolute inset-0 transition-transform duration-700 ease-out"
-              style={{ 
-                transform: `translateY(-${contentOffset}vh)`,
-                height: `${services.length * 100}vh`
-              }}
-            >
+          <div className="relative overflow-hidden bg-gray-100 col-span-3 p-8 xl:p-12">
+            <div className="relative h-full w-full">
               {services.map((service, index) => (
                 <div 
                   key={service.id}
-                  className="h-screen w-full relative overflow-hidden"
+                  className={`absolute inset-0 w-full h-full transition-opacity duration-700 ease-out ${
+                    hoveredIndex === index ? 'opacity-100' : 'opacity-0'
+                  }`}
                 >
                   <img 
                     src={service.image}
