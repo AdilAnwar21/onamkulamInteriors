@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
-const ServicesShowcase = ({ scrollProgress }) => {
-  const [hoveredIndex, setHoveredIndex] = useState(0);
+const ServicesShowcase = () => {
+const [hoveredIndex, setHoveredIndex] = useState<number>(0);
 
   const services = [
     {
@@ -56,7 +56,7 @@ const ServicesShowcase = ({ scrollProgress }) => {
   ];
 
   // Calculate the vertical offset for the content based on hovered item
-  const contentOffset = hoveredIndex * 100; // Height of each content section
+//   const contentOffset = hoveredIndex * 100; // Height of each content section
 
   return (
     <div className="min-h-screen bg-stone-50 flex items-center justify-center p-0">

@@ -142,7 +142,7 @@ function App() {
               transition: 'transform 0.1s ease-out',
             }}
           >
-            <ServicesShowcase scrollProgress={servicesScroll / heroHeight} />
+            <ServicesShowcase/>
           </div>
         )}
       </main>
