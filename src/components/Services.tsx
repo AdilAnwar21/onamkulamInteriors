@@ -42,10 +42,21 @@ const ServicesScroll = ({ scrollProgress }: ServicesScrollProps) => {
 
   const totalItems = allItems.length;
   
-  // Calculate which image/title combination is active
+  // Only start image transitions when scrollProgress begins (after component is visible)
+  // Add a small threshold to ensure smooth activation
+  const threshold = 0.1;
+  const isActive = scrollProgress > threshold;
+  
+  // Calculate which image/title combination is active with smoother transitions
   const progress = Math.max(0, Math.min(1, scrollProgress));
-  const activeIndex = Math.min(Math.floor(progress * totalItems), totalItems - 1);
+  const adjustedProgress = isActive ? Math.max(0, (progress - threshold) / (1 - threshold)) : 0;
+  const smoothProgress = adjustedProgress * totalItems;
+  const activeIndex = Math.min(Math.floor(smoothProgress), totalItems - 1);
+  const nextIndex = Math.min(activeIndex + 1, totalItems - 1);
+  const transitionProgress = smoothProgress - activeIndex;
+  
   const currentItem = allItems[activeIndex] || allItems[0] || { title: 'Services', image: '', serviceId: 1 };
+  const nextItem = allItems[nextIndex] || currentItem;
 
   // Calculate smooth transition progress within current item
 //   const itemProgress = (progress * totalItems) % 1;
@@ -64,11 +75,11 @@ const ServicesScroll = ({ scrollProgress }: ServicesScrollProps) => {
           Services
         </span>
         
-        <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light leading-tight mb-6 lg:mb-8 transition-all duration-700 ease-out">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light leading-tight mb-6 lg:mb-8 transition-all duration-1000 ease-out">
           {currentItem?.title || 'Services'}
         </h2>
         
-        <p className="text-sm sm:text-base text-gray-300 mb-6 lg:mb-8 max-w-md leading-relaxed">
+        <p className="text-sm sm:text-base text-gray-300 mb-6 lg:mb-8 max-w-md leading-relaxed transition-all duration-800 ease-out">
           Transform your space with our expert {currentItem?.title?.toLowerCase() || 'design'} services. 
           We bring creativity and precision to every project.
         </p>
@@ -78,12 +89,12 @@ const ServicesScroll = ({ scrollProgress }: ServicesScrollProps) => {
           <span className="transform transition-transform group-hover:translate-x-1">→</span>
         </button>
 
-        {/* Mobile progress indicator */}
+        {/* Mobile progress indicator with smoother transitions */}
         <div className="lg:hidden mt-6 flex space-x-1">
           {allItems.map((_, index) => (
             <div
               key={index}
-              className={`h-1 rounded-full transition-all duration-300 ${
+              className={`h-1 rounded-full transition-all duration-700 ease-out ${
                 index === activeIndex 
                   ? 'bg-white w-8' 
                   : 'bg-gray-600 w-2'
@@ -98,11 +109,11 @@ const ServicesScroll = ({ scrollProgress }: ServicesScrollProps) => {
         {/* Background for smooth transitions */}
         <div className="absolute inset-0 bg-gray-900" />
         
-        {/* Image container */}
+        {/* Image container with smoother transitions - only moves when section is active */}
         <div
-          className="absolute inset-0 transition-transform duration-500 ease-out"
+          className="absolute inset-0 transition-transform duration-[1200ms] ease-[cubic-bezier(0.25,0.46,0.45,0.94)]"
           style={{
-            transform: `translateY(-${activeIndex * 100}%)`,
+            transform: isActive ? `translateY(-${smoothProgress * 100}%)` : `translateY(0%)`,
           }}
         >
           {allItems.map((item, index) => (
@@ -114,7 +125,7 @@ const ServicesScroll = ({ scrollProgress }: ServicesScrollProps) => {
                 <img
                   src={item.image}
                   alt={item.title || 'Service'}
-                  className="w-full h-full object-cover rounded-lg sm:rounded-xl lg:rounded-2xl shadow-2xl"
+                  className="w-full h-full object-cover rounded-lg sm:rounded-xl lg:rounded-2xl shadow-2xl transition-all duration-[1000ms] ease-out"
                   onError={(e) => {
                     // Fallback image if the main image fails to load
                     const target = e.target as HTMLImageElement;
@@ -123,7 +134,7 @@ const ServicesScroll = ({ scrollProgress }: ServicesScrollProps) => {
                 />
                 
                 {/* Image overlay for extra context on mobile */}
-                <div className="lg:hidden absolute bottom-4 left-4 right-4 bg-black/70 backdrop-blur-sm rounded-lg p-3">
+                <div className="lg:hidden absolute bottom-4 left-4 right-4 bg-black/70 backdrop-blur-sm rounded-lg p-3 transition-all duration-500 ease-out">
                   <h3 className="text-white text-sm font-medium">{item.title || 'Service'}</h3>
                   <p className="text-gray-300 text-xs mt-1">Professional Design Services</p>
                 </div>
@@ -132,12 +143,12 @@ const ServicesScroll = ({ scrollProgress }: ServicesScrollProps) => {
           ))}
         </div>
 
-        {/* Desktop progress indicator */}
+        {/* Desktop progress indicator with smoother transitions */}
         <div className="hidden lg:block absolute bottom-8 left-8 space-y-2">
           {allItems.map((_, index) => (
             <div
               key={index}
-              className={`w-1 rounded-full transition-all duration-300 ${
+              className={`w-1 rounded-full transition-all duration-700 ease-out ${
                 index === activeIndex 
                   ? 'bg-white h-8' 
                   : 'bg-gray-600 h-2'
@@ -146,12 +157,12 @@ const ServicesScroll = ({ scrollProgress }: ServicesScrollProps) => {
           ))}
         </div>
 
-        {/* Service indicator */}
+        {/* Service indicator with smoother transitions */}
         <div className="hidden lg:block absolute top-8 right-8 text-right">
-          <div className="text-xs text-gray-400 uppercase tracking-wider">
+          <div className="text-xs text-gray-400 uppercase tracking-wider transition-all duration-500 ease-out">
             Service {currentItem?.serviceId || 1}
           </div>
-          <div className="text-sm text-white mt-1">
+          <div className="text-sm text-white mt-1 transition-all duration-500 ease-out">
             {String(activeIndex + 1).padStart(2, '0')} / {String(totalItems).padStart(2, '0')}
           </div>
         </div>
