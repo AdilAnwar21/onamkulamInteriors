@@ -9,7 +9,6 @@ const services = [
     id: 1,
     title: "Renovation & Remodeling",
     images: [
-    //   "https://images.unsplash.com/photo-1600607687920-4e9b6c2b5f20?auto=format&fit=crop&w=1600&q=80",
       "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1600&q=80",
     ],
   },
@@ -17,16 +16,14 @@ const services = [
     id: 2,
     title: "Interior Design",
     images: [
-    //   "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=80",
-      "https://images.unsplash.com/photo-1616627982044-8a1b20e3ef5c?auto=format&fit=crop&w=1600&q=80",
+      "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80",
     ],
   },
   {
     id: 3,
     title: "Space Planning",
     images: [
-    //   "https://images.unsplash.com/photo-1615874959474-d609969a20ed?auto=format&fit=crop&w=1600&q=80",
-      "https://images.unsplash.com/photo-1600585154356-596af9009c95?auto=format&fit=crop&w=1600&q=80",
+      "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80",
     ],
   },
 ];
@@ -118,6 +115,11 @@ const ServicesScroll = ({ scrollProgress }: ServicesScrollProps) => {
                   src={item.image}
                   alt={item.title || 'Service'}
                   className="w-full h-full object-cover rounded-lg sm:rounded-xl lg:rounded-2xl shadow-2xl"
+                  onError={(e) => {
+                    // Fallback image if the main image fails to load
+                    const target = e.target as HTMLImageElement;
+                    target.src = "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80";
+                  }}
                 />
                 
                 {/* Image overlay for extra context on mobile */}
