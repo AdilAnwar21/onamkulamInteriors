@@ -20,21 +20,11 @@ const Team = () => {
   useEffect(() => {
     const fetchTeamData = async () => {
       setLoading(true);
-      // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Mock API response with team members
       const mockTeamData = [
         {
           id: 1,
-          name: "Sarah Mitchell",
-          position: "Senior Interior Designer",
-          quote: "Design is about creating spaces that inspire and nurture the human spirit. Every project is an opportunity to transform lives.",
-          description: "Sarah specializes in residential luxury projects and has over 8 years of experience creating sophisticated living spaces.",
-          image: "https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=600&h=800&fit=crop&crop=face&fm=png"
-        },
-        {
-          id: 2,
           name: "Alex Rodriguez",
           position: "Project Manager",
           quote: "Excellence is in the details. I ensure every project runs smoothly from concept to completion.",
@@ -42,7 +32,7 @@ const Team = () => {
           image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=600&h=800&fit=crop&crop=face&fm=png"
         },
         {
-          id: 3,
+          id: 2,
           name: "Emily Chen",
           position: "Creative Director",
           quote: "Innovation meets tradition in every design we create. We don't just follow trends, we set them.",
@@ -50,7 +40,7 @@ const Team = () => {
           image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=600&h=800&fit=crop&crop=face&fm=png"
         },
         {
-          id: 4,
+          id: 3,
           name: "David Park",
           position: "3D Visualization Specialist",
           quote: "Bringing dreams to life through technology. Every render tells a story before it becomes reality.",
@@ -72,7 +62,7 @@ const Team = () => {
     
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % teamMembers.length);
-    }, 5000); // Change every 5 seconds
+    }, 5000);
 
     return () => clearInterval(interval);
   }, [teamMembers.length]);
@@ -109,9 +99,8 @@ const Team = () => {
       <div className="relative z-10 w-full max-w-7xl mx-auto px-8 lg:px-16">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           
-          {/* Left side - Content */}
-          <div className="text-gray-800 space-y-8">
-            
+          {/* LEFT side - Section Header + Photo */}
+          <div className="flex flex-col items-center lg:items-start space-y-8">
             {/* Section Header */}
             <div>
               <h2 className="text-lg font-medium text-gray-600 mb-4 tracking-wide">
@@ -122,12 +111,26 @@ const Team = () => {
               </p>
             </div>
 
-            {/* Large Quote */}
+            {/* Team member photo (no background box) */}
             <div className="relative">
-              <div className="absolute -left-4 -top-4 text-8xl text-gray-300 font-serif leading-none">"</div>
+              <img 
+                src={currentMember.image}
+                alt={currentMember.name}
+                className="w-80 h-96 lg:w-96 lg:h-[32rem] rounded-2xl object-cover object-center transition-all duration-500"
+              />
+            </div>
+          </div>
+
+          {/* RIGHT side - Content */}
+          <div className="text-gray-800 space-y-8 lg:pl-8">
+            
+            {/* Large Quote with curly quotes */}
+            <div className="relative">
+              <div className="absolute -left-6 -top-4 text-8xl text-gray-300 font-serif leading-none">“</div>
               <blockquote className="text-3xl lg:text-4xl xl:text-5xl text-gray-900 leading-tight font-light pl-12 pr-4">
                 {currentMember.quote}
               </blockquote>
+              <div className="absolute -bottom-8 right-0 text-8xl text-gray-300 font-serif leading-none">”</div>
             </div>
 
             {/* Member Info */}
@@ -179,32 +182,8 @@ const Team = () => {
             </div>
           </div>
 
-          {/* Right side - Photo */}
-          <div className="flex justify-center lg:justify-end">
-            <div className="relative">
-              {/* Rectangular team member photo */}
-              <div className="w-80 h-96 lg:w-96 lg:h-[32rem] rounded-2xl shadow-2xl relative overflow-hidden bg-white">
-                <img 
-                  src={currentMember.image}
-                  alt={currentMember.name}
-                  className="w-full h-full object-cover object-center transition-all duration-500"
-                />
-                
-                {/* Subtle border overlay */}
-                <div className="absolute inset-0 border border-gray-200/20 rounded-2xl" />
-              </div>
-              
-              {/* Decorative elements */}
-              <div className="absolute -top-4 -right-4 w-8 h-8 bg-gray-200/40 rounded-full blur-sm" />
-              <div className="absolute -bottom-6 -left-6 w-12 h-12 bg-gray-300/30 rounded-full blur-md" />
-            </div>
-          </div>
         </div>
       </div>
-
-      {/* Subtle background effects */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-white rounded-full blur-3xl opacity-50" />
-      <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-gray-200 rounded-full blur-2xl opacity-30" />
     </div>
   );
 };
