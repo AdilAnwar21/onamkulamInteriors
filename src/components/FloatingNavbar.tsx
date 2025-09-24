@@ -1,24 +1,24 @@
 import { useState, useEffect } from 'react';
 import { Menu, X, Home, User, Briefcase, Mail, ArrowRight } from 'lucide-react';
 
-const FloatingNavbar = () => {
+const FloatingNavbar = ({ activeSection }: { activeSection?: string }) => {
   const [scrollY, setScrollY] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  
+
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 1024);
     };
-    
+
     checkMobile();
     window.addEventListener('resize', checkMobile);
-    
+
     const handleScroll = () => {
       setScrollY(window.scrollY);
     };
     window.addEventListener('scroll', handleScroll);
-    
+
     return () => {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', checkMobile);
@@ -37,7 +37,7 @@ const FloatingNavbar = () => {
   ];
 
   // Easing
-  const easeInOutCubic = (t:any) => {
+  const easeInOutCubic = (t: number) => {
     return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
   };
 
@@ -57,11 +57,14 @@ const FloatingNavbar = () => {
     return `translateX(-${moveDistance}px)`;
   };
 
-  // Updated background for liquid glass effect
+  // Translucent frosted glass background
   const getNavbarBackground = () => {
     if (scrollProgress === 0) return 'transparent';
-    const opacity = Math.min(0.92, 0.75 + scrollProgress * 0.17);
-    return `linear-gradient(135deg, rgba(255, 255, 255, ${opacity}), rgba(200, 200, 200, ${opacity * 0.8}))`;
+    return `linear-gradient(
+    135deg,
+    rgba(255, 255, 255, ${0.04 + scrollProgress * 0.1}),
+    rgba(255, 255, 255, ${0.02 + scrollProgress * 0.06})
+  )`;
   };
 
   const getBorderStyle = () => {
@@ -73,7 +76,9 @@ const FloatingNavbar = () => {
   };
 
   const getShadow = () => {
-    return scrollProgress > 0.1 ? 'shadow-[inset_0_1px_2px_rgba(255,255,255,0.3),inset_0_-1px_2px_rgba(0,0,0,0.2),0_4px_12px_rgba(0,0,0,0.15)]' : '';
+    return scrollProgress > 0.1
+      ? 'shadow-[inset_0_1px_2px_rgba(255,255,255,0.3),inset_0_-1px_2px_rgba(0,0,0,0.2),0_4px_12px_rgba(0,0,0,0.15)]'
+      : '';
   };
 
   // -------------------- MOBILE NAVBAR --------------------
@@ -87,14 +92,22 @@ const FloatingNavbar = () => {
             <div className="text-black font-bold text-lg tracking-wider">
               ONAMKULAM
             </div>
-            
+
             {/* Hamburger Menu */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="text-black p-2 hover:bg-white/20 rounded-full transition-all duration-300 hover:scale-110 active:scale-95"
             >
-              <div className={`transition-transform duration-300 ${isMenuOpen ? 'rotate-180' : 'rotate-0'}`}>
-                {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              <div
+                className={`transition-transform duration-300 ${
+                  isMenuOpen ? 'rotate-180' : 'rotate-0'
+                }`}
+              >
+                {isMenuOpen ? (
+                  <X className="w-6 h-6" />
+                ) : (
+                  <Menu className="w-6 h-6" />
+                )}
               </div>
             </button>
           </div>
@@ -103,31 +116,37 @@ const FloatingNavbar = () => {
         {/* Mobile Dropdown */}
         {isMenuOpen && (
           <>
-            <div 
+            <div
               className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 animate-in fade-in duration-200"
               onClick={() => setIsMenuOpen(false)}
             />
-            
+
             <div className="fixed top-16 left-4 right-4 z-50 bg-white/95 backdrop-blur-xl rounded-2xl border border-white/30 shadow-2xl p-6 animate-in slide-in-from-top-4 fade-in duration-300">
               <div className="space-y-3">
                 {navItems.map((item, index) => {
                   const Icon = item.icon;
+                  const isActive = activeSection === item.name;
+
                   return (
                     <button
                       key={item.name}
-                      className="flex items-center space-x-3 w-full text-left px-4 py-3 text-black hover:text-[#8B4513] hover:bg-black/5 rounded-lg transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] animate-in slide-in-from-left-2 fade-in duration-400"
-                      style={{ 
+                      className={`flex items-center space-x-3 w-full text-left px-4 py-3 rounded-lg transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] ${
+                        isActive
+                          ? 'bg-black text-white'
+                          : 'text-black hover:text-[#8B4513] hover:bg-black/5'
+                      }`}
+                      style={{
                         animationDelay: `${index * 50 + 100}ms`,
-                        animationFillMode: 'both'
+                        animationFillMode: 'both',
                       }}
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      <Icon className="w-5 h-5 transition-transform duration-200 group-hover:scale-110" />
+                      <Icon className="w-5 h-5" />
                       <span className="font-medium">{item.name}</span>
                     </button>
                   );
                 })}
-                
+
                 {/* Say Hello Button */}
                 <div className="pt-3 border-t border-black/20 animate-in slide-in-from-bottom-2 fade-in duration-400 delay-400">
                   <button className="w-full bg-black/10 text-black px-6 py-3 rounded-full flex items-center justify-center space-x-3 hover:bg-black/20 transition-all duration-300 hover:scale-105 active:scale-95">
@@ -148,38 +167,45 @@ const FloatingNavbar = () => {
   // -------------------- DESKTOP NAVBAR --------------------
   return (
     <nav className="fixed top-6 right-6 z-50">
-      <div 
+      <div
         className="relative"
-        style={{ 
+        style={{
           width: getDesktopNavbarWidth(),
           transform: getDesktopNavbarTransform(),
-          transition: 'all 1.5s cubic-bezier(0.23, 1, 0.32, 1)'
+          transition: 'all 1.5s cubic-bezier(0.23, 1, 0.32, 1)',
         }}
       >
-        <div 
+        <div
           className={`rounded-full ${getBorderStyle()} ${getBackdropBlur()} ${getShadow()} overflow-hidden relative`}
-          style={{ 
+          style={{
             background: getNavbarBackground(),
             height: scrollProgress > 0.2 ? '68px' : '56px',
-            transition: 'all 1.5s cubic-bezier(0.23, 1, 0.32, 1)'
+            transition: 'all 1.5s cubic-bezier(0.23, 1, 0.32, 1)',
           }}
         >
           {/* Noise texture overlay for liquid glass effect */}
-          <div 
+          <div
             className="absolute inset-0"
             style={{
-              backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\"0 0 200 200\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cfilter id=\"noiseFilter\"%3E%3CfeTurbulence type=\"fractalNoise\" baseFrequency=\"0.65\" numOctaves=\"3\" stitchTiles=\"stitch\"/%3E%3C/filter%3E%3Crect width=\"100%25\" height=\"100%25\" filter=\"url(%23noiseFilter)\" opacity=\"0.1\"/%3E%3C/svg%3E\")',
-              mixBlendMode: 'overlay'
+              backgroundImage:
+                'url("data:image/svg+xml,%3Csvg viewBox=\\"0 0 200 200\\" xmlns=\\"http://www.w3.org/2000/svg\\"%3E%3Cfilter id=\\"noiseFilter\\"%3E%3CfeTurbulence type=\\"fractalNoise\\" baseFrequency=\\"0.65\\" numOctaves=\\"3\\" stitchTiles=\\"stitch\\"/%3E%3C/filter%3E%3Crect width=\\"100%25\\" height=\\"100%25\\" filter=\\"url(%23noiseFilter)\\" opacity=\\"0.1\\"/%3E%3C/svg%3E")',
+              mixBlendMode: 'overlay',
             }}
           />
           <div className="flex items-center h-full px-2 relative">
             {/* Logo */}
-            <div 
+            <div
               className="flex items-center overflow-hidden"
               style={{
-                width: scrollProgress > 0.3 ? `${Math.min(200, (scrollProgress - 0.3) * 320)}px` : '0px',
-                opacity: scrollProgress > 0.4 ? Math.min(1, (scrollProgress - 0.4) * 2.5) : 0,
-                transition: 'all 1.5s cubic-bezier(0.23, 1, 0.32, 1)'
+                width:
+                  scrollProgress > 0.3
+                    ? `${Math.min(200, (scrollProgress - 0.3) * 320)}px`
+                    : '0px',
+                opacity:
+                  scrollProgress > 0.4
+                    ? Math.min(1, (scrollProgress - 0.4) * 2.5)
+                    : 0,
+                transition: 'all 1.5s cubic-bezier(0.23, 1, 0.32, 1)',
               }}
             >
               <div className="px-6 py-2 text-black font-bold text-xl whitespace-nowrap tracking-wider">
@@ -191,29 +217,53 @@ const FloatingNavbar = () => {
             <div
               className="flex items-center space-x-1 overflow-hidden"
               style={{
-                width: scrollProgress > 0.1 ? `${Math.min(450, (scrollProgress - 0.1) * 520)}px` : '0px',
-                opacity: scrollProgress > 0.2 ? Math.min(1, (scrollProgress - 0.2) * 2.5) : 0,
-                transition: 'all 1.5s cubic-bezier(0.23, 1, 0.32, 1)'
+                width:
+                  scrollProgress > 0.1
+                    ? `${Math.min(450, (scrollProgress - 0.1) * 520)}px`
+                    : '0px',
+                opacity:
+                  scrollProgress > 0.2
+                    ? Math.min(1, (scrollProgress - 0.2) * 2.5)
+                    : 0,
+                transition: 'all 1.5s cubic-bezier(0.23, 1, 0.32, 1)',
               }}
             >
               {navItems.map((item, index) => {
                 const Icon = item.icon;
                 const itemDelay = index * 0.02;
-                const itemProgress = Math.max(0, Math.min(1, (scrollProgress - 0.2 - itemDelay) / 0.3));
+                const itemProgress = Math.max(
+                  0,
+                  Math.min(1, (scrollProgress - 0.2 - itemDelay) / 0.3)
+                );
                 const smoothItemProgress = easeInOutCubic(itemProgress);
-                
+                const isActive = activeSection === item.name;
+
                 return (
                   <button
                     key={item.name}
-                    className="flex items-center space-x-2 px-4 py-2.5 text-black hover:text-[#8B4513] hover:bg-white/10 rounded-full group whitespace-nowrap text-sm font-medium transition-all duration-300"
+                    className={`flex items-center space-x-2 px-4 py-2.5 rounded-full group whitespace-nowrap text-sm font-medium transition-all duration-300
+                      ${
+                        isActive
+                          ? 'bg-black text-white shadow-md'
+                          : 'text-black hover:text-[#8B4513] hover:bg-white/10'
+                      }`}
                     style={{
                       opacity: smoothItemProgress,
-                      transform: `translateY(${(1 - smoothItemProgress) * 2}px)`,
-                      transition: 'all 1.2s cubic-bezier(0.23, 1, 0.32, 1)'
+                      transform: `translateY(${
+                        (1 - smoothItemProgress) * 2
+                      }px)`,
+                      transition:
+                        'all 1.2s cubic-bezier(0.23, 1, 0.32, 1)',
                     }}
                   >
-                    <Icon className="w-4 h-4 group-hover:scale-110 transition-transform duration-300" />
-                    <span className="group-hover:translate-x-0.5 transition-transform duration-200">{item.name}</span>
+                    <Icon
+                      className={`w-4 h-4 transition-transform duration-300 ${
+                        isActive ? 'scale-110' : 'group-hover:scale-110'
+                      }`}
+                    />
+                    <span className="group-hover:translate-x-0.5 transition-transform duration-200">
+                      {item.name}
+                    </span>
                   </button>
                 );
               })}

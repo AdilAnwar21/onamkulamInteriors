@@ -6,6 +6,8 @@ import ExclusiveBrands from './components/partnersSection';
 import TestimonialScroll from './components/Testimonials';
 import ServicesScroll from './components/Services';
 import ServicesShowcase from './components/ServicesShowcase';
+import Founder from './components/Founder';
+import Team from './components/Team';
 
 function App() {
   const [scrollY, setScrollY] = useState(0);
@@ -78,14 +80,14 @@ function App() {
   );
   const servicesScrollVisible =
     scrollY >= servicesScrollStart &&
-    scrollY < servicesScrollDisplayEnd + sectionDuration * 0.5; // Reduced overlap to prevent white gap
+    scrollY < servicesScrollDisplayEnd + sectionDuration * 0.5;
   const servicesScrollOffset = Math.min(
     heroHeight,
     Math.max(0, scrollY - servicesScrollStart)
   );
 
-  // Testimonials section - Start earlier to eliminate gap
-  const testimonialsStart = servicesScrollDisplayEnd - sectionDuration * 0.5; // Start earlier
+  // Testimonials section
+  const testimonialsStart = servicesScrollDisplayEnd - sectionDuration * 0.5;
   const testimonialsSlideEnd = testimonialsStart + sectionDuration;
   const testimonialsDisplayEnd = testimonialsSlideEnd + displayDuration * 3;
   const testimonialsScroll = Math.max(0, scrollY - testimonialsStart);
@@ -99,16 +101,36 @@ function App() {
     scrollY < testimonialsDisplayEnd + sectionDuration;
 
   // ServicesShowcase section
-  const servicesStart = testimonialsDisplayEnd;
-  const servicesScroll = Math.max(0, scrollY - servicesStart);
-  const servicesOffset = Math.min(heroHeight, servicesScroll);
-  const servicesVisible = scrollY >= servicesStart;
+  const servicesShowcaseStart = testimonialsDisplayEnd;
+  const servicesShowcaseSlideEnd = servicesShowcaseStart + sectionDuration;
+  const servicesShowcaseDisplayEnd = servicesShowcaseSlideEnd + displayDuration;
+  const servicesShowcaseScroll = Math.max(0, scrollY - servicesShowcaseStart);
+  const servicesShowcaseOffset = Math.min(heroHeight, servicesShowcaseScroll);
+  const servicesShowcaseVisible =
+    scrollY >= servicesShowcaseStart &&
+    scrollY < servicesShowcaseDisplayEnd + sectionDuration;
 
-  // Total height
-  const totalHeight = servicesStart + heroHeight * 2;
+  // Founder section
+  const founderStart = servicesShowcaseDisplayEnd;
+  const founderSlideEnd = founderStart + sectionDuration;
+  const founderDisplayEnd = founderSlideEnd + displayDuration;
+  const founderScroll = Math.max(0, scrollY - founderStart);
+  const founderOffset = Math.min(heroHeight, founderScroll);
+  const founderVisible =
+    scrollY >= founderStart &&
+    scrollY < founderDisplayEnd + sectionDuration;
+
+  // Team section
+  const teamStart = founderDisplayEnd;
+  const teamScroll = Math.max(0, scrollY - teamStart);
+  const teamOffset = Math.min(heroHeight, teamScroll);
+  const teamVisible = scrollY >= teamStart;
+
+  // Total height - Updated to include team section
+  const totalHeight = teamStart + heroHeight * 2;
 
   return (
-    <div className="relative overflow-hidden bg-black"> {/* Added bg-black to prevent white gaps */}
+    <div className="relative overflow-hidden bg-black">
       {/* Floating Navbar */}
       <div className="fixed inset-x-0 top-0 z-[100]">
         <FloatingNavbar />
@@ -164,7 +186,7 @@ function App() {
         {/* ServicesScroll */}
         {servicesScrollVisible && (
           <div
-            className="fixed inset-0 w-full bg-black" // Added bg-black
+            className="fixed inset-0 w-full bg-black"
             style={{
               zIndex: 40,
               transform:
@@ -181,7 +203,7 @@ function App() {
         {/* Testimonials */}
         {testimonialsVisible && (
           <div
-            className="fixed inset-0 w-full bg-black" // Added bg-black
+            className="fixed inset-0 w-full bg-black"
             style={{
               zIndex: 50,
               transform:
@@ -196,16 +218,50 @@ function App() {
         )}
 
         {/* ServicesShowcase */}
-        {servicesVisible && (
+        {servicesShowcaseVisible && (
           <div
-            className="fixed inset-0 w-full"
+            className="fixed inset-0 w-full bg-black"
             style={{
               zIndex: 60,
-              transform: `translateY(${heroHeight - servicesOffset}px)`,
+              transform:
+                scrollY <= servicesShowcaseSlideEnd
+                  ? `translateY(${heroHeight - servicesShowcaseOffset}px)`
+                  : `translateY(0px)`,
               transition: 'transform 0.1s ease-out',
             }}
           >
             <ServicesShowcase />
+          </div>
+        )}
+
+        {/* Founder */}
+        {founderVisible && (
+          <div
+            className="fixed inset-0 w-full bg-white"
+            style={{
+              zIndex: 70,
+              transform:
+                scrollY <= founderSlideEnd
+                  ? `translateY(${heroHeight - founderOffset}px)`
+                  : `translateY(0px)`,
+              transition: 'transform 0.1s ease-out',
+            }}
+          >
+            <Founder />
+          </div>
+        )}
+
+        {/* Team */}
+        {teamVisible && (
+          <div
+            className="fixed inset-0 w-full bg-gray-50"
+            style={{
+              zIndex: 80,
+              transform: `translateY(${heroHeight - teamOffset}px)`,
+              transition: 'transform 0.1s ease-out',
+            }}
+          >
+            <Team />
           </div>
         )}
       </main>
