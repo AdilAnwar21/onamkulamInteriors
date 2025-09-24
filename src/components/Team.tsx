@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 // Define the team member data type
@@ -91,13 +91,97 @@ const Team = () => {
   const currentMember = teamMembers[currentIndex];
 
   return (
-    <div className="h-screen w-full bg-gray-50 flex items-center justify-center relative overflow-hidden">
+    <div className="min-h-screen w-full bg-gray-50 flex items-center justify-center relative overflow-hidden py-6 sm:py-10 lg:py-0">
       {/* Background */}
       <div className="absolute inset-0 bg-gray-50" />
       
       {/* Main content container */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-8 lg:px-16">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-16">
+        
+        {/* Mobile Layout (up to lg) */}
+        <div className="lg:hidden">
+          {/* Section Header */}
+          <div className="text-center mb-4 sm:mb-6">
+            <h2 className="text-sm sm:text-base font-medium text-gray-600 mb-1 tracking-wide">
+              MEET OUR TEAM
+            </h2>
+            <p className="text-gray-600 leading-relaxed text-xs sm:text-sm px-2">
+              The talented individuals who bring our clients' visions to life
+            </p>
+          </div>
+
+          {/* Content fits inside the screen */}
+          <div className="flex flex-col items-center justify-between px-4">
+            {/* Team member photo */}
+            <div className="flex justify-center mb-4">
+              <img 
+                src={currentMember.image}
+                alt={currentMember.name}
+                className="w-40 h-52 sm:w-48 sm:h-64 rounded-xl object-cover object-center shadow-md"
+              />
+            </div>
+
+            {/* Quote with curly quotes */}
+            <div className="relative text-center px-2 mb-4">
+              <div className="absolute -left-2 -top-2 text-2xl sm:text-3xl text-gray-300 font-serif leading-none">“</div>
+              <blockquote className="text-base sm:text-lg text-gray-900 leading-snug font-light px-4">
+                {currentMember.quote}
+              </blockquote>
+              <div className="absolute -bottom-3 right-2 text-2xl sm:text-3xl text-gray-300 font-serif leading-none">”</div>
+            </div>
+
+            {/* Member Info */}
+            <div className="text-center mb-4">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900">
+                {currentMember.name}
+              </h3>
+              <p className="text-gray-600 mb-2 font-medium text-xs sm:text-sm">
+                {currentMember.position}
+              </p>
+              <p className="text-gray-700 text-xs sm:text-sm max-w-xs mx-auto">
+                {currentMember.description}
+              </p>
+            </div>
+
+            {/* Navigation */}
+            <div className="flex items-center justify-center gap-3">
+              <button
+                onClick={goToPrevious}
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border-2 border-gray-300 flex items-center justify-center hover:border-gray-900 hover:bg-gray-900 hover:text-white transition-all duration-300"
+                aria-label="Previous team member"
+              >
+                <ChevronLeft className="w-3 h-3 sm:w-4 sm:h-4" />
+              </button>
+              
+              <button
+                onClick={goToNext}
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border-2 border-gray-300 flex items-center justify-center hover:border-gray-900 hover:bg-gray-900 hover:text-white transition-all duration-300"
+                aria-label="Next team member"
+              >
+                <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4" />
+              </button>
+
+              {/* Dots */}
+              <div className="flex gap-1.5 ml-2">
+                {teamMembers.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentIndex(index)}
+                    className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
+                      index === currentIndex 
+                        ? 'bg-gray-900 w-4' 
+                        : 'bg-gray-300 hover:bg-gray-400'
+                    }`}
+                    aria-label={`Go to team member ${index + 1}`}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop Layout (lg and up) */}
+        <div className="hidden lg:grid lg:grid-cols-2 gap-16 items-center">
           
           {/* LEFT side - Section Header + Photo */}
           <div className="flex flex-col items-center lg:items-start space-y-8">
@@ -111,12 +195,12 @@ const Team = () => {
               </p>
             </div>
 
-            {/* Team member photo (no background box) */}
+            {/* Team member photo */}
             <div className="relative">
               <img 
                 src={currentMember.image}
                 alt={currentMember.name}
-                className="w-80 h-96 lg:w-96 lg:h-[32rem] rounded-2xl object-cover object-center transition-all duration-500"
+                className="w-80 h-96 lg:w-96 lg:h-[32rem] rounded-2xl object-cover object-center transition-all duration-500 shadow-lg"
               />
             </div>
           </div>

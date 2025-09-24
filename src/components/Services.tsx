@@ -51,7 +51,7 @@ const ServicesScroll = ({ scrollProgress }: ServicesScrollProps) => {
   const currentItem = allItems[activeIndex] || allItems[0] || { title: 'Services', image: '', serviceId: 1 };
 
   // Calculate smooth transition progress within current item
-  const itemProgress = (progress * totalItems) % 1;
+//   const itemProgress = (progress * totalItems) % 1;
 
   return (
     <div 
