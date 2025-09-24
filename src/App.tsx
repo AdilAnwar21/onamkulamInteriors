@@ -51,12 +51,12 @@ function App() {
   const achievementsVisible = scrollY >= achievementsStart && scrollY < achievementsDisplayEnd + sectionDuration;
 
   // Brands: starts after achievements display period
-  // Extended duration to account for internal scrolling through 4 sections: title, grid, partners, quote + color transition
+  // INCREASED duration to properly show all 4 sections: title, grid, partners, quote + color transition
   const brandsStart = achievementsDisplayEnd;
   const brandsSlideEnd = brandsStart + sectionDuration;
-  const brandsInternalScrollDuration = displayDuration * 5; 
+  const brandsInternalScrollDuration = displayDuration * 10; // INCREASED from 5 to 10 to give even more time
   const brandsDisplayEnd = brandsSlideEnd + brandsInternalScrollDuration;
-  const brandsScroll = Math.max(0, scrollY - brandsStart)+20;
+  const brandsScroll = Math.max(0, scrollY - brandsStart) + 20;
   const brandsOffset = Math.min(heroHeight, brandsScroll);
   const brandsProgress = Math.min(1, Math.max(0, (scrollY - brandsSlideEnd)) / brandsInternalScrollDuration); // Progress starts after slide-up
   const brandsVisible = scrollY >= brandsStart && scrollY < brandsDisplayEnd + sectionDuration;
@@ -76,7 +76,7 @@ function App() {
   const servicesOffset = Math.min(heroHeight, servicesScroll);
   const servicesVisible = scrollY >= servicesStart;
 
-  // Total document height - reduced to eliminate extra space
+  // Total document height - updated to account for longer brands section
   const totalHeight = servicesStart + heroHeight * 2;
 
   return (

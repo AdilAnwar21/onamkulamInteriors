@@ -59,12 +59,22 @@ const ExclusiveBrandsComplete: React.FC<{ scrollProgress?: number }> = ({ scroll
     { name: 'smeg', logo: '•••smeg' },
   ];
 
-  // Much simpler progress divisions - wider ranges so everything shows
-  const titleProgress = Math.min(1, scrollProgress * 3); // Shows early and stays
-  const gridProgress = scrollProgress > 0.1 ? Math.min(1, (scrollProgress - 0.1) * 2.5) : 0;
-  const partnersProgress = scrollProgress > 0.25 ? Math.min(1, (scrollProgress - 0.25) * 2) : 0;
-  const quoteProgress = scrollProgress > 0.45 ? Math.min(1, (scrollProgress - 0.45) * 2) : 0;
-  const colorTransitionProgress = scrollProgress > 0.7 ? Math.min(1, (scrollProgress - 0.7) * 3.33) : 0;
+  // BETTER progress divisions with more space for each section
+  const titleProgress = scrollProgress < 0.25 ? Math.min(1, scrollProgress * 4) : 1; // 0-25%: Title
+  const gridProgress = scrollProgress > 0.15 && scrollProgress < 0.5 ? Math.min(1, (scrollProgress - 0.15) * 2.86) : scrollProgress >= 0.5 ? 1 : 0; // 15-50%: Grid
+  const partnersProgress = scrollProgress > 0.4 && scrollProgress < 0.75 ? Math.min(1, (scrollProgress - 0.4) * 2.86) : scrollProgress >= 0.75 ? 1 : 0; // 40-75%: Partners
+  const quoteProgress = scrollProgress > 0.65 && scrollProgress < 0.9 ? Math.min(1, (scrollProgress - 0.65) * 4) : scrollProgress >= 0.9 ? 1 : 0; // 65-90%: Quote
+  const colorTransitionProgress = scrollProgress > 0.8 ? Math.min(1, (scrollProgress - 0.8) * 5) : 0; // 80-100%: Color transition
+
+  // Calculate which section should be visible based on scroll progress
+  const getCurrentSection = () => {
+    if (scrollProgress < 0.25) return 0; // Title + Grid
+    if (scrollProgress < 0.5) return 1; // Grid
+    if (scrollProgress < 0.75) return 2; // Partners
+    return 3; // Quote
+  };
+
+  const currentSection = getCurrentSection();
 
   // Brand stagger animation
   const brandProgressForIndex = (index: number) => {
@@ -85,7 +95,7 @@ const ExclusiveBrandsComplete: React.FC<{ scrollProgress?: number }> = ({ scroll
 
   return (
     <div 
-      className={`relative overflow-hidden min-h-[400vh] ${
+      className={`relative w-full h-screen overflow-hidden ${
         isWhiteMode ? 'bg-white text-black' : 'bg-black text-white'
       }`}
       style={{
@@ -123,24 +133,46 @@ const ExclusiveBrandsComplete: React.FC<{ scrollProgress?: number }> = ({ scroll
           pointer-events: none;
           opacity: ${colorTransitionProgress > 0 ? colorTransitionProgress : 0};
         }
+
+        .section {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          padding: 2rem;
+        }
       `}</style>
 
       {/* Color sweep effect */}
       {colorTransitionProgress > 0 && <div className="color-sweep" />}
 
-      {/* Content container */}
-      <div className="relative z-10">
-        {/* EXCLUSIVE BRANDS TITLE SECTION */}
-        <section className="min-h-screen flex flex-col justify-center items-center px-6 md:px-10 py-16">
+      {/* Content container with absolute positioned sections */}
+      <div className="relative z-10 w-full h-full">
+        
+        {/* EXCLUSIVE BRANDS TITLE + GRID SECTION */}
+        <div 
+          className="section"
+          style={{
+            opacity: scrollProgress < 0.5 ? 1 : Math.max(0, 1 - (scrollProgress - 0.5) * 4),
+            transform: `translateY(${scrollProgress < 0.5 ? 0 : -(scrollProgress - 0.5) * 100}px)`,
+            transition: 'all 0.3s ease-out'
+          }}
+        >
+          {/* Title */}
           <div
-            className="mb-16 text-center"
+            className="mb-8 md:mb-16 text-center"
             style={{
               opacity: titleProgress,
               transform: `translateY(${Math.max(0, (1 - titleProgress) * 50)}px)`,
               transition: 'all 0.6s ease'
             }}
           >
-            <h2 className="text-4xl md:text-6xl lg:text-7xl font-light tracking-wider leading-tight">
+            <h2 className="text-3xl md:text-5xl lg:text-6xl font-light tracking-wider leading-tight">
               <div
                 style={{
                   opacity: titleProgress > 0.2 ? 1 : 0,
@@ -172,14 +204,14 @@ const ExclusiveBrandsComplete: React.FC<{ scrollProgress?: number }> = ({ scroll
           </div>
 
           {/* BRANDS GRID */}
-          <div className="w-full max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-8 md:gap-12">
+          <div className="w-full max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8">
             {exclusiveBrands.map((brand, i) => {
               const brandProg = brandProgressForIndex(i);
               
               return (
                 <div
                   key={brand.name}
-                  className={`border rounded-lg p-8 md:p-12 text-center cursor-pointer min-h-[200px] md:min-h-[240px] flex flex-col justify-center brand-card ${
+                  className={`border rounded-lg p-6 md:p-8 text-center cursor-pointer min-h-[160px] md:min-h-[180px] flex flex-col justify-center brand-card ${
                     isWhiteMode 
                       ? 'bg-gray-50 border-gray-300 hover:bg-gray-100 hover:border-gray-400' 
                       : 'bg-gray-900/50 border-gray-800/50 hover:bg-gray-800/60 hover:border-gray-700/60'
@@ -190,10 +222,10 @@ const ExclusiveBrandsComplete: React.FC<{ scrollProgress?: number }> = ({ scroll
                     transition: `all 0.6s ease ${i * 0.1}s`
                   }}
                 >
-                  <h3 className="text-2xl md:text-3xl font-light tracking-wide">
+                  <h3 className="text-xl md:text-2xl font-light tracking-wide">
                     {brand.name}
                   </h3>
-                  <div className={`w-16 h-0.5 mx-auto mt-6 opacity-60 ${
+                  <div className={`w-12 h-0.5 mx-auto mt-4 opacity-60 ${
                     isWhiteMode 
                       ? 'bg-gradient-to-r from-transparent via-black to-transparent' 
                       : 'bg-gradient-to-r from-transparent via-white to-transparent'
@@ -202,19 +234,29 @@ const ExclusiveBrandsComplete: React.FC<{ scrollProgress?: number }> = ({ scroll
               );
             })}
           </div>
-        </section>
+        </div>
 
         {/* PARTNERS SECTION */}
-        <section className="min-h-screen flex flex-col justify-center items-center px-6 md:px-12 py-16">
+        <div 
+          className="section"
+          style={{
+            opacity: scrollProgress >= 0.4 && scrollProgress < 0.8 ? 1 : 0,
+            transform: `translateY(${
+              scrollProgress < 0.4 ? 100 : 
+              scrollProgress >= 0.8 ? -100 : 0
+            }px)`,
+            transition: 'all 0.3s ease-out'
+          }}
+        >
           <div
-            className="mb-16 text-center"
+            className="mb-12 md:mb-16 text-center"
             style={{
               opacity: partnersProgress,
               transform: `translateY(${Math.max(0, (1 - partnersProgress) * 50)}px)`,
               transition: 'all 0.6s ease'
             }}
           >
-            <h2 className="text-4xl md:text-6xl lg:text-7xl font-light tracking-wider">
+            <h2 className="text-3xl md:text-5xl lg:text-6xl font-light tracking-wider">
               OUR PARTNERS
             </h2>
           </div>
@@ -231,7 +273,7 @@ const ExclusiveBrandsComplete: React.FC<{ scrollProgress?: number }> = ({ scroll
                 {[...partners, ...partners].map((p, i) => (
                   <div
                     key={`${p.name}-${i}`}
-                    className={`min-w-[280px] md:min-w-[320px] h-40 md:h-48 border rounded-lg flex flex-col items-center justify-center flex-shrink-0 ${
+                    className={`min-w-[240px] md:min-w-[280px] h-32 md:h-40 border rounded-lg flex flex-col items-center justify-center flex-shrink-0 ${
                       isWhiteMode 
                         ? 'bg-transparent border-black/60 hover:border-black' 
                         : 'bg-transparent border-white/60 hover:border-white'
@@ -240,7 +282,7 @@ const ExclusiveBrandsComplete: React.FC<{ scrollProgress?: number }> = ({ scroll
                   >
                     {p.name === 'BANG & OLUFSEN' ? (
                       <div className="text-center">
-                        <h3 className="text-xl md:text-2xl font-light tracking-wide">B&O</h3>
+                        <h3 className="text-lg md:text-xl font-light tracking-wide">B&O</h3>
                         <p className={`text-xs md:text-sm mt-1 tracking-wider ${
                           isWhiteMode ? 'text-gray-600' : 'text-gray-400'
                         }`}>
@@ -248,37 +290,45 @@ const ExclusiveBrandsComplete: React.FC<{ scrollProgress?: number }> = ({ scroll
                         </p>
                       </div>
                     ) : p.name === 'WOLF' ? (
-                      <div className={`border px-4 py-2 ${
+                      <div className={`border px-3 py-1.5 ${
                         isWhiteMode ? 'border-black' : 'border-white'
                       }`}>
-                        <h3 className="text-lg md:text-xl font-light tracking-wider">{p.logo}</h3>
+                        <h3 className="text-base md:text-lg font-light tracking-wider">{p.logo}</h3>
                       </div>
                     ) : (
-                      <h3 className="text-lg md:text-xl font-light tracking-wide">{p.logo}</h3>
+                      <h3 className="text-base md:text-lg font-light tracking-wide">{p.logo}</h3>
                     )}
                   </div>
                 ))}
               </div>
             </div>
           )}
-        </section>
+        </div>
 
         {/* QUOTE SECTION */}
-        <section className="min-h-screen flex flex-col justify-center items-center px-6 md:px-12 py-16 text-center">
+        <div 
+          className="section"
+          style={{
+            opacity: scrollProgress >= 0.65 ? 1 : 0,
+            transform: `translateY(${scrollProgress < 0.65 ? 100 : 0}px)`,
+            transition: 'all 0.3s ease-out'
+          }}
+        >
           <div
             style={{
               opacity: quoteProgress,
               transform: `translateY(${Math.max(0, (1 - quoteProgress) * 50)}px)`,
               transition: 'all 0.8s ease',
-              maxWidth: '80ch',
+              maxWidth: '70ch',
+              textAlign: 'center',
             }}
           >
-            <h3 className="text-2xl md:text-4xl lg:text-5xl font-light leading-relaxed">
+            <h3 className="text-2xl md:text-3xl lg:text-4xl font-light leading-relaxed">
               With unlimited creativity,{' '}
               <span className="italic">we transform your vision</span>
             </h3>
           </div>
-        </section>
+        </div>
       </div>
     </div>
   );
