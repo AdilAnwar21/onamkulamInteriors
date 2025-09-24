@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React from 'react';
 
 // Define the founder data type
 interface FounderData {
@@ -10,40 +10,14 @@ interface FounderData {
 }
 
 const Founder = () => {
-  const [founderData, setFounderData] = useState<FounderData | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  // Simulate API call
-  useEffect(() => {
-    const fetchFounderData = async () => {
-      setLoading(true);
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const mockApiResponse = {
-        id: 1,
-        name: "Marcus Thompson",
-        quote: "Interior design is the art of creating harmony between human needs and aesthetic beauty. Every space I design tells a unique story, blending functionality with emotion to create environments that truly feel like home.",
-        signature: "Marcus Thompson",
-        image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=600&fit=crop&crop=face"
-      };
-      
-      setFounderData(mockApiResponse);
-      setLoading(false);
-    };
-
-    fetchFounderData();
-  }, []);
-
-  if (loading || !founderData) {
-    return (
-      <div className="h-screen w-full bg-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-800 mx-auto mb-4"></div>
-          <p className="text-amber-800">Loading founder information...</p>
-        </div>
-      </div>
-    );
-  }
+  // Static founder data - no loading state needed
+  const founderData: FounderData = {
+    id: 1,
+    name: "Marcus Thompson",
+    quote: "Interior design is the art of creating harmony between human needs and aesthetic beauty. Every space I design tells a unique story, blending functionality with emotion to create environments that truly feel like home.",
+    signature: "Marcus Thompson",
+    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=600&fit=crop&crop=face"
+  };
 
   return (
     <div className="min-h-screen w-full bg-white flex items-center justify-center relative overflow-hidden py-6 sm:py-10 lg:py-0">
@@ -79,11 +53,11 @@ const Founder = () => {
 
           {/* Quote */}
           <div className="relative px-2 sm:px-4">
-            <div className="absolute -left-2 -top-2 text-3xl sm:text-4xl text-amber-200 font-serif">“</div>
+            <div className="absolute -left-2 -top-2 text-3xl sm:text-4xl text-amber-200 font-serif">"</div>
             <blockquote className="text-base sm:text-lg text-amber-800 leading-snug italic px-4">
               {founderData.quote}
             </blockquote>
-            <div className="absolute -right-2 -bottom-3 text-3xl sm:text-4xl text-amber-200 font-serif">”</div>
+            <div className="absolute -right-2 -bottom-3 text-3xl sm:text-4xl text-amber-200 font-serif">"</div>
           </div>
 
           {/* Signature */}
@@ -130,11 +104,11 @@ const Founder = () => {
 
             {/* Quote with curly quotes */}
             <div className="relative">
-              <div className="absolute -left-4 -top-2 text-6xl text-amber-200 font-serif">“</div>
+              <div className="absolute -left-4 -top-2 text-6xl text-amber-200 font-serif">"</div>
               <blockquote className="text-xl lg:text-2xl text-amber-800 leading-relaxed italic pl-8 pr-4">
                 {founderData.quote}
               </blockquote>
-              <div className="absolute -right-4 -bottom-6 text-6xl text-amber-200 font-serif">”</div>
+              <div className="absolute -right-4 -bottom-6 text-6xl text-amber-200 font-serif">"</div>
             </div>
 
             <div className="pt-8 border-t border-amber-200">

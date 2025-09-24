@@ -12,54 +12,38 @@ interface TeamMember {
 }
 
 const Team = () => {
-  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+  // Static team data - no loading state needed
+  const teamMembers: TeamMember[] = [
+    {
+      id: 1,
+      name: "Alex Rodriguez",
+      position: "Project Manager",
+      quote: "Excellence is in the details. I ensure every project runs smoothly from concept to completion.",
+      description: "Alex coordinates all our projects with precision, ensuring timelines are met and quality standards exceeded.",
+      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=600&h=800&fit=crop&crop=face&fm=png"
+    },
+    {
+      id: 2,
+      name: "Emily Chen",
+      position: "Creative Director",
+      quote: "Innovation meets tradition in every design we create. We don't just follow trends, we set them.",
+      description: "Emily leads our creative vision, bringing fresh perspectives to modern interior design with 10+ years of experience.",
+      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=600&h=800&fit=crop&crop=face&fm=png"
+    },
+    {
+      id: 3,
+      name: "David Park",
+      position: "3D Visualization Specialist",
+      quote: "Bringing dreams to life through technology. Every render tells a story before it becomes reality.",
+      description: "David creates stunning 3D visualizations that help clients envision their perfect spaces before construction begins.",
+      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=800&fit=crop&crop=face&fm=png"
+    }
+  ];
+
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [loading, setLoading] = useState(true);
-
-  // Simulate API call for team data
-  useEffect(() => {
-    const fetchTeamData = async () => {
-      setLoading(true);
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const mockTeamData = [
-        {
-          id: 1,
-          name: "Alex Rodriguez",
-          position: "Project Manager",
-          quote: "Excellence is in the details. I ensure every project runs smoothly from concept to completion.",
-          description: "Alex coordinates all our projects with precision, ensuring timelines are met and quality standards exceeded.",
-          image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=600&h=800&fit=crop&crop=face&fm=png"
-        },
-        {
-          id: 2,
-          name: "Emily Chen",
-          position: "Creative Director",
-          quote: "Innovation meets tradition in every design we create. We don't just follow trends, we set them.",
-          description: "Emily leads our creative vision, bringing fresh perspectives to modern interior design with 10+ years of experience.",
-          image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=600&h=800&fit=crop&crop=face&fm=png"
-        },
-        {
-          id: 3,
-          name: "David Park",
-          position: "3D Visualization Specialist",
-          quote: "Bringing dreams to life through technology. Every render tells a story before it becomes reality.",
-          description: "David creates stunning 3D visualizations that help clients envision their perfect spaces before construction begins.",
-          image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=800&fit=crop&crop=face&fm=png"
-        }
-      ];
-      
-      setTeamMembers(mockTeamData);
-      setLoading(false);
-    };
-
-    fetchTeamData();
-  }, []);
 
   // Auto-advance to next team member
   useEffect(() => {
-    if (teamMembers.length === 0) return;
-    
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % teamMembers.length);
     }, 5000);
@@ -76,17 +60,6 @@ const Team = () => {
   const goToNext = () => {
     setCurrentIndex((prev) => (prev + 1) % teamMembers.length);
   };
-
-  if (loading || teamMembers.length === 0) {
-    return (
-      <div className="h-screen w-full bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-800 mx-auto mb-4"></div>
-          <p className="text-gray-800">Loading team information...</p>
-        </div>
-      </div>
-    );
-  }
 
   const currentMember = teamMembers[currentIndex];
 
@@ -123,11 +96,11 @@ const Team = () => {
 
             {/* Quote with curly quotes */}
             <div className="relative text-center px-2 mb-4">
-              <div className="absolute -left-2 -top-2 text-2xl sm:text-3xl text-gray-300 font-serif leading-none">“</div>
+              <div className="absolute -left-2 -top-2 text-2xl sm:text-3xl text-gray-300 font-serif leading-none">"</div>
               <blockquote className="text-base sm:text-lg text-gray-900 leading-snug font-light px-4">
                 {currentMember.quote}
               </blockquote>
-              <div className="absolute -bottom-3 right-2 text-2xl sm:text-3xl text-gray-300 font-serif leading-none">”</div>
+              <div className="absolute -bottom-3 right-2 text-2xl sm:text-3xl text-gray-300 font-serif leading-none">"</div>
             </div>
 
             {/* Member Info */}
@@ -210,11 +183,11 @@ const Team = () => {
             
             {/* Large Quote with curly quotes */}
             <div className="relative">
-              <div className="absolute -left-6 -top-4 text-8xl text-gray-300 font-serif leading-none">“</div>
+              <div className="absolute -left-6 -top-4 text-8xl text-gray-300 font-serif leading-none">"</div>
               <blockquote className="text-3xl lg:text-4xl xl:text-5xl text-gray-900 leading-tight font-light pl-12 pr-4">
                 {currentMember.quote}
               </blockquote>
-              <div className="absolute -bottom-8 right-0 text-8xl text-gray-300 font-serif leading-none">”</div>
+              <div className="absolute -bottom-8 right-0 text-8xl text-gray-300 font-serif leading-none">"</div>
             </div>
 
             {/* Member Info */}
