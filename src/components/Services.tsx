@@ -9,24 +9,24 @@ const services = [
     id: 1,
     title: "Renovation & Remodeling",
     images: [
-      "/images/service1a.jpg",
-      "/images/service1b.jpg",
+      "https://images.unsplash.com/photo-1600607687920-4e9b6c2b5f20?auto=format&fit=crop&w=1600&q=80",
+      "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1600&q=80",
     ],
   },
   {
     id: 2,
     title: "Interior Design",
     images: [
-      "/images/service2a.jpg",
-      "/images/service2b.jpg",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=80",
+      "https://images.unsplash.com/photo-1616627982044-8a1b20e3ef5c?auto=format&fit=crop&w=1600&q=80",
     ],
   },
   {
     id: 3,
     title: "Space Planning",
     images: [
-      "/images/service3a.jpg",
-      "/images/service3b.jpg",
+      "https://images.unsplash.com/photo-1615874959474-d609969a20ed?auto=format&fit=crop&w=1600&q=80",
+      "https://images.unsplash.com/photo-1600585154356-596af9009c95?auto=format&fit=crop&w=1600&q=80",
     ],
   },
 ];
@@ -68,7 +68,7 @@ const ServicesScroll = ({ scrollProgress }: ServicesScrollProps) => {
                 <img
                   src={src}
                   alt={service.title}
-                  className="rounded-2xl w-[90%] h-[85%] object-cover"
+                  className="rounded-2xl w-[90%] h-[85%] object-cover shadow-lg"
                 />
               </div>
             ))
