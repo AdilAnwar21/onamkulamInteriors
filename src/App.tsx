@@ -8,6 +8,8 @@ import ServicesScroll from './components/Services';
 import ServicesShowcase from './components/ServicesShowcase';
 import Founder from './components/Founder';
 import Team from './components/Team';
+import CTASection from './components/CTASection';
+import Footer from './components/Footer';
 
 function App() {
   const [scrollY, setScrollY] = useState(0);
@@ -122,12 +124,28 @@ function App() {
 
   // Team section
   const teamStart = founderDisplayEnd;
+  const teamSlideEnd = teamStart + sectionDuration;
+  const teamDisplayEnd = teamSlideEnd + displayDuration;
   const teamScroll = Math.max(0, scrollY - teamStart);
   const teamOffset = Math.min(heroHeight, teamScroll);
-  const teamVisible = scrollY >= teamStart;
+  const teamVisible = scrollY >= teamStart && scrollY < teamDisplayEnd + sectionDuration;
 
-  // Total height - Updated to include team section
-  const totalHeight = teamStart + heroHeight * 2;
+  // CTA section
+  const ctaStart = teamDisplayEnd;
+  const ctaSlideEnd = ctaStart + sectionDuration;
+  const ctaDisplayEnd = ctaSlideEnd + displayDuration;
+  const ctaScroll = Math.max(0, scrollY - ctaStart);
+  const ctaOffset = Math.min(heroHeight, ctaScroll);
+  const ctaVisible = scrollY >= ctaStart && scrollY < ctaDisplayEnd + sectionDuration;
+
+  // Footer section
+  const footerStart = ctaDisplayEnd;
+  const footerScroll = Math.max(0, scrollY - footerStart);
+  const footerOffset = Math.min(heroHeight, footerScroll);
+  const footerVisible = scrollY >= footerStart;
+
+  // Total height - Updated to include Footer section
+  const totalHeight = footerStart + heroHeight * 2;
 
   return (
     <div className="relative overflow-hidden bg-black">
@@ -257,11 +275,45 @@ function App() {
             className="fixed inset-0 w-full bg-gray-50"
             style={{
               zIndex: 80,
-              transform: `translateY(${heroHeight - teamOffset}px)`,
+              transform:
+                scrollY <= teamSlideEnd
+                  ? `translateY(${heroHeight - teamOffset}px)`
+                  : `translateY(0px)`,
               transition: 'transform 0.1s ease-out',
             }}
           >
             <Team />
+          </div>
+        )}
+
+        {/* CTA Section */}
+        {ctaVisible && (
+          <div
+            className="fixed inset-0 w-full"
+            style={{
+              zIndex: 90,
+              transform:
+                scrollY <= ctaSlideEnd
+                  ? `translateY(${heroHeight - ctaOffset}px)`
+                  : `translateY(0px)`,
+              transition: 'transform 0.1s ease-out',
+            }}
+          >
+            <CTASection />
+          </div>
+        )}
+
+        {/* Footer */}
+        {footerVisible && (
+          <div
+            className="fixed inset-0 w-full"
+            style={{
+              zIndex: 100,
+              transform: `translateY(${heroHeight - footerOffset}px)`,
+              transition: 'transform 0.1s ease-out',
+            }}
+          >
+            <Footer />
           </div>
         )}
       </main>
