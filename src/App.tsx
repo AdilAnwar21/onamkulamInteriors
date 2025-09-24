@@ -31,42 +31,53 @@ function App() {
     };
   }, []);
 
-  const heroHeight = windowHeight;
+  // Use a fixed hero height that matches our Hero component (800px max)
+  const heroHeight = Math.min(windowHeight, 800);
+  const sectionDuration = heroHeight; // Duration for each section to slide up
+  const displayDuration = heroHeight; // Duration to display each section before next starts
 
-  // Hero offset
-  const heroOffset = Math.min(scrollY * 0.5, heroHeight * 0.5);
+  // Section timing calculations
+  // Hero: 0 to heroHeight (slides out more gradually)
+  const heroEnd = heroHeight * 0.9; // Hero slides out later
+  const heroOffset = Math.min(scrollY * 0.4, heroHeight * 0.4); // Slower hero exit
+  const heroVisible = scrollY < heroEnd + sectionDuration * 0.8; // Hero visible longer
 
-  // Achievements offset
-  const achievementsStart = heroHeight;
-  const achievementsOffset = Math.max(
-    0,
-    Math.min(heroHeight, scrollY - achievementsStart)
-  );
+  // Achievements: starts overlapping with hero to eliminate gap
+  const achievementsStart = heroHeight * 0.5; // Start earlier to overlap with hero
+  const achievementsSlideEnd = achievementsStart + sectionDuration; // When it's fully visible
+  const achievementsDisplayEnd = achievementsSlideEnd + displayDuration; // When it stops displaying
+  const achievementsScroll = Math.max(0, scrollY - achievementsStart);
+  const achievementsOffset = Math.min(heroHeight, achievementsScroll);
+  const achievementsVisible = scrollY >= achievementsStart && scrollY < achievementsDisplayEnd + sectionDuration;
 
-  // Exclusive Brands offset - Extended duration
-  const brandsStart = heroHeight * 2;
-  const brandsScroll = Math.max(0, scrollY - brandsStart);
-  const brandsProgress = brandsScroll / (heroHeight * 2); // Extended for more content
+  // Brands: starts after achievements display period
+  // Extended duration to account for internal scrolling through 4 sections: title, grid, partners, quote + color transition
+  const brandsStart = achievementsDisplayEnd;
+  const brandsSlideEnd = brandsStart + sectionDuration;
+  const brandsInternalScrollDuration = displayDuration * 5; 
+  const brandsDisplayEnd = brandsSlideEnd + brandsInternalScrollDuration;
+  const brandsScroll = Math.max(0, scrollY - brandsStart)+20;
+  const brandsOffset = Math.min(heroHeight, brandsScroll);
+  const brandsProgress = Math.min(1, Math.max(0, (scrollY - brandsSlideEnd)) / brandsInternalScrollDuration); // Progress starts after slide-up
+  const brandsVisible = scrollY >= brandsStart && scrollY < brandsDisplayEnd + sectionDuration;
 
-  // Testimonials calculation - stacks on top of brands
-  const testimonialsStart = heroHeight * 3.5; // Start earlier for stacking
+  // Testimonials: starts after brands display period
+  const testimonialsStart = brandsDisplayEnd;
+  const testimonialsSlideEnd = testimonialsStart + sectionDuration;
+  const testimonialsDisplayEnd = testimonialsSlideEnd + displayDuration * 3; // Extended display for testimonials
   const testimonialsScroll = Math.max(0, scrollY - testimonialsStart);
-  const testimonialsOffset = Math.min(heroHeight, testimonialsScroll * 0.8); // Slide up effect
-  const testimonialsProgress = Math.min(
-    1,
-    testimonialsScroll / (heroHeight * 2) // Duration for all slides
-  );
+  const testimonialsOffset = Math.min(heroHeight, testimonialsScroll);
+  const testimonialsProgress = Math.min(1, Math.max(0, (scrollY - testimonialsSlideEnd)) / (displayDuration * 3)); // Progress starts after slide-up
+  const testimonialsVisible = scrollY >= testimonialsStart && scrollY < testimonialsDisplayEnd + sectionDuration;
 
-  // Testimonials visibility - stacking scroll
-  const testimonialsVisible = testimonialsScroll > 0;
-
-  // Services calculation - stacks on top of testimonials
-  const servicesStart = heroHeight * 6; // Start when testimonials are well established
+  // Services: starts after testimonials display period
+  const servicesStart = testimonialsDisplayEnd;
   const servicesScroll = Math.max(0, scrollY - servicesStart);
-  const servicesOffset = Math.min(heroHeight, servicesScroll * 0.8); // Slide up effect
+  const servicesOffset = Math.min(heroHeight, servicesScroll);
+  const servicesVisible = scrollY >= servicesStart;
 
-  // Services visibility - stacking scroll
-  const servicesVisible = servicesScroll > 0;
+  // Total document height - reduced to eliminate extra space
+  const totalHeight = servicesStart + heroHeight * 2;
 
   return (
     <div className="relative overflow-hidden">
@@ -75,10 +86,11 @@ function App() {
         <FloatingNavbar />
       </div>
 
-      {/* Scrollable container - Optimized height */}
-      <main style={{ height: `${heroHeight * 8.5}px` }}>
-        {/* Hero Layer */}
-        {scrollY < achievementsStart + heroHeight && (
+      {/* Scrollable container */}
+      <main style={{ height: `${totalHeight}px` }}>
+        
+        {/* Hero Layer - slides out first */}
+        {heroVisible && (
           <div
             className="fixed inset-0 w-full"
             style={{
@@ -90,41 +102,45 @@ function App() {
           </div>
         )}
 
-        {/* Achievements Layer */}
-        {scrollY < brandsStart + heroHeight && (
+        {/* Achievements Layer - slides up after hero, then stays for display duration */}
+        {achievementsVisible && (
           <div
-            className="absolute inset-0 w-full"
+            className="fixed inset-0 w-full"
             style={{
-              top: `${heroHeight}px`,
               zIndex: 20,
-              transform: `translateY(${-achievementsOffset}px)`,
+              transform: scrollY <= achievementsSlideEnd 
+                ? `translateY(${heroHeight - achievementsOffset}px)` // Sliding up phase
+                : `translateY(0px)`, // Fully visible phase (stays at top)
             }}
           >
             <Achievements />
           </div>
         )}
 
-        {/* Exclusive Brands Layer - Extended visibility */}
-        {scrollY < testimonialsStart + heroHeight && (
+        {/* Exclusive Brands Layer - slides up after achievements display period */}
+        {brandsVisible && (
           <div
-            className="absolute inset-0 w-full"
+            className="fixed inset-0 w-full"
             style={{
-              top: `${heroHeight * 2}px`,
               zIndex: 30,
-              transform: `translateY(${-brandsScroll}px)`,
+              transform: scrollY <= brandsSlideEnd 
+                ? `translateY(${heroHeight - brandsOffset}px)` // Sliding up phase
+                : `translateY(0px)`, // Fully visible phase
             }}
           >
             <ExclusiveBrands scrollProgress={brandsProgress} />
           </div>
         )}
 
-        {/* Testimonials Layer - Slides up from bottom over brands */}
+        {/* Testimonials Layer - slides up after brands display period */}
         {testimonialsVisible && (
           <div
             className="fixed inset-0 w-full"
             style={{
               zIndex: 40,
-              transform: `translateY(${heroHeight - testimonialsOffset}px)`,
+              transform: scrollY <= testimonialsSlideEnd 
+                ? `translateY(${heroHeight - testimonialsOffset}px)` // Sliding up phase
+                : `translateY(0px)`, // Fully visible phase
               transition: 'transform 0.1s ease-out',
             }}
           >
@@ -132,7 +148,7 @@ function App() {
           </div>
         )}
 
-        {/* Services Layer - Slides up from bottom */}
+        {/* Services Layer - slides up after testimonials display period */}
         {servicesVisible && (
           <div
             className="fixed inset-0 w-full"
@@ -142,7 +158,7 @@ function App() {
               transition: 'transform 0.1s ease-out',
             }}
           >
-            <ServicesShowcase/>
+            <ServicesShowcase />
           </div>
         )}
       </main>

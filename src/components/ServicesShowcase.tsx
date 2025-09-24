@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 const ServicesShowcase = () => {
-const [hoveredIndex, setHoveredIndex] = useState<number>(0);
+  const [hoveredIndex, setHoveredIndex] = useState<number>(0);
 
   const services = [
     {
@@ -55,9 +55,6 @@ const [hoveredIndex, setHoveredIndex] = useState<number>(0);
     }
   ];
 
-  // Calculate the vertical offset for the content based on hovered item
-//   const contentOffset = hoveredIndex * 100; // Height of each content section
-
   return (
     <div className="min-h-screen bg-stone-50 flex items-center justify-center p-0">
       <div className="max-w-none w-full h-screen">
@@ -97,24 +94,24 @@ const [hoveredIndex, setHoveredIndex] = useState<number>(0);
             </div>
           </div>
 
-          {/* Right Side - Single Image Display */}
+          {/* Right Side - Scroll Up Image Display */}
           <div className="relative overflow-hidden bg-gray-100 col-span-3 p-8 xl:p-12">
-            <div className="relative h-full w-full">
-              {services.map((service, index) => (
-                <div 
-                  key={service.id}
-                  className={`absolute inset-0 w-full h-full transition-opacity duration-700 ease-out ${
-                    hoveredIndex === index ? 'opacity-100' : 'opacity-0'
-                  }`}
-                >
-                  <img 
-                    src={service.image}
-                    alt={service.title} 
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-black/5"></div>
-                </div>
-              ))}
+            <div className="relative h-full w-full overflow-hidden">
+              <div 
+                className="h-full w-full transition-transform duration-700 ease-in-out"
+                style={{ transform: `translateY(-${hoveredIndex * 100}%)` }}
+              >
+                {services.map((service) => (
+                  <div key={service.id} className="h-full w-full flex-shrink-0 relative">
+                    <img 
+                      src={service.image}
+                      alt={service.title} 
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black/5"></div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Menu, X, Home, User, Briefcase, Mail, ArrowRight } from 'lucide-react';
 
 const FloatingNavbar = () => {
@@ -37,7 +37,7 @@ const FloatingNavbar = () => {
   ];
 
   // Easing
-  const easeInOutCubic = (t: any) => {
+  const easeInOutCubic = (t:any) => {
     return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
   };
 
@@ -57,22 +57,23 @@ const FloatingNavbar = () => {
     return `translateX(-${moveDistance}px)`;
   };
 
-  // Updated background and border styles for transparent initial state
+  // Updated background for liquid glass effect
   const getNavbarBackground = () => {
     if (scrollProgress === 0) return 'transparent';
-    return `rgba(255, 255, 255, ${Math.min(0.95, 0.75 + scrollProgress * 0.2)})`;
+    const opacity = Math.min(0.92, 0.75 + scrollProgress * 0.17);
+    return `linear-gradient(135deg, rgba(255, 255, 255, ${opacity}), rgba(200, 200, 200, ${opacity * 0.8}))`;
   };
 
   const getBorderStyle = () => {
-    return scrollProgress > 0 ? 'border border-white/30' : '';
+    return scrollProgress > 0 ? 'border border-white/20' : '';
   };
 
   const getBackdropBlur = () => {
-    return scrollProgress > 0 ? 'backdrop-blur-xl' : '';
+    return scrollProgress > 0 ? 'backdrop-blur-2xl' : '';
   };
 
   const getShadow = () => {
-    return scrollProgress > 0.1 ? 'shadow-2xl' : '';
+    return scrollProgress > 0.1 ? 'shadow-[inset_0_1px_2px_rgba(255,255,255,0.3),inset_0_-1px_2px_rgba(0,0,0,0.2),0_4px_12px_rgba(0,0,0,0.15)]' : '';
   };
 
   // -------------------- MOBILE NAVBAR --------------------
@@ -156,14 +157,22 @@ const FloatingNavbar = () => {
         }}
       >
         <div 
-          className={`rounded-full ${getBorderStyle()} ${getBackdropBlur()} ${getShadow()} overflow-hidden`}
+          className={`rounded-full ${getBorderStyle()} ${getBackdropBlur()} ${getShadow()} overflow-hidden relative`}
           style={{ 
-            backgroundColor: getNavbarBackground(),
+            background: getNavbarBackground(),
             height: scrollProgress > 0.2 ? '68px' : '56px',
             transition: 'all 1.5s cubic-bezier(0.23, 1, 0.32, 1)'
           }}
         >
-          <div className="flex items-center h-full px-2">
+          {/* Noise texture overlay for liquid glass effect */}
+          <div 
+            className="absolute inset-0"
+            style={{
+              backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\"0 0 200 200\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cfilter id=\"noiseFilter\"%3E%3CfeTurbulence type=\"fractalNoise\" baseFrequency=\"0.65\" numOctaves=\"3\" stitchTiles=\"stitch\"/%3E%3C/filter%3E%3Crect width=\"100%25\" height=\"100%25\" filter=\"url(%23noiseFilter)\" opacity=\"0.1\"/%3E%3C/svg%3E\")',
+              mixBlendMode: 'overlay'
+            }}
+          />
+          <div className="flex items-center h-full px-2 relative">
             {/* Logo */}
             <div 
               className="flex items-center overflow-hidden"
@@ -196,7 +205,7 @@ const FloatingNavbar = () => {
                 return (
                   <button
                     key={item.name}
-                    className="flex items-center space-x-2 px-4 py-2.5 text-black hover:text-[#8B4513] hover:bg-black/5 rounded-full group whitespace-nowrap text-sm font-medium transition-all duration-300"
+                    className="flex items-center space-x-2 px-4 py-2.5 text-black hover:text-[#8B4513] hover:bg-white/10 rounded-full group whitespace-nowrap text-sm font-medium transition-all duration-300"
                     style={{
                       opacity: smoothItemProgress,
                       transform: `translateY(${(1 - smoothItemProgress) * 2}px)`,
@@ -213,7 +222,8 @@ const FloatingNavbar = () => {
             {/* Say Hello Button */}
             <div className="ml-auto">
               <button
-                className="bg-black/10 text-black px-6 py-3 rounded-full flex items-center space-x-3 hover:bg-black/20 hover:scale-105 whitespace-nowrap"
+                className="bg-white/20 text-black px-6 py-3 rounded-full flex items-center space-x-3 hover:bg-white/30 hover:scale-105 whitespace-nowrap transition-all duration-300"
+                style={{ backdropFilter: 'blur(4px)' }}
               >
                 <span className="font-medium">Say "Hello"</span>
                 <div className="bg-yellow-400 rounded-full p-1 transition-all duration-300">
