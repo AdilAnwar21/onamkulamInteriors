@@ -1,7 +1,3 @@
-// Add this import to your App.tsx:
-// import CTASection from './components/CTASection';
-
-import React from 'react';
 
 const CTASection = () => {
   return (
