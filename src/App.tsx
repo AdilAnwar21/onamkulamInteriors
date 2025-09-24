@@ -78,14 +78,14 @@ function App() {
   );
   const servicesScrollVisible =
     scrollY >= servicesScrollStart &&
-    scrollY < servicesScrollDisplayEnd + sectionDuration;
+    scrollY < servicesScrollDisplayEnd + sectionDuration * 0.5; // Reduced overlap to prevent white gap
   const servicesScrollOffset = Math.min(
     heroHeight,
     Math.max(0, scrollY - servicesScrollStart)
   );
 
-  // Testimonials section
-  const testimonialsStart = servicesScrollDisplayEnd;
+  // Testimonials section - Start earlier to eliminate gap
+  const testimonialsStart = servicesScrollDisplayEnd - sectionDuration * 0.5; // Start earlier
   const testimonialsSlideEnd = testimonialsStart + sectionDuration;
   const testimonialsDisplayEnd = testimonialsSlideEnd + displayDuration * 3;
   const testimonialsScroll = Math.max(0, scrollY - testimonialsStart);
@@ -108,14 +108,14 @@ function App() {
   const totalHeight = servicesStart + heroHeight * 2;
 
   return (
-    <div className="relative overflow-hidden">
+    <div className="relative overflow-hidden bg-black"> {/* Added bg-black to prevent white gaps */}
       {/* Floating Navbar */}
       <div className="fixed inset-x-0 top-0 z-[100]">
         <FloatingNavbar />
       </div>
 
       {/* Scrollable container */}
-      <main style={{ height: `${totalHeight}px` }}>
+      <main style={{ height: `${totalHeight}px` }} className="bg-black">
         {/* Hero */}
         {heroVisible && (
           <div
@@ -164,7 +164,7 @@ function App() {
         {/* ServicesScroll */}
         {servicesScrollVisible && (
           <div
-            className="fixed inset-0 w-full"
+            className="fixed inset-0 w-full bg-black" // Added bg-black
             style={{
               zIndex: 40,
               transform:
@@ -181,7 +181,7 @@ function App() {
         {/* Testimonials */}
         {testimonialsVisible && (
           <div
-            className="fixed inset-0 w-full"
+            className="fixed inset-0 w-full bg-black" // Added bg-black
             style={{
               zIndex: 50,
               transform:

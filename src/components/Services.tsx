@@ -9,7 +9,7 @@ const services = [
     id: 1,
     title: "Renovation & Remodeling",
     images: [
-      "https://images.unsplash.com/photo-1600607687920-4e9b6c2b5f20?auto=format&fit=crop&w=1600&q=80",
+    //   "https://images.unsplash.com/photo-1600607687920-4e9b6c2b5f20?auto=format&fit=crop&w=1600&q=80",
       "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1600&q=80",
     ],
   },
@@ -17,7 +17,7 @@ const services = [
     id: 2,
     title: "Interior Design",
     images: [
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=80",
+    //   "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=80",
       "https://images.unsplash.com/photo-1616627982044-8a1b20e3ef5c?auto=format&fit=crop&w=1600&q=80",
     ],
   },
@@ -25,7 +25,7 @@ const services = [
     id: 3,
     title: "Space Planning",
     images: [
-      "https://images.unsplash.com/photo-1615874959474-d609969a20ed?auto=format&fit=crop&w=1600&q=80",
+    //   "https://images.unsplash.com/photo-1615874959474-d609969a20ed?auto=format&fit=crop&w=1600&q=80",
       "https://images.unsplash.com/photo-1600585154356-596af9009c95?auto=format&fit=crop&w=1600&q=80",
     ],
   },
@@ -34,45 +34,124 @@ const services = [
 const ServicesScroll = ({ scrollProgress }: ServicesScrollProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Calculate which service is active
-  const index = Math.floor(scrollProgress * services.length);
-  const activeIndex = Math.min(index, services.length - 1);
+  // Flatten all images with their corresponding service data
+  const allItems = services.flatMap(service =>
+    service.images.map(image => ({
+      title: service.title,
+      image: image,
+      serviceId: service.id
+    }))
+  );
+
+  const totalItems = allItems.length;
+  
+  // Calculate which image/title combination is active
+  const progress = Math.max(0, Math.min(1, scrollProgress));
+  const activeIndex = Math.min(Math.floor(progress * totalItems), totalItems - 1);
+  const currentItem = allItems[activeIndex] || allItems[0] || { title: 'Services', image: '', serviceId: 1 };
+
+  // Calculate smooth transition progress within current item
+  const itemProgress = (progress * totalItems) % 1;
 
   return (
-    <div ref={containerRef} className="flex w-full h-screen bg-black text-white">
+    <div 
+      ref={containerRef} 
+      className="flex flex-col lg:flex-row w-full h-screen bg-black text-white overflow-hidden"
+    >
       {/* Left Side - Text */}
-      <div className="flex flex-col justify-center items-start w-1/2 px-16">
-        <span className="text-sm text-gray-400">Services</span>
-        <h2 className="text-6xl font-light leading-tight">
-          {services[activeIndex].title}
+      <div className="flex flex-col justify-center items-start w-full lg:w-1/2 px-6 sm:px-8 md:px-12 lg:px-16 py-8 lg:py-0 relative z-10">
+        <span className="text-xs sm:text-sm text-gray-400 mb-2">
+          {String(activeIndex + 1).padStart(2, '0')} / {String(totalItems).padStart(2, '0')}
+        </span>
+        <span className="text-xs sm:text-sm text-gray-400 uppercase tracking-wider mb-4">
+          Services
+        </span>
+        
+        <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light leading-tight mb-6 lg:mb-8 transition-all duration-700 ease-out">
+          {currentItem?.title || 'Services'}
         </h2>
-        <button className="mt-8 flex items-center gap-2 text-white hover:opacity-80 transition">
-          View All →
+        
+        <p className="text-sm sm:text-base text-gray-300 mb-6 lg:mb-8 max-w-md leading-relaxed">
+          Transform your space with our expert {currentItem?.title?.toLowerCase() || 'design'} services. 
+          We bring creativity and precision to every project.
+        </p>
+        
+        <button className="flex items-center gap-2 text-white hover:opacity-80 transition-opacity duration-300 text-sm sm:text-base group">
+          <span>View All Projects</span>
+          <span className="transform transition-transform group-hover:translate-x-1">→</span>
         </button>
+
+        {/* Mobile progress indicator */}
+        <div className="lg:hidden mt-6 flex space-x-1">
+          {allItems.map((_, index) => (
+            <div
+              key={index}
+              className={`h-1 rounded-full transition-all duration-300 ${
+                index === activeIndex 
+                  ? 'bg-white w-8' 
+                  : 'bg-gray-600 w-2'
+              }`}
+            />
+          ))}
+        </div>
       </div>
 
       {/* Right Side - Scrolling Images */}
-      <div className="relative w-1/2 h-full overflow-hidden">
+      <div className="relative w-full h-1/2 lg:w-1/2 lg:h-full overflow-hidden">
+        {/* Background for smooth transitions */}
+        <div className="absolute inset-0 bg-gray-900" />
+        
+        {/* Image container */}
         <div
-          className="absolute inset-0 flex flex-col transition-transform duration-500"
+          className="absolute inset-0 transition-transform duration-500 ease-out"
           style={{
             transform: `translateY(-${activeIndex * 100}%)`,
           }}
         >
-          {services.map((service) =>
-            service.images.map((src, i) => (
-              <div
-                key={`${service.id}-${i}`}
-                className="w-full h-screen flex items-center justify-center"
-              >
+          {allItems.map((item, index) => (
+            <div
+              key={index}
+              className="w-full h-full flex items-center justify-center p-4 sm:p-6 lg:p-8"
+            >
+              <div className="relative w-full h-full max-w-2xl">
                 <img
-                  src={src}
-                  alt={service.title}
-                  className="rounded-2xl w-[90%] h-[85%] object-cover shadow-lg"
+                  src={item.image}
+                  alt={item.title || 'Service'}
+                  className="w-full h-full object-cover rounded-lg sm:rounded-xl lg:rounded-2xl shadow-2xl"
                 />
+                
+                {/* Image overlay for extra context on mobile */}
+                <div className="lg:hidden absolute bottom-4 left-4 right-4 bg-black/70 backdrop-blur-sm rounded-lg p-3">
+                  <h3 className="text-white text-sm font-medium">{item.title || 'Service'}</h3>
+                  <p className="text-gray-300 text-xs mt-1">Professional Design Services</p>
+                </div>
               </div>
-            ))
-          )}
+            </div>
+          ))}
+        </div>
+
+        {/* Desktop progress indicator */}
+        <div className="hidden lg:block absolute bottom-8 left-8 space-y-2">
+          {allItems.map((_, index) => (
+            <div
+              key={index}
+              className={`w-1 rounded-full transition-all duration-300 ${
+                index === activeIndex 
+                  ? 'bg-white h-8' 
+                  : 'bg-gray-600 h-2'
+              }`}
+            />
+          ))}
+        </div>
+
+        {/* Service indicator */}
+        <div className="hidden lg:block absolute top-8 right-8 text-right">
+          <div className="text-xs text-gray-400 uppercase tracking-wider">
+            Service {currentItem?.serviceId || 1}
+          </div>
+          <div className="text-sm text-white mt-1">
+            {String(activeIndex + 1).padStart(2, '0')} / {String(totalItems).padStart(2, '0')}
+          </div>
         </div>
       </div>
     </div>

@@ -46,8 +46,8 @@ const TestimonialScroll = ({ scrollProgress }: TestimonialScrollProps) => {
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-screen overflow-hidden"
-      style={{ zIndex: 40 }}
+      className="fixed inset-0 w-full h-screen overflow-hidden bg-black"
+      style={{ zIndex: 50 }}
     >
       {testimonials.map((testimonial, index) => {
         const sectionStart = index / totalCards;
@@ -63,37 +63,76 @@ const TestimonialScroll = ({ scrollProgress }: TestimonialScrollProps) => {
         return (
           <div
             key={testimonial.id}
-            className="absolute inset-0 w-full h-full flex"
+            className="absolute inset-0 w-full h-full flex flex-col md:flex-row"
             style={{
               transform: `translateY(${translateY}%)`,
               zIndex: index + 1,
               transition: "transform 0.3s ease-out",
             }}
           >
-            {/* Left Image */}
+            {/* Image Section */}
             <div
-              className="w-full md:w-2/3 h-full bg-cover bg-center"
+              className="w-full h-1/2 md:w-2/3 md:h-full bg-cover bg-center relative"
               style={{
                 backgroundImage: `url(${testimonial.projectImage})`,
               }}
-            ></div>
+            >
+              {/* Mobile Content Overlay */}
+              <div className="md:hidden absolute inset-0 bg-black/50 flex flex-col justify-end p-6 text-white">
+                <h1 className="text-4xl sm:text-5xl font-bold mb-2">{testimonial.number}</h1>
+                <h2 className="text-xl sm:text-2xl font-semibold mb-2">
+                  {testimonial.project}
+                </h2>
+                <p className="text-sm opacity-70">{testimonial.location}</p>
+              </div>
+            </div>
 
-            {/* Right Content */}
-            <div className="hidden md:flex flex-col justify-center w-1/3 bg-black/70 text-white p-12">
-              <h1 className="text-7xl font-bold mb-6">{testimonial.number}</h1>
-              <h2 className="text-4xl font-semibold mb-4">
+            {/* Desktop Content Section */}
+            <div className="flex flex-col justify-center w-full h-1/2 md:w-1/3 md:h-full bg-black text-white p-6 sm:p-8 lg:p-12">
+              {/* Desktop Number - Hidden on mobile since it's in overlay */}
+              <h1 className="hidden md:block text-5xl lg:text-7xl font-bold mb-4 lg:mb-6">{testimonial.number}</h1>
+              
+              {/* Desktop Project Title - Hidden on mobile since it's in overlay */}
+              <h2 className="hidden md:block text-2xl lg:text-4xl font-semibold mb-3 lg:mb-4">
                 {testimonial.project}
               </h2>
-              <p className="text-lg italic mb-6">"{testimonial.quote}"</p>
-              <div>
-                <p className="font-medium">{testimonial.author}</p>
-                <p className="text-sm opacity-70">{testimonial.role}</p>
-                <p className="text-sm opacity-50">{testimonial.location}</p>
+              
+              {/* Quote - Visible on both */}
+              <p className="text-sm sm:text-base lg:text-lg italic mb-4 lg:mb-6 leading-relaxed">
+                "{testimonial.quote}"
+              </p>
+              
+              {/* Author Info */}
+              <div className="space-y-1">
+                <p className="font-medium text-sm sm:text-base">{testimonial.author}</p>
+                <p className="text-xs sm:text-sm opacity-70">{testimonial.role}</p>
+                {/* Location only shown on desktop, already in mobile overlay */}
+                <p className="hidden md:block text-xs sm:text-sm opacity-50">{testimonial.location}</p>
               </div>
             </div>
           </div>
         );
       })}
+      
+      {/* Progress indicator */}
+      <div className="absolute bottom-6 right-6 z-50">
+        <div className="flex space-x-2">
+          {testimonials.map((_, index) => {
+            const sectionStart = index / totalCards;
+            const sectionEnd = (index + 1) / totalCards;
+            const isActive = progress >= sectionStart && progress < sectionEnd;
+            
+            return (
+              <div
+                key={index}
+                className={`w-2 h-2 rounded-full transition-colors duration-300 ${
+                  isActive ? 'bg-white' : 'bg-white/30'
+                }`}
+              />
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 };
