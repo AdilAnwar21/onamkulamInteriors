@@ -1,4 +1,3 @@
-import React from 'react';
 
 // Define the founder data type
 interface FounderData {

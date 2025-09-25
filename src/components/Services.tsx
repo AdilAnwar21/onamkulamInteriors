@@ -52,11 +52,11 @@ const ServicesScroll = ({ scrollProgress }: ServicesScrollProps) => {
   const adjustedProgress = isActive ? Math.max(0, (progress - threshold) / (1 - threshold)) : 0;
   const smoothProgress = adjustedProgress * totalItems;
   const activeIndex = Math.min(Math.floor(smoothProgress), totalItems - 1);
-  const nextIndex = Math.min(activeIndex + 1, totalItems - 1);
-  const transitionProgress = smoothProgress - activeIndex;
+  // const nextIndex = Math.min(activeIndex + 1, totalItems - 1);
+  // const transitionProgress = smoothProgress - activeIndex;
   
   const currentItem = allItems[activeIndex] || allItems[0] || { title: 'Services', image: '', serviceId: 1 };
-  const nextItem = allItems[nextIndex] || currentItem;
+  // const nextItem = allItems[nextIndex] || currentItem;
 
   // Calculate smooth transition progress within current item
 //   const itemProgress = (progress * totalItems) % 1;
@@ -157,15 +157,7 @@ const ServicesScroll = ({ scrollProgress }: ServicesScrollProps) => {
           ))}
         </div>
 
-        {/* Service indicator with smoother transitions */}
-        {/* <div className="hidden lg:block absolute top-8 right-8 text-right">
-          <div className="text-xs text-gray-400 uppercase tracking-wider transition-all duration-500 ease-out">
-            Service {currentItem?.serviceId || 1}
-          </div>
-          <div className="text-sm text-white mt-1 transition-all duration-500 ease-out">
-            {String(activeIndex + 1).padStart(2, '0')} / {String(totalItems).padStart(2, '0')}
-          </div>
-        </div> */}
+        
       </div>
     </div>
   );
