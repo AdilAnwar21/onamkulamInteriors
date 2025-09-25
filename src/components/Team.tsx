@@ -14,16 +14,9 @@ interface TeamMember {
 const Team = () => {
   // Static team data - no loading state needed
   const teamMembers: TeamMember[] = [
+    
     {
       id: 1,
-      name: "Alex Rodriguez",
-      position: "Project Manager",
-      quote: "Excellence is in the details. I ensure every project runs smoothly from concept to completion.",
-      description: "Alex coordinates all our projects with precision, ensuring timelines are met and quality standards exceeded.",
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=600&h=800&fit=crop&crop=face&fm=png"
-    },
-    {
-      id: 2,
       name: "Emily Chen",
       position: "Creative Director",
       quote: "Innovation meets tradition in every design we create. We don't just follow trends, we set them.",
@@ -31,13 +24,21 @@ const Team = () => {
       image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=600&h=800&fit=crop&crop=face&fm=png"
     },
     {
-      id: 3,
+      id: 2,
       name: "David Park",
       position: "3D Visualization Specialist",
       quote: "Bringing dreams to life through technology. Every render tells a story before it becomes reality.",
       description: "David creates stunning 3D visualizations that help clients envision their perfect spaces before construction begins.",
       image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=800&fit=crop&crop=face&fm=png"
-    }
+    },
+    {
+      id: 3,
+      name: "Alex Rodriguez",
+      position: "Project Manager",
+      quote: "Excellence is in the details. I ensure every project runs smoothly from concept to completion.",
+      description: "Alex coordinates all our projects with precision, ensuring timelines are met and quality standards exceeded.",
+      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=600&h=800&fit=crop&crop=face&fm=png"
+    },
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);

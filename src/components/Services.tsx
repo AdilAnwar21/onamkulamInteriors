@@ -68,12 +68,12 @@ const ServicesScroll = ({ scrollProgress }: ServicesScrollProps) => {
     >
       {/* Left Side - Text */}
       <div className="flex flex-col justify-center items-start w-full lg:w-1/2 px-6 sm:px-8 md:px-12 lg:px-16 py-8 lg:py-0 relative z-10">
-        <span className="text-xs sm:text-sm text-gray-400 mb-2">
+        {/* <span className="text-xs sm:text-sm text-gray-400 mb-2">
           {String(activeIndex + 1).padStart(2, '0')} / {String(totalItems).padStart(2, '0')}
         </span>
         <span className="text-xs sm:text-sm text-gray-400 uppercase tracking-wider mb-4">
           Services
-        </span>
+        </span> */}
         
         <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light leading-tight mb-6 lg:mb-8 transition-all duration-1000 ease-out">
           {currentItem?.title || 'Services'}
@@ -158,14 +158,14 @@ const ServicesScroll = ({ scrollProgress }: ServicesScrollProps) => {
         </div>
 
         {/* Service indicator with smoother transitions */}
-        <div className="hidden lg:block absolute top-8 right-8 text-right">
+        {/* <div className="hidden lg:block absolute top-8 right-8 text-right">
           <div className="text-xs text-gray-400 uppercase tracking-wider transition-all duration-500 ease-out">
             Service {currentItem?.serviceId || 1}
           </div>
           <div className="text-sm text-white mt-1 transition-all duration-500 ease-out">
             {String(activeIndex + 1).padStart(2, '0')} / {String(totalItems).padStart(2, '0')}
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
