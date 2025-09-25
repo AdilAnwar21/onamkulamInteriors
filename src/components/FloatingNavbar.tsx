@@ -57,27 +57,27 @@ const FloatingNavbar = ({ activeSection }: { activeSection?: string }) => {
     return `translateX(-${moveDistance}px)`;
   };
 
-  // Translucent frosted glass background
+  // Crystal clear glass background with higher transparency
   const getNavbarBackground = () => {
     if (scrollProgress === 0) return 'transparent';
     return `linear-gradient(
     135deg,
-    rgba(255, 255, 255, ${0.04 + scrollProgress * 0.1}),
-    rgba(255, 255, 255, ${0.02 + scrollProgress * 0.06})
+    rgba(255, 255, 255, ${0.12 + scrollProgress * 0.18}),
+    rgba(255, 255, 255, ${0.08 + scrollProgress * 0.12})
   )`;
   };
 
   const getBorderStyle = () => {
-    return scrollProgress > 0 ? 'border border-white/20' : '';
+    return scrollProgress > 0 ? 'border border-white/30' : '';
   };
 
   const getBackdropBlur = () => {
-    return scrollProgress > 0 ? 'backdrop-blur-2xl' : '';
+    return scrollProgress > 0 ? 'backdrop-blur-3xl' : '';
   };
 
   const getShadow = () => {
     return scrollProgress > 0.1
-      ? 'shadow-[inset_0_1px_2px_rgba(255,255,255,0.3),inset_0_-1px_2px_rgba(0,0,0,0.2),0_4px_12px_rgba(0,0,0,0.15)]'
+      ? 'shadow-[inset_0_1px_3px_rgba(255,255,255,0.4),inset_0_-1px_3px_rgba(0,0,0,0.15),0_8px_32px_rgba(0,0,0,0.12)]'
       : '';
   };
 
@@ -85,8 +85,8 @@ const FloatingNavbar = ({ activeSection }: { activeSection?: string }) => {
   if (isMobile) {
     return (
       <>
-        {/* Mobile Sticky Navbar */}
-        <nav className="fixed top-0 left-0 right-0 z-50 bg-white/10 backdrop-blur-md border-b border-white/20">
+        {/* Mobile Sticky Navbar with crystal clear background */}
+        <nav className="fixed top-0 left-0 right-0 z-50 bg-white/15 backdrop-blur-3xl border-b border-white/30">
           <div className="flex items-center justify-between px-6 py-4">
             {/* Logo */}
             <div className="text-black font-bold text-lg tracking-wider">
@@ -96,7 +96,7 @@ const FloatingNavbar = ({ activeSection }: { activeSection?: string }) => {
             {/* Hamburger Menu */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-black p-2 hover:bg-white/20 rounded-full transition-all duration-300 hover:scale-110 active:scale-95"
+              className="text-black p-2 hover:bg-white/25 rounded-full transition-all duration-300 hover:scale-110 active:scale-95"
             >
               <div
                 className={`transition-transform duration-300 ${
@@ -121,7 +121,7 @@ const FloatingNavbar = ({ activeSection }: { activeSection?: string }) => {
               onClick={() => setIsMenuOpen(false)}
             />
 
-            <div className="fixed top-16 left-4 right-4 z-50 bg-white/95 backdrop-blur-xl rounded-2xl border border-white/30 shadow-2xl p-6 animate-in slide-in-from-top-4 fade-in duration-300">
+            <div className="fixed top-16 left-4 right-4 z-50 bg-white/98 backdrop-blur-3xl rounded-2xl border border-white/40 shadow-2xl p-6 animate-in slide-in-from-top-4 fade-in duration-300">
               <div className="space-y-3">
                 {navItems.map((item, index) => {
                   const Icon = item.icon;
@@ -183,12 +183,12 @@ const FloatingNavbar = ({ activeSection }: { activeSection?: string }) => {
             transition: 'all 1.5s cubic-bezier(0.23, 1, 0.32, 1)',
           }}
         >
-          {/* Noise texture overlay for liquid glass effect */}
+          {/* Enhanced noise texture overlay for crystal glass effect */}
           <div
             className="absolute inset-0"
             style={{
               backgroundImage:
-                'url("data:image/svg+xml,%3Csvg viewBox=\\"0 0 200 200\\" xmlns=\\"http://www.w3.org/2000/svg\\"%3E%3Cfilter id=\\"noiseFilter\\"%3E%3CfeTurbulence type=\\"fractalNoise\\" baseFrequency=\\"0.65\\" numOctaves=\\"3\\" stitchTiles=\\"stitch\\"/%3E%3C/filter%3E%3Crect width=\\"100%25\\" height=\\"100%25\\" filter=\\"url(%23noiseFilter)\\" opacity=\\"0.1\\"/%3E%3C/svg%3E")',
+                'url("data:image/svg+xml,%3Csvg viewBox=\\"0 0 200 200\\" xmlns=\\"http://www.w3.org/2000/svg\\"%3E%3Cfilter id=\\"noiseFilter\\"%3E%3CfeTurbulence type=\\"fractalNoise\\" baseFrequency=\\"0.85\\" numOctaves=\\"4\\" stitchTiles=\\"stitch\\"/%3E%3C/filter%3E%3Crect width=\\"100%25\\" height=\\"100%25\\" filter=\\"url(%23noiseFilter)\\" opacity=\\"0.08\\"/%3E%3C/svg%3E")',
               mixBlendMode: 'overlay',
             }}
           />
@@ -245,7 +245,7 @@ const FloatingNavbar = ({ activeSection }: { activeSection?: string }) => {
                       ${
                         isActive
                           ? 'bg-black text-white shadow-md'
-                          : 'text-black hover:text-[#8B4513] hover:bg-white/10'
+                          : 'text-black hover:text-[#8B4513] hover:bg-white/15'
                       }`}
                     style={{
                       opacity: smoothItemProgress,

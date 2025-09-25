@@ -24,7 +24,7 @@ const Hero = () => {
       {/* Left Side Content */}
       <div className="absolute left-4 sm:left-6 lg:left-16 top-1/3 -translate-y-1/2 max-w-[70%] sm:max-w-none">
         {/* Award Badge */}
-        <div className="flex items-center space-x-3 text-white mb-6 sm:mb-8">
+        {/* <div className="flex items-center space-x-3 text-white mb-6 sm:mb-8">
           <div className="w-6 h-6 sm:w-8 sm:h-8 bg-white/20 rounded flex items-center justify-center">
             <span className="text-[10px] sm:text-xs font-bold">✦</span>
           </div>
@@ -33,7 +33,7 @@ const Hero = () => {
             <p className="text-xs sm:text-sm opacity-90">Design Awards</p>
           </div>
           <span className="text-lg sm:text-2xl font-light opacity-90">2021</span>
-        </div>
+        </div> */}
 
         {/* Main Content Block */}
         <div className="text-white mb-10 sm:mb-12">

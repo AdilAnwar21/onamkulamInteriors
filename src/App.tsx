@@ -69,8 +69,22 @@ function App() {
   const brandsVisible =
     scrollY >= brandsStart && scrollY < brandsDisplayEnd + sectionDuration;
 
-  // ServicesScroll section
-  const servicesScrollStart = brandsDisplayEnd;
+  // Testimonials section (moved to be after Exclusive Brands)
+  const testimonialsStart = brandsDisplayEnd;
+  const testimonialsSlideEnd = testimonialsStart + sectionDuration;
+  const testimonialsDisplayEnd = testimonialsSlideEnd + displayDuration * 3;
+  const testimonialsScroll = Math.max(0, scrollY - testimonialsStart);
+  const testimonialsOffset = Math.min(heroHeight, testimonialsScroll);
+  const testimonialsProgress = Math.min(
+    1,
+    Math.max(0, (scrollY - testimonialsSlideEnd)) / (displayDuration * 3)
+  );
+  const testimonialsVisible =
+    scrollY >= testimonialsStart &&
+    scrollY < testimonialsDisplayEnd + sectionDuration;
+
+  // ServicesScroll section (moved to be after Testimonials)
+  const servicesScrollStart = testimonialsDisplayEnd;
   const servicesScrollSlideEnd = servicesScrollStart + sectionDuration;
   const servicesScrollInternalDuration = displayDuration * 3;
   const servicesScrollDisplayEnd =
@@ -88,22 +102,8 @@ function App() {
     Math.max(0, scrollY - servicesScrollStart)
   );
 
-  // Testimonials section
-  const testimonialsStart = servicesScrollDisplayEnd - sectionDuration * 0.5;
-  const testimonialsSlideEnd = testimonialsStart + sectionDuration;
-  const testimonialsDisplayEnd = testimonialsSlideEnd + displayDuration * 3;
-  const testimonialsScroll = Math.max(0, scrollY - testimonialsStart);
-  const testimonialsOffset = Math.min(heroHeight, testimonialsScroll);
-  const testimonialsProgress = Math.min(
-    1,
-    Math.max(0, (scrollY - testimonialsSlideEnd)) / (displayDuration * 3)
-  );
-  const testimonialsVisible =
-    scrollY >= testimonialsStart &&
-    scrollY < testimonialsDisplayEnd + sectionDuration;
-
   // ServicesShowcase section
-  const servicesShowcaseStart = testimonialsDisplayEnd;
+  const servicesShowcaseStart = servicesScrollDisplayEnd - sectionDuration * 0.5;
   const servicesShowcaseSlideEnd = servicesShowcaseStart + sectionDuration;
   const servicesShowcaseDisplayEnd = servicesShowcaseSlideEnd + displayDuration;
   const servicesShowcaseScroll = Math.max(0, scrollY - servicesShowcaseStart);
@@ -201,29 +201,12 @@ function App() {
           </div>
         )}
 
-        {/* ServicesScroll */}
-        {servicesScrollVisible && (
-          <div
-            className="fixed inset-0 w-full bg-black"
-            style={{
-              zIndex: 40,
-              transform:
-                scrollY <= servicesScrollSlideEnd
-                  ? `translateY(${heroHeight - servicesScrollOffset}px)`
-                  : `translateY(0px)`,
-              transition: 'transform 0.1s ease-out',
-            }}
-          >
-            <ServicesScroll scrollProgress={servicesScrollProgress} />
-          </div>
-        )}
-
-        {/* Testimonials */}
+        {/* Testimonials (moved to position after Exclusive Brands) */}
         {testimonialsVisible && (
           <div
             className="fixed inset-0 w-full bg-black"
             style={{
-              zIndex: 50,
+              zIndex: 40,
               transform:
                 scrollY <= testimonialsSlideEnd
                   ? `translateY(${heroHeight - testimonialsOffset}px)`
@@ -232,6 +215,23 @@ function App() {
             }}
           >
             <TestimonialScroll scrollProgress={testimonialsProgress} />
+          </div>
+        )}
+
+        {/* ServicesScroll (moved to position after Testimonials) */}
+        {servicesScrollVisible && (
+          <div
+            className="fixed inset-0 w-full bg-black"
+            style={{
+              zIndex: 50,
+              transform:
+                scrollY <= servicesScrollSlideEnd
+                  ? `translateY(${heroHeight - servicesScrollOffset}px)`
+                  : `translateY(0px)`,
+              transition: 'transform 0.1s ease-out',
+            }}
+          >
+            <ServicesScroll scrollProgress={servicesScrollProgress} />
           </div>
         )}
 

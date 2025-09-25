@@ -46,7 +46,7 @@ const TestimonialScroll = ({ scrollProgress }: TestimonialScrollProps) => {
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 w-full h-screen overflow-hidden bg-black"
+      className="fixed inset-0 w-full h-screen overflow-hidden bg-white"
       style={{ zIndex: 50 }}
     >
       {testimonials.map((testimonial, index) => {
@@ -59,6 +59,13 @@ const TestimonialScroll = ({ scrollProgress }: TestimonialScrollProps) => {
 
         // Each card scrolls up over the previous
         const translateY = (1 - sectionProgress) * 100;
+
+        // Determine colors based on section index
+        const isSecondSection = index === 1;
+        const textColor = isSecondSection ? 'text-white' : 'text-black';
+        const bgColor = isSecondSection ? 'bg-black' : 'bg-white';
+        const mobileOverlayBg = isSecondSection ? 'bg-black/50' : 'bg-white/50';
+        const mobileTextColor = isSecondSection ? 'text-white' : 'text-black';
 
         return (
           <div
@@ -78,7 +85,7 @@ const TestimonialScroll = ({ scrollProgress }: TestimonialScrollProps) => {
               }}
             >
               {/* Mobile Content Overlay */}
-              <div className="md:hidden absolute inset-0 bg-black/50 flex flex-col justify-end p-6 text-white">
+              <div className={`md:hidden absolute inset-0 ${mobileOverlayBg} flex flex-col justify-end p-6 ${mobileTextColor}`}>
                 <h1 className="text-4xl sm:text-5xl font-bold mb-2">{testimonial.number}</h1>
                 <h2 className="text-xl sm:text-2xl font-semibold mb-2">
                   {testimonial.project}
@@ -88,7 +95,7 @@ const TestimonialScroll = ({ scrollProgress }: TestimonialScrollProps) => {
             </div>
 
             {/* Desktop Content Section */}
-            <div className="flex flex-col justify-center w-full h-1/2 md:w-1/3 md:h-full bg-black text-white p-6 sm:p-8 lg:p-12">
+            <div className={`flex flex-col justify-center w-full h-1/2 md:w-1/3 md:h-full ${bgColor} ${textColor} p-6 sm:p-8 lg:p-12`}>
               {/* Desktop Number - Hidden on mobile since it's in overlay */}
               <h1 className="hidden md:block text-5xl lg:text-7xl font-bold mb-4 lg:mb-6">{testimonial.number}</h1>
               
@@ -105,9 +112,9 @@ const TestimonialScroll = ({ scrollProgress }: TestimonialScrollProps) => {
               {/* Author Info */}
               <div className="space-y-1">
                 <p className="font-medium text-sm sm:text-base">{testimonial.author}</p>
-                <p className="text-xs sm:text-sm opacity-70">{testimonial.role}</p>
+                <p className={`text-xs sm:text-sm ${isSecondSection ? 'opacity-70' : 'opacity-60'}`}>{testimonial.role}</p>
                 {/* Location only shown on desktop, already in mobile overlay */}
-                <p className="hidden md:block text-xs sm:text-sm opacity-50">{testimonial.location}</p>
+                <p className={`hidden md:block text-xs sm:text-sm ${isSecondSection ? 'opacity-50' : 'opacity-40'}`}>{testimonial.location}</p>
               </div>
             </div>
           </div>
@@ -126,7 +133,7 @@ const TestimonialScroll = ({ scrollProgress }: TestimonialScrollProps) => {
               <div
                 key={index}
                 className={`w-2 h-2 rounded-full transition-colors duration-300 ${
-                  isActive ? 'bg-white' : 'bg-white/30'
+                  isActive ? 'bg-gray-800' : 'bg-gray-400'
                 }`}
               />
             );
