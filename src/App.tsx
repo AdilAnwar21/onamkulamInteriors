@@ -5,11 +5,12 @@ import Achievements from './components/Achievements';
 import ExclusiveBrands from './components/partnersSection';
 import TestimonialScroll from './components/Testimonials';
 import ServicesScroll from './components/Services';
-import Quote from './components/Quote'; // New import
+import Quote from './components/Quote';
 import ServicesShowcase from './components/ServicesShowcase';
 import Founder from './components/Founder';
 import Team from './components/Team';
 import CTASection from './components/CTASection';
+import LatestProjects from './components/LatestProjects'; // New import
 import Footer from './components/Footer';
 
 function App() {
@@ -56,7 +57,7 @@ function App() {
     scrollY >= achievementsStart &&
     scrollY < achievementsDisplayEnd + sectionDuration;
 
-  // Exclusive Brands section - Enhanced for smoother scrolling
+  // Exclusive Brands section
   const brandsStart = achievementsDisplayEnd;
   const brandsSlideEnd = brandsStart + sectionDuration * 0.8;
   const brandsInternalScrollDuration = displayDuration * 12;
@@ -103,12 +104,12 @@ function App() {
     Math.max(0, scrollY - servicesScrollStart)
   );
 
-  // FIXED: Quote section timing
+  // Quote section
   const quoteStart = servicesScrollDisplayEnd - sectionDuration * 0.5;
   const quoteSlideEnd = quoteStart + sectionDuration;
-  const quoteInternalDuration = displayDuration * 2.5; // Increased duration for complete animation
+  const quoteInternalDuration = displayDuration * 2.5;
   const quoteDisplayEnd = quoteSlideEnd + quoteInternalDuration;
-  const quoteHoldDuration = displayDuration * 1; // Additional hold time after animation completes
+  const quoteHoldDuration = displayDuration * 1;
   const quoteCompleteEnd = quoteDisplayEnd + quoteHoldDuration;
   
   const quoteScroll = Math.max(0, scrollY - quoteStart);
@@ -121,7 +122,7 @@ function App() {
     scrollY >= quoteStart &&
     scrollY < quoteCompleteEnd + sectionDuration;
 
-  // FIXED: ServicesShowcase section (updated to start after Quote is completely done)
+  // ServicesShowcase section
   const servicesShowcaseStart = quoteCompleteEnd;
   const servicesShowcaseSlideEnd = servicesShowcaseStart + sectionDuration;
   const servicesShowcaseDisplayEnd = servicesShowcaseSlideEnd + displayDuration;
@@ -157,13 +158,21 @@ function App() {
   const ctaOffset = Math.min(heroHeight, ctaScroll);
   const ctaVisible = scrollY >= ctaStart && scrollY < ctaDisplayEnd + sectionDuration;
 
-  // Footer section
-  const footerStart = ctaDisplayEnd;
+  // Latest Projects section (NEW)
+  const latestProjectsStart = ctaDisplayEnd;
+  const latestProjectsSlideEnd = latestProjectsStart + sectionDuration;
+  const latestProjectsDisplayEnd = latestProjectsSlideEnd + displayDuration;
+  const latestProjectsScroll = Math.max(0, scrollY - latestProjectsStart);
+  const latestProjectsOffset = Math.min(heroHeight, latestProjectsScroll);
+  const latestProjectsVisible = scrollY >= latestProjectsStart && scrollY < latestProjectsDisplayEnd + sectionDuration;
+
+  // Footer section (UPDATED)
+  const footerStart = latestProjectsDisplayEnd;
   const footerScroll = Math.max(0, scrollY - footerStart);
   const footerOffset = Math.min(heroHeight, footerScroll);
   const footerVisible = scrollY >= footerStart;
 
-  // Total height - Updated to include Quote section with proper timing
+  // Total height (UPDATED)
   const totalHeight = footerStart + heroHeight * 2;
 
   return (
@@ -337,6 +346,24 @@ function App() {
             }}
           >
             <CTASection />
+          </div>
+        )}
+
+        {/* Latest Projects Section (NEW) */}
+        {latestProjectsVisible && (
+          <div
+            className="fixed inset-0 w-full"
+            style={{
+              zIndex: 95,
+              transform:
+                scrollY <= latestProjectsSlideEnd
+                  ? `translateY(${heroHeight - latestProjectsOffset}px)`
+                  : `translateY(0px)`,
+              transition: 'transform 0.1s ease-out',
+              opacity: scrollY >= latestProjectsStart ? 1 : 0,
+            }}
+          >
+            <LatestProjects />
           </div>
         )}
 
