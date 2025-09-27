@@ -5,6 +5,7 @@ import Achievements from './components/Achievements';
 import ExclusiveBrands from './components/partnersSection';
 import TestimonialScroll from './components/Testimonials';
 import ServicesScroll from './components/Services';
+import Quote from './components/Quote'; // New import
 import ServicesShowcase from './components/ServicesShowcase';
 import Founder from './components/Founder';
 import Team from './components/Team';
@@ -57,20 +58,19 @@ function App() {
 
   // Exclusive Brands section - Enhanced for smoother scrolling
   const brandsStart = achievementsDisplayEnd;
-  const brandsSlideEnd = brandsStart + sectionDuration * 0.8; // Shorter slide-in duration
-  const brandsInternalScrollDuration = displayDuration * 12; // Extended internal scroll duration
+  const brandsSlideEnd = brandsStart + sectionDuration * 0.8;
+  const brandsInternalScrollDuration = displayDuration * 12;
   const brandsDisplayEnd = brandsSlideEnd + brandsInternalScrollDuration;
   const brandsScroll = Math.max(0, scrollY - brandsStart);
   const brandsOffset = Math.min(heroHeight, brandsScroll);
   
-  // Enhanced progress calculation with smoother easing
   const rawBrandsProgress = Math.max(0, (scrollY - brandsSlideEnd)) / brandsInternalScrollDuration;
   const brandsProgress = Math.min(1, rawBrandsProgress);
   
   const brandsVisible =
     scrollY >= brandsStart && scrollY < brandsDisplayEnd + sectionDuration;
 
-  // Testimonials section (moved to be after Exclusive Brands)
+  // Testimonials section
   const testimonialsStart = brandsDisplayEnd;
   const testimonialsSlideEnd = testimonialsStart + sectionDuration;
   const testimonialsDisplayEnd = testimonialsSlideEnd + displayDuration * 3;
@@ -84,7 +84,7 @@ function App() {
     scrollY >= testimonialsStart &&
     scrollY < testimonialsDisplayEnd + sectionDuration;
 
-  // ServicesScroll section (moved to be after Testimonials)
+  // ServicesScroll section
   const servicesScrollStart = testimonialsDisplayEnd;
   const servicesScrollSlideEnd = servicesScrollStart + sectionDuration;
   const servicesScrollInternalDuration = displayDuration * 3;
@@ -103,8 +103,23 @@ function App() {
     Math.max(0, scrollY - servicesScrollStart)
   );
 
-  // ServicesShowcase section
-  const servicesShowcaseStart = servicesScrollDisplayEnd - sectionDuration * 0.5;
+  // NEW: Quote section (inserted before ServicesShowcase)
+  const quoteStart = servicesScrollDisplayEnd - sectionDuration * 0.5;
+  const quoteSlideEnd = quoteStart + sectionDuration;
+  const quoteInternalDuration = displayDuration * 2; // Duration for letter animation
+  const quoteDisplayEnd = quoteSlideEnd + quoteInternalDuration;
+  const quoteScroll = Math.max(0, scrollY - quoteStart);
+  const quoteOffset = Math.min(heroHeight, quoteScroll);
+  const quoteProgress = Math.min(
+    1,
+    Math.max(0, (scrollY - quoteSlideEnd)) / quoteInternalDuration
+  );
+  const quoteVisible =
+    scrollY >= quoteStart &&
+    scrollY < quoteDisplayEnd + sectionDuration;
+
+  // ServicesShowcase section (updated to start after Quote)
+  const servicesShowcaseStart = quoteDisplayEnd;
   const servicesShowcaseSlideEnd = servicesShowcaseStart + sectionDuration;
   const servicesShowcaseDisplayEnd = servicesShowcaseSlideEnd + displayDuration;
   const servicesShowcaseScroll = Math.max(0, scrollY - servicesShowcaseStart);
@@ -145,7 +160,7 @@ function App() {
   const footerOffset = Math.min(heroHeight, footerScroll);
   const footerVisible = scrollY >= footerStart;
 
-  // Total height - Updated to include Footer section
+  // Total height - Updated to include Quote section
   const totalHeight = footerStart + heroHeight * 2;
 
   return (
@@ -186,7 +201,7 @@ function App() {
           </div>
         )}
 
-        {/* Exclusive Brands - Enhanced smooth scrolling */}
+        {/* Exclusive Brands */}
         {brandsVisible && (
           <div
             className="fixed inset-0 w-full"
@@ -196,14 +211,14 @@ function App() {
                 scrollY <= brandsSlideEnd
                   ? `translateY(${heroHeight - brandsOffset}px)`
                   : `translateY(0px)`,
-              transition: 'transform 0.05s linear', // Smoother micro-transitions
+              transition: 'transform 0.05s linear',
             }}
           >
             <ExclusiveBrands scrollProgress={brandsProgress} />
           </div>
         )}
 
-        {/* Testimonials (moved to position after Exclusive Brands) */}
+        {/* Testimonials */}
         {testimonialsVisible && (
           <div
             className="fixed inset-0 w-full bg-black"
@@ -220,7 +235,7 @@ function App() {
           </div>
         )}
 
-        {/* ServicesScroll (moved to position after Testimonials) */}
+        {/* ServicesScroll */}
         {servicesScrollVisible && (
           <div
             className="fixed inset-0 w-full bg-black"
@@ -234,6 +249,23 @@ function App() {
             }}
           >
             <ServicesScroll scrollProgress={servicesScrollProgress} />
+          </div>
+        )}
+
+        {/* NEW: Quote Section */}
+        {quoteVisible && (
+          <div
+            className="fixed inset-0 w-full bg-white"
+            style={{
+              zIndex: 55,
+              transform:
+                scrollY <= quoteSlideEnd
+                  ? `translateY(${heroHeight - quoteOffset}px)`
+                  : `translateY(0px)`,
+              transition: 'transform 0.08s ease-out',
+            }}
+          >
+            <Quote scrollProgress={quoteProgress} />
           </div>
         )}
 

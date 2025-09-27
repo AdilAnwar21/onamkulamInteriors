@@ -10,8 +10,6 @@ type Brand = {
 
 const ExclusiveBrandsComplete: React.FC<{ scrollProgress?: number }> = ({ scrollProgress = 0 }) => {
   const [mounted, setMounted] = useState(false);
-  const [typedText, setTypedText] = useState('');
-  const [showCursor, setShowCursor] = useState(false);
 
   const fullQuote = "Crafting spaces that inspire, designing dreams that come alive.";
 
@@ -19,34 +17,19 @@ const ExclusiveBrandsComplete: React.FC<{ scrollProgress?: number }> = ({ scroll
     setMounted(true);
   }, []);
 
-  // Smooth typing effect with fluid progression
-  useEffect(() => {
-    if (scrollProgress > 0 && scrollProgress < 0.23) {
-      const typingProgress = scrollProgress / 0.23;
-      
-      // Smooth easing for more natural typing speed
-      const easedProgress = typingProgress * typingProgress * (3 - 2 * typingProgress); // smoothstep
-      const targetLength = Math.floor(fullQuote.length * easedProgress);
-      
-      // Show cursor when typing starts
-      if (typingProgress > 0.03 && !showCursor) {
-        setShowCursor(true);
-      }
-      
-      // Immediate, smooth character progression without delays
-      setTypedText(fullQuote.slice(0, targetLength));
-      
-    } else if (scrollProgress >= 0.23) {
-      setTypedText(fullQuote);
-      // Hide cursor when typing is complete
-      if (showCursor) {
-        setTimeout(() => setShowCursor(false), 800);
-      }
-    } else {
-      setTypedText('');
-      setShowCursor(false);
-    }
-  }, [scrollProgress]);
+  // Calculate individual letter animations
+  const getLetterStyle = (index: number) => {
+    const scrollTypingProgress = Math.min(1, Math.max(0, scrollProgress / 0.23));
+    const easedProgress = scrollTypingProgress * scrollTypingProgress * (3 - 2 * scrollTypingProgress);
+    const letterProgress = Math.max(0, Math.min(1, (easedProgress * fullQuote.length - index) * 0.5));
+    
+    return {
+      opacity: letterProgress,
+      transform: `translateY(${Math.max(0, (1 - letterProgress) * 15)}px)`,
+      transition: 'opacity 0.2s ease-out, transform 0.3s ease-out',
+      display: 'inline-block'
+    };
+  };
 
   const exclusiveBrands: Brand[] = [
     {
@@ -204,24 +187,13 @@ const ExclusiveBrandsComplete: React.FC<{ scrollProgress?: number }> = ({ scroll
           }
         }
 
-        .typing-cursor {
-          display: inline-block;
-          width: 2px;
-          height: 1em;
-          background-color: currentColor;
-          margin-left: 3px;
-          opacity: ${showCursor ? 1 : 0};
-          animation: ${showCursor ? 'blink 1.2s infinite' : 'none'};
-        }
-
-        @keyframes blink {
-          0%, 45% { opacity: 1; }
-          50%, 95% { opacity: 0; }
-          100% { opacity: 1; }
-        }
-
         .smooth-transform {
           transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.5s ease-out;
+        }
+
+        .letter-animation {
+          display: inline-block;
+          transition: opacity 0.2s ease-out, transform 0.3s ease-out;
         }
       `}</style>
 
@@ -249,8 +221,14 @@ const ExclusiveBrandsComplete: React.FC<{ scrollProgress?: number }> = ({ scroll
             }}
           >
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-light leading-relaxed tracking-wide">
-              {typedText}
-              <span className="typing-cursor"></span>
+              {fullQuote.split('').map((char, index) => (
+                <span 
+                  key={index} 
+                  style={getLetterStyle(index)}
+                >
+                  {char === ' ' ? '\u00A0' : char}
+                </span>
+              ))}
             </h2>
           </div>
         </div>
