@@ -86,7 +86,7 @@ const FloatingNavbar = ({ activeSection }: { activeSection?: string }) => {
     return (
       <>
         {/* Mobile Sticky Navbar with crystal clear background */}
-        <nav className="fixed top-0 left-0 right-0 z-50 bg-white/15 backdrop-blur-3xl border-b border-white/30">
+        <nav className="fixed top-0 left-0 right-0 z-50 bg-white/15 backdrop-blur-3xl border-white/30">
           <div className="flex items-center justify-between px-6 py-4">
             {/* Logo */}
             <div className="text-black font-bold text-lg tracking-wider">
