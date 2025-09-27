@@ -10,10 +10,36 @@ type Brand = {
 
 const ExclusiveBrandsComplete: React.FC<{ scrollProgress?: number }> = ({ scrollProgress = 0 }) => {
   const [mounted, setMounted] = useState(false);
+  const [typedText, setTypedText] = useState('');
+
+  const fullQuote = "Crafting spaces that inspire, designing dreams that come alive.";
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Typing effect for quote with smoother progression
+  useEffect(() => {
+    if (scrollProgress > 0 && scrollProgress < 0.2) {
+      // Use easing function for smoother typing progression
+      const rawProgress = scrollProgress / 0.2;
+      const easedProgress = rawProgress * rawProgress * (3.0 - 2.0 * rawProgress); // Smoothstep easing
+      const targetLength = Math.floor(fullQuote.length * easedProgress);
+      
+      if (targetLength > typedText.length) {
+        const timer = setTimeout(() => {
+          setTypedText(fullQuote.slice(0, targetLength));
+        }, 20); // Slightly faster typing
+        return () => clearTimeout(timer);
+      } else if (targetLength < typedText.length) {
+        setTypedText(fullQuote.slice(0, targetLength));
+      }
+    } else if (scrollProgress >= 0.2) {
+      setTypedText(fullQuote);
+    } else {
+      setTypedText('');
+    }
+  }, [scrollProgress, typedText.length]);
 
   const exclusiveBrands: Brand[] = [
     {
@@ -57,43 +83,48 @@ const ExclusiveBrandsComplete: React.FC<{ scrollProgress?: number }> = ({ scroll
     { name: 'smeg', logo: '•••smeg' },
   ];
 
-  // Faster section boundaries with more responsive transitions
+  // Updated section boundaries to accommodate the new quote section
   const getCurrentSection = () => {
-    if (scrollProgress < 0.25) return 0; // Title + Grid (0-25%)
-    if (scrollProgress < 0.65) return 1; // Partners (25-65%)
-    return 2; // Quote (65-100%)
+    if (scrollProgress < 0.2) return 0; // Quote (0-20%)
+    if (scrollProgress < 0.4) return 1; // Title + Grid (20-40%)
+    if (scrollProgress < 0.7) return 2; // Partners (40-70%)
+    return 3; // Final Quote (70-100%)
   };
 
   const currentSection = getCurrentSection();
 
-  // More responsive section progress calculations
-  const titleGridProgress = scrollProgress < 0.25 ? (scrollProgress / 0.25) * 1.5 : 1; // Faster initial animation
-  const partnersProgress = scrollProgress >= 0.25 && scrollProgress < 0.65 ? 
-    Math.min(1, ((scrollProgress - 0.25) / 0.4) * 1.2) : // Faster partners animation
-    (scrollProgress >= 0.65 ? 1 : 0);
-  const quoteProgress = scrollProgress >= 0.65 ? 
-    Math.min(1, ((scrollProgress - 0.65) / 0.35) * 1.5) : 0; // Faster quote animation
+  // Section progress calculations with smoother easing
+  const quoteProgress = scrollProgress < 0.2 ? 
+    Math.pow((scrollProgress / 0.2), 0.8) : 1; // Smoother ease-out for quote
+  const titleGridProgress = scrollProgress >= 0.2 && scrollProgress < 0.4 ? 
+    ((scrollProgress - 0.2) / 0.2) * 1.5 : 
+    (scrollProgress >= 0.4 ? 1 : 0);
+  const partnersProgress = scrollProgress >= 0.4 && scrollProgress < 0.7 ? 
+    Math.min(1, ((scrollProgress - 0.4) / 0.3) * 1.2) : 
+    (scrollProgress >= 0.7 ? 1 : 0);
+  const finalQuoteProgress = scrollProgress >= 0.7 ? 
+    Math.min(1, ((scrollProgress - 0.7) / 0.3) * 1.5) : 0;
   
-  // Much faster title and grid progression
+  // Title and grid progression
   const titleProgress = Math.min(1, titleGridProgress * 2);
   const gridProgress = titleGridProgress > 0.1 ? Math.min(1, (titleGridProgress - 0.1) * 2) : 0;
   
-  // Faster color transition
-  const colorTransitionProgress = scrollProgress > 0.7 ? Math.min(1, (scrollProgress - 0.7) * 5) : 0;
+  // Color transition
+  const colorTransitionProgress = scrollProgress > 0.75 ? Math.min(1, (scrollProgress - 0.75) * 4) : 0;
 
-  // Brand stagger animation with much faster progression
+  // Brand stagger animation
   const brandProgressForIndex = (index: number) => {
     if (gridProgress <= 0) return 0;
-    const stagger = 0.03; // Reduced stagger delay
+    const stagger = 0.03;
     const start = index * stagger;
     const adjustedProgress = Math.max(0, gridProgress - start);
-    return Math.min(1, adjustedProgress * 4); // Much faster brand animation
+    return Math.min(1, adjustedProgress * 4);
   };
 
-  // Faster marquee based on progress
+  // Marquee speed
   const marqueeDuration = partnersProgress > 0 ? Math.max(8, 15 - partnersProgress * 7) : 15;
 
-  // Color transition effect
+  // Color mode
   const isWhiteMode = colorTransitionProgress > 0.5;
   const sweepProgress = colorTransitionProgress;
 
@@ -164,6 +195,20 @@ const ExclusiveBrandsComplete: React.FC<{ scrollProgress?: number }> = ({ scroll
             padding: 2rem;
           }
         }
+
+        .typing-cursor {
+          display: inline-block;
+          width: 2px;
+          height: 1em;
+          background-color: currentColor;
+          margin-left: 2px;
+          animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+          0%, 50% { opacity: 1; }
+          51%, 100% { opacity: 0; }
+        }
       `}</style>
 
       {/* Color sweep effect */}
@@ -172,18 +217,50 @@ const ExclusiveBrandsComplete: React.FC<{ scrollProgress?: number }> = ({ scroll
       {/* Content container with absolute positioned sections */}
       <div className="relative z-10 w-full h-full">
         
-        {/* EXCLUSIVE BRANDS TITLE + GRID SECTION */}
+        {/* OPENING QUOTE SECTION */}
         <div 
           className="section"
           style={{
             opacity: currentSection === 0 ? 1 : 
-                    currentSection === 1 ? Math.max(0, 1 - (scrollProgress - 0.25) * 10) : 0,
+                    currentSection === 1 ? Math.max(0, 1 - (scrollProgress - 0.2) * 8) : 0, // Smoother fade out
             transform: `translateY(${
               currentSection === 0 ? 0 : 
-              currentSection === 1 ? -(scrollProgress - 0.25) * 300 : -100
+              currentSection === 1 ? -(scrollProgress - 0.2) * 200 : -100 // Less aggressive movement
+            }px)`,
+            transition: 'opacity 0.4s ease-out, transform 0.3s ease-out', // Longer, smoother transitions
+            pointerEvents: currentSection <= 1 ? 'auto' : 'none'
+          }}
+        >
+          <div
+            className="text-center px-4 max-w-4xl mx-auto"
+            style={{
+              opacity: quoteProgress,
+              transform: `translateY(${Math.max(0, (1 - quoteProgress) * 20)}px)`,
+              transition: 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)' // Smoother cubic bezier easing
+            }}
+          >
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-light leading-relaxed tracking-wide">
+              {typedText}
+              {typedText.length < fullQuote.length && quoteProgress > 0.05 && (
+                <span className="typing-cursor"></span>
+              )}
+            </h2>
+          </div>
+        </div>
+
+        {/* EXCLUSIVE BRANDS TITLE + GRID SECTION */}
+        <div 
+          className="section"
+          style={{
+            opacity: currentSection === 1 ? Math.min(1, (scrollProgress - 0.2) * 10) : 
+                    currentSection === 2 ? Math.max(0, 1 - (scrollProgress - 0.4) * 10) : 0,
+            transform: `translateY(${
+              currentSection === 1 ? (1 - (scrollProgress - 0.2) * 8) * 60 : 
+              currentSection === 2 ? -(scrollProgress - 0.4) * 300 :
+              currentSection < 1 ? 60 : -100
             }px)`,
             transition: 'opacity 0.2s ease-out',
-            pointerEvents: currentSection <= 1 ? 'auto' : 'none'
+            pointerEvents: currentSection === 1 ? 'auto' : 'none'
           }}
         >
           {/* Title */}
@@ -263,15 +340,15 @@ const ExclusiveBrandsComplete: React.FC<{ scrollProgress?: number }> = ({ scroll
         <div 
           className="section"
           style={{
-            opacity: currentSection === 1 ? Math.min(1, (scrollProgress - 0.25) * 8) : 
-                    currentSection === 2 ? Math.max(0, 1 - (scrollProgress - 0.65) * 10) : 0,
+            opacity: currentSection === 2 ? Math.min(1, (scrollProgress - 0.4) * 8) : 
+                    currentSection === 3 ? Math.max(0, 1 - (scrollProgress - 0.7) * 10) : 0,
             transform: `translateY(${
-              currentSection === 1 ? (1 - (scrollProgress - 0.25) * 4) * 60 : 
-              currentSection === 2 ? -(scrollProgress - 0.65) * 300 :
-              currentSection < 1 ? 60 : -100
+              currentSection === 2 ? (1 - (scrollProgress - 0.4) * 6) * 60 : 
+              currentSection === 3 ? -(scrollProgress - 0.7) * 300 :
+              currentSection < 2 ? 60 : -100
             }px)`,
             transition: 'opacity 0.2s ease-out',
-            pointerEvents: currentSection === 1 ? 'auto' : 'none'
+            pointerEvents: currentSection === 2 ? 'auto' : 'none'
           }}
         >
           <div
@@ -331,24 +408,24 @@ const ExclusiveBrandsComplete: React.FC<{ scrollProgress?: number }> = ({ scroll
           )}
         </div>
 
-        {/* QUOTE SECTION */}
+        {/* FINAL QUOTE SECTION */}
         <div 
           className="section"
           style={{
-            opacity: currentSection === 2 ? Math.min(1, (scrollProgress - 0.65) * 10) : 0,
+            opacity: currentSection === 3 ? Math.min(1, (scrollProgress - 0.7) * 10) : 0,
             transform: `translateY(${
-              currentSection === 2 ? (1 - (scrollProgress - 0.65) * 4) * 60 : 
-              currentSection < 2 ? 60 : 0
+              currentSection === 3 ? (1 - (scrollProgress - 0.7) * 4) * 60 : 
+              currentSection < 3 ? 60 : 0
             }px)`,
             transition: 'opacity 0.2s ease-out',
-            pointerEvents: currentSection === 2 ? 'auto' : 'none'
+            pointerEvents: currentSection === 3 ? 'auto' : 'none'
           }}
         >
           <div
             className="px-4"
             style={{
-              opacity: quoteProgress,
-              transform: `translateY(${Math.max(0, (1 - quoteProgress) * 20)}px)`,
+              opacity: finalQuoteProgress,
+              transform: `translateY(${Math.max(0, (1 - finalQuoteProgress) * 20)}px)`,
               transition: 'all 0.4s ease',
               maxWidth: '90vw',
               textAlign: 'center',
