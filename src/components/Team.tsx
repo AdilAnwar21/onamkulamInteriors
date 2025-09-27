@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -14,7 +15,6 @@ interface TeamMember {
 const Team = () => {
   // Static team data - no loading state needed
   const teamMembers: TeamMember[] = [
-    
     {
       id: 1,
       name: "Emily Chen",
@@ -91,7 +91,7 @@ const Team = () => {
               <img 
                 src={currentMember.image}
                 alt={currentMember.name}
-                className="w-40 h-52 sm:w-48 sm:h-64 rounded-xl object-cover object-center shadow-md"
+                className="w-32 h-32 sm:w-40 sm:h-40 rounded-full object-cover shadow-md"
               />
             </div>
 
@@ -155,13 +155,23 @@ const Team = () => {
         </div>
 
         {/* Desktop Layout (lg and up) */}
-        <div className="hidden lg:grid lg:grid-cols-2 gap-16 items-center">
+        <div className="hidden lg:grid lg:grid-cols-[20%_80%] gap-8 items-center">
           
-          {/* LEFT side - Section Header + Photo */}
-          <div className="flex flex-col items-center lg:items-start space-y-8">
+          {/* LEFT side - Photo */}
+          <div className="flex justify-center lg:justify-start">
+            <img 
+              src={currentMember.image}
+              alt={currentMember.name}
+              className="w-40 h-40 rounded-full object-cover shadow-md"
+            />
+          </div>
+
+          {/* RIGHT side - Content (80% width) */}
+          <div className="text-gray-800 space-y-6 lg:pl-4">
+            
             {/* Section Header */}
             <div>
-              <h2 className="text-lg font-medium text-gray-600 mb-4 tracking-wide">
+              <h2 className="text-lg font-medium text-gray-600 mb-2 tracking-wide">
                 MEET OUR TEAM
               </h2>
               <p className="text-gray-600 leading-relaxed">
@@ -169,34 +179,21 @@ const Team = () => {
               </p>
             </div>
 
-            {/* Team member photo */}
-            <div className="relative">
-              <img 
-                src={currentMember.image}
-                alt={currentMember.name}
-                className="w-80 h-96 lg:w-96 lg:h-[32rem] rounded-2xl object-cover object-center transition-all duration-500 shadow-lg"
-              />
-            </div>
-          </div>
-
-          {/* RIGHT side - Content */}
-          <div className="text-gray-800 space-y-8 lg:pl-8">
-            
             {/* Large Quote with curly quotes */}
             <div className="relative">
-              <div className="absolute -left-6 -top-4 text-8xl text-gray-300 font-serif leading-none">"</div>
-              <blockquote className="text-3xl lg:text-4xl xl:text-5xl text-gray-900 leading-tight font-light pl-12 pr-4">
+              <div className="absolute -left-6 -top-4 text-6xl text-gray-300 font-serif leading-none">"</div>
+              <blockquote className="text-2xl lg:text-3xl text-gray-900 leading-snug font-light pl-10 pr-4">
                 {currentMember.quote}
               </blockquote>
-              <div className="absolute -bottom-8 right-0 text-8xl text-gray-300 font-serif leading-none">"</div>
+              <div className="absolute -bottom-6 right-0 text-6xl text-gray-300 font-serif leading-none">"</div>
             </div>
 
             {/* Member Info */}
-            <div className="pt-8">
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+            <div className="pt-4">
+              <h3 className="text-lg font-semibold text-gray-900 mb-1">
                 {currentMember.name}
               </h3>
-              <p className="text-gray-600 mb-4 font-medium">
+              <p className="text-gray-600 mb-3 font-medium">
                 {currentMember.position}
               </p>
               <p className="text-gray-700 leading-relaxed">
@@ -205,32 +202,32 @@ const Team = () => {
             </div>
 
             {/* Navigation */}
-            <div className="flex items-center gap-4 pt-8">
+            <div className="flex items-center gap-3 pt-6">
               <button
                 onClick={goToPrevious}
-                className="w-12 h-12 rounded-full border-2 border-gray-300 flex items-center justify-center hover:border-gray-900 hover:bg-gray-900 hover:text-white transition-all duration-300"
+                className="w-10 h-10 rounded-full border-2 border-gray-300 flex items-center justify-center hover:border-gray-900 hover:bg-gray-900 hover:text-white transition-all duration-300"
                 aria-label="Previous team member"
               >
-                <ChevronLeft className="w-5 h-5" />
+                <ChevronLeft className="w-4 h-4" />
               </button>
               
               <button
                 onClick={goToNext}
-                className="w-12 h-12 rounded-full border-2 border-gray-300 flex items-center justify-center hover:border-gray-900 hover:bg-gray-900 hover:text-white transition-all duration-300"
+                className="w-10 h-10 rounded-full border-2 border-gray-300 flex items-center justify-center hover:border-gray-900 hover:bg-gray-900 hover:text-white transition-all duration-300"
                 aria-label="Next team member"
               >
-                <ChevronRight className="w-5 h-5" />
+                <ChevronRight className="w-4 h-4" />
               </button>
 
               {/* Progress indicators */}
-              <div className="flex gap-2 ml-4">
+              <div className="flex gap-2 ml-3">
                 {teamMembers.map((_, index) => (
                   <button
                     key={index}
                     onClick={() => setCurrentIndex(index)}
                     className={`w-2 h-2 rounded-full transition-all duration-300 ${
                       index === currentIndex 
-                        ? 'bg-gray-900 w-6' 
+                        ? 'bg-gray-900 w-5' 
                         : 'bg-gray-300 hover:bg-gray-400'
                     }`}
                     aria-label={`Go to team member ${index + 1}`}
@@ -239,7 +236,6 @@ const Team = () => {
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>
@@ -247,3 +243,4 @@ const Team = () => {
 };
 
 export default Team;
+
