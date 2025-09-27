@@ -103,11 +103,14 @@ function App() {
     Math.max(0, scrollY - servicesScrollStart)
   );
 
-  // NEW: Quote section (inserted before ServicesShowcase)
+  // FIXED: Quote section timing
   const quoteStart = servicesScrollDisplayEnd - sectionDuration * 0.5;
   const quoteSlideEnd = quoteStart + sectionDuration;
-  const quoteInternalDuration = displayDuration * 2; // Duration for letter animation
+  const quoteInternalDuration = displayDuration * 2.5; // Increased duration for complete animation
   const quoteDisplayEnd = quoteSlideEnd + quoteInternalDuration;
+  const quoteHoldDuration = displayDuration * 1; // Additional hold time after animation completes
+  const quoteCompleteEnd = quoteDisplayEnd + quoteHoldDuration;
+  
   const quoteScroll = Math.max(0, scrollY - quoteStart);
   const quoteOffset = Math.min(heroHeight, quoteScroll);
   const quoteProgress = Math.min(
@@ -116,10 +119,10 @@ function App() {
   );
   const quoteVisible =
     scrollY >= quoteStart &&
-    scrollY < quoteDisplayEnd + sectionDuration;
+    scrollY < quoteCompleteEnd + sectionDuration;
 
-  // ServicesShowcase section (updated to start after Quote)
-  const servicesShowcaseStart = quoteDisplayEnd;
+  // FIXED: ServicesShowcase section (updated to start after Quote is completely done)
+  const servicesShowcaseStart = quoteCompleteEnd;
   const servicesShowcaseSlideEnd = servicesShowcaseStart + sectionDuration;
   const servicesShowcaseDisplayEnd = servicesShowcaseSlideEnd + displayDuration;
   const servicesShowcaseScroll = Math.max(0, scrollY - servicesShowcaseStart);
@@ -160,7 +163,7 @@ function App() {
   const footerOffset = Math.min(heroHeight, footerScroll);
   const footerVisible = scrollY >= footerStart;
 
-  // Total height - Updated to include Quote section
+  // Total height - Updated to include Quote section with proper timing
   const totalHeight = footerStart + heroHeight * 2;
 
   return (
@@ -252,7 +255,7 @@ function App() {
           </div>
         )}
 
-        {/* NEW: Quote Section */}
+        {/* Quote Section */}
         {quoteVisible && (
           <div
             className="fixed inset-0 w-full bg-white"

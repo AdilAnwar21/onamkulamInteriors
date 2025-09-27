@@ -6,15 +6,15 @@ interface QuoteProps {
 
 const Quote: React.FC<QuoteProps> = ({ scrollProgress }) => {
   const quote = "Design is not just what it looks like and feels like. Design is how it works.";
-  const author = "- Steve Jobs";
   
   // Calculate how many characters should be visible based on scroll progress
+  // Use 70% of scroll progress for quote, leave 30% for author and hold time
   const totalChars = quote.length;
-  const visibleChars = Math.floor(scrollProgress * totalChars);
+  const quoteProgress = Math.min(1, scrollProgress / 0.7);
+  const visibleChars = Math.floor(quoteProgress * totalChars);
   
-  // Calculate author visibility (starts after quote is 80% complete)
-  const authorProgress = Math.max(0, (scrollProgress - 0.8) / 0.2);
-  const authorOpacity = Math.min(1, authorProgress * 2);
+  // Calculate author visibility (starts after quote is complete, at 70% scroll progress)
+  const authorProgress = Math.max(0, (scrollProgress - 0.7) / 0.2);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-white px-8">
