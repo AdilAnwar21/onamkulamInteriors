@@ -14,7 +14,7 @@ const Quote: React.FC<QuoteProps> = ({ scrollProgress }) => {
   const visibleChars = Math.floor(quoteProgress * totalChars);
   
   // Calculate author visibility (starts after quote is complete, at 70% scroll progress)
-  const authorProgress = Math.max(0, (scrollProgress - 0.7) / 0.2);
+//   const authorProgress = Math.max(0, (scrollProgress - 0.7) / 0.2);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-white px-8">
