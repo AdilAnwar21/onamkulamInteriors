@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Menu, X, Home, User, Briefcase, Mail, ArrowRight } from 'lucide-react';
-
+import logo from '../assets/images/LOGO 01.png';
 const FloatingNavbar = ({ activeSection }: { activeSection?: string }) => {
   const [scrollY, setScrollY] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -90,7 +90,14 @@ const FloatingNavbar = ({ activeSection }: { activeSection?: string }) => {
           <div className="flex items-center justify-between px-6 py-4">
             {/* Logo */}
             <div className="text-black font-bold text-lg tracking-wider">
-              ONAMKULAM
+              {/* Logo */}
+              <div className="flex items-center">
+                <img
+                  src={logo}
+                  alt="Logo"
+                  className="h-8 w-auto object-contain"
+                />
+              </div>
             </div>
 
             {/* Hamburger Menu */}
@@ -208,9 +215,11 @@ const FloatingNavbar = ({ activeSection }: { activeSection?: string }) => {
                 transition: 'all 1.5s cubic-bezier(0.23, 1, 0.32, 1)',
               }}
             >
-              <div className="px-6 py-2 text-black font-bold text-xl whitespace-nowrap tracking-wider">
-                ONAMKULAM
-              </div>
+              <img
+                src={logo}
+                alt="Logo"
+                className="h-8 w-auto object-contain px-4"
+              />
             </div>
 
             {/* Nav Items */}

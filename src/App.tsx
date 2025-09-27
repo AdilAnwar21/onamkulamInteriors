@@ -55,17 +55,18 @@ function App() {
     scrollY >= achievementsStart &&
     scrollY < achievementsDisplayEnd + sectionDuration;
 
-  // Exclusive Brands section
+  // Exclusive Brands section - Enhanced for smoother scrolling
   const brandsStart = achievementsDisplayEnd;
-  const brandsSlideEnd = brandsStart + sectionDuration;
-  const brandsInternalScrollDuration = displayDuration * 10;
+  const brandsSlideEnd = brandsStart + sectionDuration * 0.8; // Shorter slide-in duration
+  const brandsInternalScrollDuration = displayDuration * 12; // Extended internal scroll duration
   const brandsDisplayEnd = brandsSlideEnd + brandsInternalScrollDuration;
-  const brandsScroll = Math.max(0, scrollY - brandsStart) + 20;
+  const brandsScroll = Math.max(0, scrollY - brandsStart);
   const brandsOffset = Math.min(heroHeight, brandsScroll);
-  const brandsProgress = Math.min(
-    1,
-    Math.max(0, (scrollY - brandsSlideEnd)) / brandsInternalScrollDuration
-  );
+  
+  // Enhanced progress calculation with smoother easing
+  const rawBrandsProgress = Math.max(0, (scrollY - brandsSlideEnd)) / brandsInternalScrollDuration;
+  const brandsProgress = Math.min(1, rawBrandsProgress);
+  
   const brandsVisible =
     scrollY >= brandsStart && scrollY < brandsDisplayEnd + sectionDuration;
 
@@ -185,7 +186,7 @@ function App() {
           </div>
         )}
 
-        {/* Exclusive Brands */}
+        {/* Exclusive Brands - Enhanced smooth scrolling */}
         {brandsVisible && (
           <div
             className="fixed inset-0 w-full"
@@ -195,6 +196,7 @@ function App() {
                 scrollY <= brandsSlideEnd
                   ? `translateY(${heroHeight - brandsOffset}px)`
                   : `translateY(0px)`,
+              transition: 'transform 0.05s linear', // Smoother micro-transitions
             }}
           >
             <ExclusiveBrands scrollProgress={brandsProgress} />
@@ -211,7 +213,7 @@ function App() {
                 scrollY <= testimonialsSlideEnd
                   ? `translateY(${heroHeight - testimonialsOffset}px)`
                   : `translateY(0px)`,
-              transition: 'transform 0.1s ease-out',
+              transition: 'transform 0.08s ease-out',
             }}
           >
             <TestimonialScroll scrollProgress={testimonialsProgress} />
@@ -228,7 +230,7 @@ function App() {
                 scrollY <= servicesScrollSlideEnd
                   ? `translateY(${heroHeight - servicesScrollOffset}px)`
                   : `translateY(0px)`,
-              transition: 'transform 0.1s ease-out',
+              transition: 'transform 0.08s ease-out',
             }}
           >
             <ServicesScroll scrollProgress={servicesScrollProgress} />
