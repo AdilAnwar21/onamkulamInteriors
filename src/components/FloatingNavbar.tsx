@@ -284,7 +284,7 @@ const FloatingNavbar = ({ activeSection }: { activeSection?: string }) => {
                 className="bg-white/20 text-black px-6 py-3 rounded-full flex items-center space-x-3 hover:bg-white/30 hover:scale-105 whitespace-nowrap transition-all duration-300"
                 style={{ backdropFilter: 'blur(4px)' }}
               >
-                <span className="font-medium">Begin Your Story</span>
+                <span className="font-medium italic">Begin Your Story</span>
                 <div className="bg-yellow-400 rounded-full p-1 transition-all duration-300">
                   <ArrowRight className="w-4 h-4 text-black" />
                 </div>

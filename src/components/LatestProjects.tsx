@@ -5,8 +5,7 @@ const TeamSection = () => {
   const [hoveredProject, setHoveredProject] = useState<number | null>(null);
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
-
-
+  
   const projects = [
     {
       id: 1,
@@ -41,25 +40,25 @@ const TeamSection = () => {
       image: "https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=400&h=400&fit=crop&crop=face"
     }
   ];
-
+  
   const stats = {
     people: "50+",
     description: "People in business"
   };
-
+  
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsVisible(true);
     }, 100);
     return () => clearTimeout(timer);
   }, []);
-
+  
   return (
     <div className="h-screen w-full bg-gray-50 overflow-hidden" ref={sectionRef}>
-      <div className="h-full pt-16 pb-4 px-4 sm:pt-20 sm:pb-6 sm:px-6 lg:px-8 w-full max-w-7xl mx-auto flex flex-col">
+      <div className="h-full pt-20 pb-4 px-4 sm:pt-24 sm:pb-6 sm:px-6 lg:px-8 w-full max-w-7xl mx-auto flex flex-col">
         
         {/* Navigation breadcrumb */}
-        <div className={`mb-2 flex-shrink-0 transition-all duration-700 ${
+        <div className={`mb-4 flex-shrink-0 transition-all duration-700 ${
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
         }`}>
           <div className="flex items-center text-sm text-gray-500">
@@ -67,18 +66,18 @@ const TeamSection = () => {
             <span className="ml-2"></span>
           </div>
         </div>
-
+        
         {/* Header */}
-        <div className={`mb-4 lg:mb-6 flex-shrink-0 transition-all duration-1000 delay-100 ${
+        <div className={`mb-3 sm:mb-4 lg:mb-6 flex-shrink-0 transition-all duration-1000 delay-100 ${
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 text-left">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 text-left">
             Latest Projects:
           </h1>
         </div>
-
+        
         {/* Main Content Grid - Takes remaining space */}
-        <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6">
+        <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
           
           {/* Left Side - Description */}
           <div className={`lg:col-span-4 flex flex-col justify-center transition-all duration-1000 delay-200 ${
@@ -89,23 +88,22 @@ const TeamSection = () => {
               <div className="flex items-center justify-center lg:justify-start">
                 <div className="flex items-center gap-3">
                   <img
-                                          src={logo}
-                                          alt="Logo"
-                                          className="h-8 object-contain"
-                                      />
-                  {/* <span className="text-xl lg:text-2xl font-bold text-gray-900">namkulam</span> */}
+                    src={logo}
+                    alt="Logo"
+                    className="h-8 sm:h-10 object-contain"
+                  />
                 </div>
               </div>
               
               {/* Description */}
               <div className="text-center lg:text-left">
-                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold leading-tight text-gray-900 max-w-md mx-auto lg:mx-0">
+                <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-tight text-gray-900 max-w-md mx-auto lg:mx-0">
                   We are a passionate team of designers dedicated to transforming your vision into beautifully crafted spaces.
                 </h2>
               </div>
             </div>
           </div>
-
+          
           {/* Right Side - Team Grid */}
           <div className={`lg:col-span-8 min-h-0 transition-all duration-1000 delay-400 ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-16'
@@ -117,7 +115,7 @@ const TeamSection = () => {
                 isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-95'
               }`}>
                 <div
-                  className="relative rounded-xl lg:rounded-2xl overflow-hidden h-full min-h-[120px] sm:min-h-[140px] lg:min-h-[160px] cursor-pointer transition-all duration-300 group"
+                  className="relative rounded-xl lg:rounded-2xl overflow-hidden h-full min-h-[100px] sm:min-h-[120px] lg:min-h-[140px] cursor-pointer transition-all duration-300 group"
                   onMouseEnter={() => setHoveredProject(projects[0].id)}
                   onMouseLeave={() => setHoveredProject(null)}
                 >
@@ -127,18 +125,18 @@ const TeamSection = () => {
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                  <div className="absolute bottom-2 lg:bottom-3 left-2 lg:left-3 text-white">
-                    <p className="font-semibold text-xs lg:text-sm">{projects[0].name}</p>
-                    <p className="text-xs opacity-90">{projects[0].role}</p>
+                  <div className="absolute bottom-3 lg:bottom-4 left-3 lg:left-4 text-white">
+                    <p className="font-semibold text-xs sm:text-sm lg:text-base">{projects[0].name}</p>
+                    <p className="text-xs sm:text-sm opacity-90">{projects[0].role}</p>
                   </div>
                 </div>
               </div>
-
+              
               <div className={`col-span-1 md:col-span-2 transition-all duration-700 delay-700 ${
                 isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-95'
               }`}>
                 <div
-                  className="relative rounded-xl lg:rounded-2xl overflow-hidden h-full min-h-[120px] sm:min-h-[140px] lg:min-h-[160px] cursor-pointer transition-all duration-300 group"
+                  className="relative rounded-xl lg:rounded-2xl overflow-hidden h-full min-h-[100px] sm:min-h-[120px] lg:min-h-[140px] cursor-pointer transition-all duration-300 group"
                   onMouseEnter={() => setHoveredProject(projects[1].id)}
                   onMouseLeave={() => setHoveredProject(null)}
                 >
@@ -148,18 +146,18 @@ const TeamSection = () => {
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                  <div className="absolute bottom-2 lg:bottom-3 left-2 lg:left-3 text-white">
-                    <p className="font-semibold text-xs lg:text-sm">{projects[1].name}</p>
-                    <p className="text-xs opacity-90">{projects[1].role}</p>
+                  <div className="absolute bottom-3 lg:bottom-4 left-3 lg:left-4 text-white">
+                    <p className="font-semibold text-xs sm:text-sm lg:text-base">{projects[1].name}</p>
+                    <p className="text-xs sm:text-sm opacity-90">{projects[1].role}</p>
                   </div>
                 </div>
               </div>
-
+              
               <div className={`col-span-2 md:col-span-2 transition-all duration-700 delay-800 ${
                 isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-95'
               }`}>
                 <div
-                  className="relative rounded-xl lg:rounded-2xl overflow-hidden h-full min-h-[120px] sm:min-h-[140px] lg:min-h-[160px] cursor-pointer transition-all duration-300 group"
+                  className="relative rounded-xl lg:rounded-2xl overflow-hidden h-full min-h-[100px] sm:min-h-[120px] lg:min-h-[140px] cursor-pointer transition-all duration-300 group"
                   onMouseEnter={() => setHoveredProject(projects[2].id)}
                   onMouseLeave={() => setHoveredProject(null)}
                 >
@@ -169,19 +167,19 @@ const TeamSection = () => {
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                  <div className="absolute bottom-2 lg:bottom-3 left-2 lg:left-3 text-white">
-                    <p className="font-semibold text-xs lg:text-sm">{projects[2].name}</p>
-                    <p className="text-xs opacity-90">{projects[2].role}</p>
+                  <div className="absolute bottom-3 lg:bottom-4 left-3 lg:left-4 text-white">
+                    <p className="font-semibold text-xs sm:text-sm lg:text-base">{projects[2].name}</p>
+                    <p className="text-xs sm:text-sm opacity-90">{projects[2].role}</p>
                   </div>
                 </div>
               </div>
-
+              
               {/* Bottom Row */}
               <div className={`col-span-2 md:col-span-4 transition-all duration-700 delay-900 ${
                 isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-95'
               }`}>
                 <div
-                  className="relative rounded-xl lg:rounded-2xl overflow-hidden h-full min-h-[100px] sm:min-h-[120px] lg:min-h-[140px] cursor-pointer transition-all duration-300 group"
+                  className="relative rounded-xl lg:rounded-2xl overflow-hidden h-full min-h-[80px] sm:min-h-[100px] lg:min-h-[120px] cursor-pointer transition-all duration-300 group"
                   onMouseEnter={() => setHoveredProject(projects[3].id)}
                   onMouseLeave={() => setHoveredProject(null)}
                 >
@@ -193,29 +191,29 @@ const TeamSection = () => {
                   <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent" />
                   
                   {/* Top left info */}
-                  <div className="absolute top-2 lg:top-3 left-2 lg:left-3 text-white">
-                    <div className="w-4 h-4 lg:w-6 lg:h-6 flex items-center justify-center mb-1">
-                      <svg className="w-3 h-3 lg:w-4 lg:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="absolute top-3 lg:top-4 left-3 lg:left-4 text-white">
+                    <div className="w-5 h-5 lg:w-6 lg:h-6 flex items-center justify-center mb-2">
+                      <svg className="w-4 h-4 lg:w-5 lg:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                       </svg>
                     </div>
-                    <p className="font-semibold text-xs lg:text-sm">{projects[3].name}</p>
-                    <p className="text-xs opacity-90">{projects[3].role}</p>
+                    <p className="font-semibold text-xs sm:text-sm lg:text-base">{projects[3].name}</p>
+                    <p className="text-xs sm:text-sm opacity-90">{projects[3].role}</p>
                   </div>
                   
                   {/* Bottom right quote */}
-                  <div className="absolute bottom-2 lg:bottom-3 right-2 lg:right-3 text-white max-w-32 lg:max-w-48 text-right">
-                    <p className="text-xs lg:text-sm font-light leading-tight">{projects[3].quote}</p>
+                  <div className="absolute bottom-3 lg:bottom-4 right-3 lg:right-4 text-white max-w-[120px] sm:max-w-[160px] lg:max-w-[200px] text-right">
+                    <p className="text-xs sm:text-sm lg:text-base font-light leading-tight">{projects[3].quote}</p>
                   </div>
                 </div>
               </div>
-
-              <div className={`col-span-2 md:col-span-2 flex flex-col gap-2 transition-all duration-700 delay-1000 ${
+              
+              <div className={`col-span-2 md:col-span-2 flex flex-col gap-2 lg:gap-3 transition-all duration-700 delay-1000 ${
                 isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-95'
               }`}>
                 {/* Tanya */}
                 <div
-                  className="relative rounded-xl lg:rounded-2xl overflow-hidden flex-1 min-h-[60px] sm:min-h-[70px] lg:min-h-[80px] cursor-pointer transition-all duration-300 group"
+                  className="relative rounded-xl lg:rounded-2xl overflow-hidden flex-1 min-h-[50px] sm:min-h-[60px] lg:min-h-[70px] cursor-pointer transition-all duration-300 group"
                   onMouseEnter={() => setHoveredProject(projects[4].id)}
                   onMouseLeave={() => setHoveredProject(null)}
                 >
@@ -225,18 +223,18 @@ const TeamSection = () => {
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                  <div className="absolute bottom-2 left-2 text-white">
-                    <p className="font-semibold text-xs">{projects[4].name}</p>
+                  <div className="absolute bottom-2 lg:bottom-3 left-2 lg:left-3 text-white">
+                    <p className="font-semibold text-xs sm:text-sm">{projects[4].name}</p>
                     <p className="text-xs opacity-90">{projects[4].role}</p>
                   </div>
                 </div>
-
+                
                 {/* Stats Card */}
-                <div className="bg-white rounded-xl lg:rounded-2xl flex-1 min-h-[60px] sm:min-h-[70px] lg:min-h-[80px] flex flex-col justify-center items-center text-center shadow-sm border border-gray-100">
-                  <div className="text-xl lg:text-2xl font-bold text-gray-900">
+                <div className="bg-white rounded-xl lg:rounded-2xl flex-1 min-h-[50px] sm:min-h-[60px] lg:min-h-[70px] flex flex-col justify-center items-center text-center shadow-sm border border-gray-100">
+                  <div className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">
                     {stats.people}
                   </div>
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs sm:text-sm text-gray-500 px-2">
                     {stats.description}
                   </div>
                 </div>
