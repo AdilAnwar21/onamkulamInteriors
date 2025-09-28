@@ -10,7 +10,7 @@ const Achievements = () => {
     { number: 27, title: "Years of Storytelling", subtitle: "Designing homes that resonate with heart and soul since 1998.", images: [ /* images... */ ] },
     { number: 220, title: "Spaces Transformed", subtitle: "Each one a unique story we helped bring to life.", images: [ /* images... */ ] },
     { number: 21, title: "Year Warranty Promise", subtitle: "Our promise of durability and trust, built into every detail.", images: [ /* images... */ ] },
-    { number: 45, title: "Days Avg. Turnaround", subtitle: "Average completion in just 45 days for a 2BHK, because your story can’t wait.", images: [ /* images... */ ] }
+    { number: 45, title: "Days Avg. Turnaround", subtitle: "Average completion in just 45 days for a 2BHK, because your story can't wait.", images: [ /* images... */ ] }
   ];
 
   // Animate numbers
@@ -55,12 +55,13 @@ const Achievements = () => {
     <section
       ref={sectionRef}
       className="relative min-h-screen bg-gray-50 py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-12"
+      style={{ paddingTop: '120px' }} // Add top padding to account for navbar
     >
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-6 sm:mb-12 md:mb-16">
           <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-800 leading-relaxed max-w-4xl">
-            Every space has a story waiting to be told. It’s the story of a family growing, a quiet evening with a book, or a gathering filled with laughter. We believe in designing not just interiors, but the very settings where your life’s best scenes are played out.
+            Every space has a story waiting to be told. It's the story of a family growing, a quiet evening with a book, or a gathering filled with laughter. We believe in designing not just interiors, but the very settings where your life's best scenes are played out.
           </p>
         </div>
 

@@ -32,7 +32,7 @@ function App() {
 
   useEffect(() => {
     document.documentElement.style.scrollBehavior = 'auto';
-    document.title = 'HouseMood - Interior Design Studio';
+    document.title = 'OnamKulam - Interior';
     return () => {
       document.documentElement.style.scrollBehavior = 'auto';
     };
