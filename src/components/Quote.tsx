@@ -5,7 +5,7 @@ interface QuoteProps {
 }
 
 const Quote: React.FC<QuoteProps> = ({ scrollProgress }) => {
-  const quote = "Design is not just what it looks like and feels like. Design is how it works.";
+  const quote = "How Your Story Unfolds";
   
   // Calculate how many characters should be visible based on scroll progress
   // Use 70% of scroll progress for quote, leave 30% for author and hold time

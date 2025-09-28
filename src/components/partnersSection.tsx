@@ -11,7 +11,7 @@ type Brand = {
 const ExclusiveBrandsComplete: React.FC<{ scrollProgress?: number }> = ({ scrollProgress = 0 }) => {
   const [mounted, setMounted] = useState(false);
 
-  const fullQuote = "Crafting spaces that inspire, designing dreams that come alive.";
+  const fullQuote = "From your vision to our hands: The simple journey to soul.";
 
   useEffect(() => {
     setMounted(true);

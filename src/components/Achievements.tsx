@@ -7,10 +7,10 @@ const Achievements = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
 
   const achievements = [
-    { number: 2014, title: "Year of establishment", subtitle: "More than 10 years in the field", images: [ /* images... */ ] },
-    { number: 304, title: "Projects are launched", subtitle: "A lot of projects are done", images: [ /* images... */ ] },
-    { number: 189, title: "Clients are satisfied", subtitle: "These people love us", images: [ /* images... */ ] },
-    { number: 12, title: "Projects in work", subtitle: "What we do right now", images: [ /* images... */ ] }
+    { number: 27, title: "Years of Storytelling", subtitle: "Designing homes that resonate with heart and soul since 1998.", images: [ /* images... */ ] },
+    { number: 220, title: "Spaces Transformed", subtitle: "Each one a unique story we helped bring to life.", images: [ /* images... */ ] },
+    { number: 21, title: "Year Warranty Promise", subtitle: "Our promise of durability and trust, built into every detail.", images: [ /* images... */ ] },
+    { number: 45, title: "Days Avg. Turnaround", subtitle: "Average completion in just 45 days for a 2BHK, because your story can’t wait.", images: [ /* images... */ ] }
   ];
 
   // Animate numbers
@@ -60,8 +60,7 @@ const Achievements = () => {
         {/* Header */}
         <div className="mb-6 sm:mb-12 md:mb-16">
           <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-800 leading-relaxed max-w-4xl">
-            Whether it's your home, office, or a commercial project, we are always dedicated to bringing 
-            your vision to life. Our numbers speak better than words:
+            Every space has a story waiting to be told. It’s the story of a family growing, a quiet evening with a book, or a gathering filled with laughter. We believe in designing not just interiors, but the very settings where your life’s best scenes are played out.
           </p>
         </div>
 

@@ -38,10 +38,10 @@ const Hero = () => {
         {/* Main Content Block */}
         <div className="text-white mb-10 sm:mb-12">
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-light leading-relaxed mb-1 sm:mb-2">
-            We Craft Interiors
+            We craft interiors that 
           </h2>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-light leading-relaxed">
-            Since 2014
+            embrace you.
           </h2>
         </div>
       </div>
@@ -59,10 +59,10 @@ const Hero = () => {
       <div className="absolute bottom-10 sm:bottom-14 left-4 sm:left-6 lg:left-16 right-4 sm:right-6 lg:right-16">
         <h1 className="text-white font-light leading-tight sm:leading-none">
           <span className="block text-4xl sm:text-6xl lg:text-8xl xl:text-9xl">
-            Your House is
+            From Space to Soul —  
           </span>
           <span className="block text-4xl sm:text-6xl lg:text-8xl xl:text-9xl mt-2">
-            the Place <span className="italic font-serif">of Mod</span>
+            Interiors That Tell <span className="italic font-serif">Your Story</span>
           </span>
         </h1>
       </div>

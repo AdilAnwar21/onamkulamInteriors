@@ -12,8 +12,8 @@ const Founder = () => {
   // Static founder data - no loading state needed
   const founderData: FounderData = {
     id: 1,
-    name: "Marcus Thompson",
-    quote: "Interior design is the art of creating harmony between human needs and aesthetic beauty. Every space I design tells a unique story, blending functionality with emotion to create environments that truly feel like home.",
+    name: "Mr. Noby Onamkulam",
+    quote: "A home is the most honest story a person can tell. My work is simply to listen deeply and design a space where that story—your story—can unfold beautifully, year after year",
     signature: "Marcus Thompson",
     image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=600&fit=crop&crop=face"
   };
@@ -42,7 +42,7 @@ const Founder = () => {
           <div>
             <h2 className="text-xl sm:text-2xl font-light leading-tight mb-2">
               <span className="block text-amber-700 text-sm sm:text-base font-normal mb-2">
-                Meet the man behind all of this
+                Meet the Visionary Behind Crafting Your Story
               </span>
               <span className="bg-gradient-to-r from-amber-900 to-amber-700 bg-clip-text text-transparent font-bold text-2xl sm:text-3xl">
                 {founderData.name}
