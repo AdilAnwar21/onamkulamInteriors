@@ -1,18 +1,40 @@
 import { useState, useEffect } from 'react';
 import { Menu, X, Home, User, Briefcase, Mail, ArrowRight } from 'lucide-react';
 import logo from '../assets/images/LOGO 01.png';
+
 const FloatingNavbar = ({ activeSection }: { activeSection?: string }) => {
   const [scrollY, setScrollY] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+  const [deviceType, setDeviceType] = useState<'mobile' | 'tablet' | 'desktop'>('desktop');
 
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 1024);
+    const checkDeviceType = () => {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      const userAgent = navigator.userAgent;
+      
+      // Check for iPad specifically (including iPad Pro)
+      const isIPad = /iPad/.test(userAgent) || 
+                   (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) ||
+                   (width >= 768 && width <= 1366 && 'ontouchstart' in window);
+      
+      // Portrait mode detection for tablets
+      const isPortrait = height > width;
+      
+      if (width < 768) {
+        setDeviceType('mobile');
+      } else if ((width <= 1366 || isIPad) && (!isPortrait || width >= 768)) {
+        setDeviceType('tablet');
+      } else if (isPortrait && width >= 768 && width < 1024) {
+        // iPad in portrait mode - treat more like mobile for better UX
+        setDeviceType('mobile');
+      } else {
+        setDeviceType('desktop');
+      }
     };
 
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
+    checkDeviceType();
+    window.addEventListener('resize', checkDeviceType);
 
     const handleScroll = () => {
       setScrollY(window.scrollY);
@@ -21,7 +43,7 @@ const FloatingNavbar = ({ activeSection }: { activeSection?: string }) => {
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('resize', checkMobile);
+      window.removeEventListener('resize', checkDeviceType);
     };
   }, []);
 
@@ -36,24 +58,42 @@ const FloatingNavbar = ({ activeSection }: { activeSection?: string }) => {
     { name: 'Contact', icon: Mail },
   ];
 
-  // Easing
+  // Easing function
   const easeInOutCubic = (t: number) => {
     return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
   };
 
   const smoothProgress = easeInOutCubic(scrollProgress);
 
-  // Desktop navbar calculations
-  const getDesktopNavbarWidth = () => {
+  // Responsive navbar calculations
+  const getNavbarWidth = () => {
     if (scrollProgress === 0) return 'auto';
-    if (scrollProgress < 0.2) return `${220 + smoothProgress * 120}px`;
-    if (scrollProgress < 0.4) return `${420 + smoothProgress * 180}px`;
-    if (scrollProgress < 0.7) return `${650 + smoothProgress * 120}px`;
-    return '880px';
+    
+    const baseWidths = {
+      desktop: {
+        initial: 220,
+        step1: 420,
+        step2: 650,
+        final: 880
+      },
+      tablet: {
+        initial: 180,
+        step1: 320,
+        step2: 480,
+        final: 600
+      }
+    };
+    
+    const widths = deviceType === 'desktop' ? baseWidths.desktop : baseWidths.tablet;
+    
+    if (scrollProgress < 0.2) return `${widths.initial + smoothProgress * (widths.step1 - widths.initial)}px`;
+    if (scrollProgress < 0.4) return `${widths.step1 + smoothProgress * (widths.step2 - widths.step1)}px`;
+    if (scrollProgress < 0.7) return `${widths.step2 + smoothProgress * (widths.final - widths.step2)}px`;
+    return `${widths.final}px`;
   };
 
-  const getDesktopNavbarTransform = () => {
-    const moveDistance = smoothProgress * 300;
+  const getNavbarTransform = () => {
+    const moveDistance = deviceType === 'tablet' ? smoothProgress * 150 : smoothProgress * 300;
     return `translateX(-${moveDistance}px)`;
   };
 
@@ -61,10 +101,10 @@ const FloatingNavbar = ({ activeSection }: { activeSection?: string }) => {
   const getNavbarBackground = () => {
     if (scrollProgress === 0) return 'transparent';
     return `linear-gradient(
-    135deg,
-    rgba(255, 255, 255, ${0.12 + scrollProgress * 0.18}),
-    rgba(255, 255, 255, ${0.08 + scrollProgress * 0.12})
-  )`;
+      135deg,
+      rgba(255, 255, 255, ${0.12 + scrollProgress * 0.18}),
+      rgba(255, 255, 255, ${0.08 + scrollProgress * 0.12})
+    )`;
   };
 
   const getBorderStyle = () => {
@@ -82,7 +122,7 @@ const FloatingNavbar = ({ activeSection }: { activeSection?: string }) => {
   };
 
   // -------------------- MOBILE NAVBAR --------------------
-  if (isMobile) {
+  if (deviceType === 'mobile') {
     return (
       <>
         {/* Mobile Sticky Navbar with crystal clear background */}
@@ -90,7 +130,6 @@ const FloatingNavbar = ({ activeSection }: { activeSection?: string }) => {
           <div className="flex items-center justify-between px-6 py-4">
             {/* Logo */}
             <div className="text-black font-bold text-lg tracking-wider">
-              {/* Logo */}
               <div className="flex items-center">
                 <img
                   src={logo}
@@ -171,14 +210,14 @@ const FloatingNavbar = ({ activeSection }: { activeSection?: string }) => {
     );
   }
 
-  // -------------------- DESKTOP NAVBAR --------------------
+  // -------------------- TABLET & DESKTOP NAVBAR --------------------
   return (
-    <nav className="fixed top-6 right-6 z-50">
+    <nav className={`fixed z-50 ${deviceType === 'tablet' ? 'top-4 right-4' : 'top-6 right-6'}`}>
       <div
         className="relative"
         style={{
-          width: getDesktopNavbarWidth(),
-          transform: getDesktopNavbarTransform(),
+          width: getNavbarWidth(),
+          transform: getNavbarTransform(),
           transition: 'all 1.5s cubic-bezier(0.23, 1, 0.32, 1)',
         }}
       >
@@ -186,7 +225,7 @@ const FloatingNavbar = ({ activeSection }: { activeSection?: string }) => {
           className={`rounded-full ${getBorderStyle()} ${getBackdropBlur()} ${getShadow()} overflow-hidden relative`}
           style={{
             background: getNavbarBackground(),
-            height: scrollProgress > 0.2 ? '68px' : '56px',
+            height: scrollProgress > 0.2 ? (deviceType === 'tablet' ? '64px' : '68px') : (deviceType === 'tablet' ? '52px' : '56px'),
             transition: 'all 1.5s cubic-bezier(0.23, 1, 0.32, 1)',
           }}
         >
@@ -206,7 +245,7 @@ const FloatingNavbar = ({ activeSection }: { activeSection?: string }) => {
               style={{
                 width:
                   scrollProgress > 0.3
-                    ? `${Math.min(200, (scrollProgress - 0.3) * 320)}px`
+                    ? `${Math.min(deviceType === 'tablet' ? 160 : 200, (scrollProgress - 0.3) * (deviceType === 'tablet' ? 260 : 320))}px`
                     : '0px',
                 opacity:
                   scrollProgress > 0.4
@@ -218,7 +257,7 @@ const FloatingNavbar = ({ activeSection }: { activeSection?: string }) => {
               <img
                 src={logo}
                 alt="Logo"
-                className="h-8 w-auto object-contain px-4"
+                className={`${deviceType === 'tablet' ? 'h-7' : 'h-8'} w-auto object-contain px-4`}
               />
             </div>
 
@@ -228,7 +267,7 @@ const FloatingNavbar = ({ activeSection }: { activeSection?: string }) => {
               style={{
                 width:
                   scrollProgress > 0.1
-                    ? `${Math.min(450, (scrollProgress - 0.1) * 520)}px`
+                    ? `${Math.min(deviceType === 'tablet' ? 280 : 450, (scrollProgress - 0.1) * (deviceType === 'tablet' ? 340 : 520))}px`
                     : '0px',
                 opacity:
                   scrollProgress > 0.2
@@ -250,7 +289,8 @@ const FloatingNavbar = ({ activeSection }: { activeSection?: string }) => {
                 return (
                   <button
                     key={item.name}
-                    className={`flex items-center space-x-2 px-4 py-2.5 rounded-full group whitespace-nowrap text-sm font-medium transition-all duration-300
+                    className={`flex items-center space-x-2 rounded-full group whitespace-nowrap font-medium transition-all duration-300
+                      ${deviceType === 'tablet' ? 'px-3 py-2 text-sm' : 'px-4 py-2.5 text-sm'}
                       ${
                         isActive
                           ? 'bg-black text-white shadow-md'
@@ -266,7 +306,7 @@ const FloatingNavbar = ({ activeSection }: { activeSection?: string }) => {
                     }}
                   >
                     <Icon
-                      className={`w-4 h-4 transition-transform duration-300 ${
+                      className={`${deviceType === 'tablet' ? 'w-4 h-4' : 'w-4 h-4'} transition-transform duration-300 ${
                         isActive ? 'scale-110' : 'group-hover:scale-110'
                       }`}
                     />
@@ -281,12 +321,15 @@ const FloatingNavbar = ({ activeSection }: { activeSection?: string }) => {
             {/* Say Hello Button */}
             <div className="ml-auto">
               <button
-                className="bg-white/20 text-black px-6 py-3 rounded-full flex items-center space-x-3 hover:bg-white/30 hover:scale-105 whitespace-nowrap transition-all duration-300"
+                className={`bg-white/20 text-black rounded-full flex items-center space-x-3 hover:bg-white/30 hover:scale-105 whitespace-nowrap transition-all duration-300
+                  ${deviceType === 'tablet' ? 'px-5 py-2.5' : 'px-6 py-3'}`}
                 style={{ backdropFilter: 'blur(4px)' }}
               >
-                <span className="font-medium italic">Begin Your Story</span>
+                <span className={`font-medium italic ${deviceType === 'tablet' ? 'text-sm' : 'text-base'}`}>
+                  Begin Your Story
+                </span>
                 <div className="bg-yellow-400 rounded-full p-1 transition-all duration-300">
-                  <ArrowRight className="w-4 h-4 text-black" />
+                  <ArrowRight className={`${deviceType === 'tablet' ? 'w-3.5 h-3.5' : 'w-4 h-4'} text-black`} />
                 </div>
               </button>
             </div>

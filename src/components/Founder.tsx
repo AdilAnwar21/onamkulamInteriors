@@ -1,5 +1,6 @@
 
 // Define the founder data type
+import founderImg from "../assets/images/founder.png";
 interface FounderData {
   id: number;
   name: string;
@@ -15,7 +16,7 @@ const Founder = () => {
     name: "Mr. Noby Onamkulam",
     quote: "A home is the most honest story a person can tell. My work is simply to listen deeply and design a space where that story—your story—can unfold beautifully, year after year",
     signature: "Marcus Thompson",
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=600&fit=crop&crop=face"
+    image: founderImg
   };
 
   return (
@@ -75,13 +76,13 @@ const Founder = () => {
           {/* Left side - Photo */}
           <div className="flex justify-center lg:justify-start">
             <div className="relative">
-              <div className="w-80 h-96 lg:w-96 lg:h-[32rem] rounded-2xl shadow-2xl relative overflow-hidden">
+              <div className="w-80 h-96 lg:w-96 lg:h-[32rem] rounded-2xl relative overflow-hidden">
                 <img 
                   src={founderData.image}
                   alt={founderData.name}
                   className="w-full h-full object-cover object-center"
                 />
-                <div className="absolute inset-0 border-2 border-amber-200/30 rounded-2xl" />
+                {/* <div className="absolute inset-0 border-2 border-amber-200/30 rounded-2xl" /> */}
               </div>
               <div className="absolute -top-4 -right-4 w-8 h-8 bg-amber-200/20 rounded-full blur-sm" />
               <div className="absolute -bottom-6 -left-6 w-12 h-12 bg-orange-200/15 rounded-full blur-md" />
