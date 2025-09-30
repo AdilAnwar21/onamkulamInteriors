@@ -19,28 +19,28 @@ const Achievements = () => {
       number: 27, 
       title: "Years of Storytelling", 
       subtitle: "Designing homes that resonate with heart and soul since 1998.", 
-      images: sampleImages, 
+      // images: sampleImages, 
       showPlus: true 
     },
     { 
       number: 220, 
       title: "Spaces Transformed", 
       subtitle: "Each one a unique story we helped bring to life.", 
-      images: sampleImages, 
+      // images: sampleImages, 
       showPlus: true 
     },
     { 
       number: 21, 
       title: "Year Warranty Promise", 
       subtitle: "Our promise of durability and trust, built into every detail.", 
-      images: sampleImages, 
+      // images: sampleImages, 
       showPlus: false 
     },
     { 
       number: 45, 
       title: "Days Avg. Turnaround", 
       subtitle: "Average completion in just 45 days for a 2BHK, because your story can't wait.", 
-      images: sampleImages, 
+      // images: sampleImages, 
       showPlus: false 
     }
   ];
@@ -79,9 +79,9 @@ const Achievements = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative h-screen bg-gray-50 py-16 sm:py-12 md:py-16 lg:py-20 px-6 sm:px-6 lg:px-12 overflow-y-auto"
+      className="relative h-screen bg-gray-50 overflow-y-auto"
     >
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-12 pt-32 sm:pt-24 md:pt-28 lg:pt-32 pb-16 sm:pb-12 md:pb-16 lg:pb-20">
         {/* Header */}
         <div className="mb-10 sm:mb-12 md:mb-16">
           <p className="text-base sm:text-base md:text-lg lg:text-xl text-gray-800 leading-relaxed max-w-4xl">
@@ -104,9 +104,9 @@ const Achievements = () => {
                   {achievement.subtitle}
                 </p>
               </div>
-
-              {/* Images */}
-              <div className="flex -space-x-2 sm:-space-x-3 mb-6 sm:mb-0">
+              
+              {/* Images - Commented out as in your code */}
+              {/* <div className="flex -space-x-2 sm:-space-x-3 mb-6 sm:mb-0">
                 {achievement.images.map((image, imgIndex) => (
                   <div
                     key={imgIndex}
@@ -120,27 +120,11 @@ const Achievements = () => {
                     />
                   </div>
                 ))}
-              </div>
+              </div> */}
 
               <div className="w-full h-px bg-gray-200 mt-6 sm:mt-8"></div>
             </div>
           ))}
-        </div>
-
-        {/* Call to Action */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
-          <div className="flex items-center space-x-3 sm:space-x-4">
-            <h3 className="text-base sm:text-lg md:text-xl font-medium text-black">
-              Want your own Design?
-            </h3>
-            <button className="bg-yellow-400 hover:bg-yellow-500 text-black p-2 sm:p-3 rounded-full transition-all">
-              <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
-            </button>
-          </div>
-          <div className="flex items-center space-x-2">
-            <span className="text-gray-600 text-sm sm:text-base">Slots are available</span>
-            <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-green-500 rounded-full animate-pulse"></div>
-          </div>
         </div>
       </div>
     </section>
