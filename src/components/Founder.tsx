@@ -97,7 +97,7 @@ const Founder = () => {
               <div className="absolute -left-4 -top-2 text-6xl text-amber-200 font-serif">
                 &ldquo;
               </div>
-              <blockquote className="text-xl lg:text-2xl text-amber-800 leading-relaxed italic pl-8">
+              <blockquote className="text-xl lg:text-2xl text-amber-800 leading-relaxed italic pl-10">
                 {founderData.quote}
               </blockquote>
               <div className="absolute -right-4 -bottom-6 text-6xl text-amber-200 font-serif">
