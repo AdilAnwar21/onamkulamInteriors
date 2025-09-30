@@ -79,9 +79,9 @@ const Achievements = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative h-screen bg-gray-50 overflow-y-auto"
+      className="relative h-screen bg-gray-50 overflow-y-auto lg:overflow-y-hidden"
     >
-      <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-12 pt-32 sm:pt-24 md:pt-28 lg:pt-32 pb-16 sm:pb-12 md:pb-16 lg:pb-20">
+      <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-12 pt-32 sm:pt-24 md:pt-28 lg:pt-32 pb-16 sm:pb-12 md:pb-16 lg:pb-20 h-full lg:flex lg:flex-col lg:justify-center">
         {/* Header */}
         <div className="mb-10 sm:mb-12 md:mb-16">
           <p className="text-base sm:text-base md:text-lg lg:text-xl text-gray-800 leading-relaxed max-w-4xl">

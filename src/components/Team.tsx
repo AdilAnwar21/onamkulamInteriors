@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -76,7 +75,7 @@ const Team = () => {
         <div className="lg:hidden">
           {/* Section Header */}
           <div className="text-center mb-4 sm:mb-6">
-            <h2 className="text-sm sm:text-base font-medium text-gray-600 mb-1 tracking-wide">
+            <h2 className="text-base sm:text-lg font-medium text-gray-600 mb-1 tracking-wide">
               MEET OUR TEAM
             </h2>
             <p className="text-gray-600 leading-relaxed text-xs sm:text-sm px-2">
@@ -97,11 +96,11 @@ const Team = () => {
 
             {/* Quote with curly quotes */}
             <div className="relative text-center px-2 mb-4">
-              <div className="absolute -left-2 -top-2 text-2xl sm:text-3xl text-gray-300 font-serif leading-none">"</div>
+              <div className="absolute -left-2 -top-2 text-2xl sm:text-3xl text-gray-300 font-serif leading-none">&ldquo;</div>
               <blockquote className="text-base sm:text-lg text-gray-900 leading-snug font-light px-4">
                 {currentMember.quote}
               </blockquote>
-              <div className="absolute -bottom-3 right-2 text-2xl sm:text-3xl text-gray-300 font-serif leading-none">"</div>
+              <div className="absolute -bottom-3 right-2 text-2xl sm:text-3xl text-gray-300 font-serif leading-none">&rdquo;</div>
             </div>
 
             {/* Member Info */}
@@ -171,7 +170,7 @@ const Team = () => {
             
             {/* Section Header */}
             <div>
-              <h2 className="text-lg font-medium text-gray-600 mb-2 tracking-wide">
+              <h2 className="text-xl font-medium text-gray-600 mb-2 tracking-wide">
                 MEET OUR TEAM
               </h2>
               <p className="text-gray-600 leading-relaxed">
@@ -181,11 +180,11 @@ const Team = () => {
 
             {/* Large Quote with curly quotes */}
             <div className="relative">
-              <div className="absolute -left-6 -top-4 text-6xl text-gray-300 font-serif leading-none">"</div>
+              <div className="absolute -left-6 -top-4 text-6xl text-gray-300 font-serif leading-none">&ldquo;</div>
               <blockquote className="text-2xl lg:text-3xl text-gray-900 leading-snug font-light pl-10 pr-4">
                 {currentMember.quote}
               </blockquote>
-              <div className="absolute -bottom-6 right-0 text-6xl text-gray-300 font-serif leading-none">"</div>
+              <div className="absolute -bottom-6 right-0 text-6xl text-gray-300 font-serif leading-none">&rdquo;</div>
             </div>
 
             {/* Member Info */}
@@ -243,4 +242,3 @@ const Team = () => {
 };
 
 export default Team;
-
