@@ -1,3 +1,6 @@
+
+import logo from '../assets/images/LOGO 01.png'
+
 const Hero = () => {
   return (
     <section className="relative min-h-screen overflow-hidden bg-neutral-200">
@@ -14,9 +17,11 @@ const Hero = () => {
         <div className="flex justify-between items-center">
           {/* Logo */}
           <div className="text-white">
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-wider">
+            {/* <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-wider">
               ONAMKULAM
-            </h1>
+            </h1> */}
+            <img src={logo} alt="ONAMKULAM" className="h-12" />
+            INTERIORS
           </div>
         </div>
       </div>
