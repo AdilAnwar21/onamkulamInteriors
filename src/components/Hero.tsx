@@ -1,7 +1,10 @@
-
 import logo from '../assets/images/LOGO 01.png'
 
-const Hero = () => {
+interface HeroProps {
+  onExploreClick?: () => void;
+}
+
+const Hero = ({ onExploreClick }: HeroProps) => {
   return (
     <section className="relative min-h-screen overflow-hidden bg-neutral-200">
       {/* Background Image */}
@@ -17,9 +20,6 @@ const Hero = () => {
         <div className="flex justify-between items-center">
           {/* Logo */}
           <div className="text-white">
-            {/* <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-wider">
-              ONAMKULAM
-            </h1> */}
             <img src={logo} alt="ONAMKULAM" className="h-12" />
             INTERIORS
           </div>
@@ -28,18 +28,6 @@ const Hero = () => {
 
       {/* Left Side Content */}
       <div className="absolute left-4 sm:left-6 lg:left-16 top-1/3 -translate-y-1/2 max-w-[70%] sm:max-w-none">
-        {/* Award Badge */}
-        {/* <div className="flex items-center space-x-3 text-white mb-6 sm:mb-8">
-          <div className="w-6 h-6 sm:w-8 sm:h-8 bg-white/20 rounded flex items-center justify-center">
-            <span className="text-[10px] sm:text-xs font-bold">✦</span>
-          </div>
-          <div>
-            <p className="text-xs sm:text-sm font-medium">Interior</p>
-            <p className="text-xs sm:text-sm opacity-90">Design Awards</p>
-          </div>
-          <span className="text-lg sm:text-2xl font-light opacity-90">2021</span>
-        </div> */}
-
         {/* Main Content Block */}
         <div className="text-white mb-10 sm:mb-12">
           <h2 className="text-2xl italic sm:text-3xl lg:text-4xl font-light leading-relaxed mb-1 sm:mb-2">
@@ -51,13 +39,17 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* Right Side Content */}
+      {/* Right Side Content - Now Clickable */}
       <div className="absolute right-4 sm:right-6 lg:right-16 top-1/3 -translate-y-1/2 text-right hidden sm:block">
-        <div className="text-white space-y-0.5 sm:space-y-1">
+        <button 
+          onClick={onExploreClick}
+          className="text-white space-y-0.5 sm:space-y-1 cursor-pointer hover:opacity-80 transition-opacity duration-300 group text-left"
+          aria-label="Explore our latest projects"
+        >
           <p className="text-sm sm:text-base font-medium">"Step into our stories"</p>
-          <p className="text-xs sm:text-sm opacity-90">Explore into our</p>
-          <p className="text-xs sm:text-sm opacity-90">latest projects</p>
-        </div>
+          <p className="text-xs sm:text-sm opacity-90 group-hover:underline">Explore into our</p>
+          <p className="text-xs sm:text-sm opacity-90 group-hover:underline">latest projects</p>
+        </button>
       </div>
 
       {/* Main Heading - Bottom */}

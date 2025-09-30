@@ -10,7 +10,7 @@ import ServicesShowcase from './components/ServicesShowcase';
 import Founder from './components/Founder';
 import Team from './components/Team';
 import CTASection from './components/CTASection';
-import LatestProjects from './components/LatestProjects'; // New import
+import LatestProjects from './components/LatestProjects';
 import Footer from './components/Footer';
 
 function App() {
@@ -20,10 +20,8 @@ function App() {
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
     const handleResize = () => setWindowHeight(window.innerHeight);
-
     window.addEventListener('scroll', handleScroll);
     window.addEventListener('resize', handleResize);
-
     return () => {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', handleResize);
@@ -158,7 +156,7 @@ function App() {
   const ctaOffset = Math.min(heroHeight, ctaScroll);
   const ctaVisible = scrollY >= ctaStart && scrollY < ctaDisplayEnd + sectionDuration;
 
-  // Latest Projects section (NEW)
+  // Latest Projects section
   const latestProjectsStart = ctaDisplayEnd;
   const latestProjectsSlideEnd = latestProjectsStart + sectionDuration;
   const latestProjectsDisplayEnd = latestProjectsSlideEnd + displayDuration;
@@ -166,25 +164,120 @@ function App() {
   const latestProjectsOffset = Math.min(heroHeight, latestProjectsScroll);
   const latestProjectsVisible = scrollY >= latestProjectsStart && scrollY < latestProjectsDisplayEnd + sectionDuration;
 
-  // Footer section (UPDATED)
+  // Footer section
   const footerStart = latestProjectsDisplayEnd;
   const footerScroll = Math.max(0, scrollY - footerStart);
   const footerOffset = Math.min(heroHeight, footerScroll);
   const footerVisible = scrollY >= footerStart;
 
-  // Total height (UPDATED)
+  // Total height
   const totalHeight = footerStart + heroHeight * 2;
+
+  // Debug: Log the scroll positions
+  useEffect(() => {
+    console.log('Latest Projects Start Position:', latestProjectsStart);
+    console.log('CTA Start Position:', ctaStart);
+    console.log('Total Height:', totalHeight);
+    console.log('Current Scroll:', scrollY);
+  }, [latestProjectsStart, ctaStart, totalHeight, scrollY]);
+
+  // Navigation function to scroll to LatestProjects with ultra-smooth animation
+  const scrollToLatestProjects = () => {
+    console.log('=== SCROLLING TO LATEST PROJECTS ===');
+    console.log('Latest Projects Slide End Position:', latestProjectsSlideEnd);
+    console.log('Current position:', window.scrollY);
+
+    const targetScroll = latestProjectsSlideEnd; // Changed from latestProjectsStart
+    const startScroll = window.scrollY;
+    const distance = targetScroll - startScroll;
+    const duration = 6000; // 6 seconds
+    let startTime: number | null = null;
+
+    const easeInOutQuint = (t: number): number => {
+      return t < 0.5
+        ? 16 * t * t * t * t * t
+        : 1 - Math.pow(-2 * t + 2, 5) / 2;
+    };
+
+    const animation = (currentTime: number) => {
+      if (startTime === null) startTime = currentTime;
+      const timeElapsed = currentTime - startTime;
+      const progress = Math.min(timeElapsed / duration, 1);
+
+      const easedProgress = easeInOutQuint(progress);
+      const currentPosition = startScroll + distance * easedProgress;
+
+      window.scrollTo(0, currentPosition);
+
+      if (progress < 1) {
+        requestAnimationFrame(animation);
+      } else {
+        console.log('=== REACHED LATEST PROJECTS ===');
+      }
+    };
+
+    requestAnimationFrame(animation);
+  };
+
+  // Navigation function to scroll to CTA Section with ultra-smooth animation
+  const scrollToCTA = () => {
+    console.log('=== SCROLLING TO CTA SECTION ===');
+    console.log('CTA Start Position:', ctaStart);
+    console.log('CTA Slide End Position:', ctaSlideEnd);
+    console.log('Current Scroll Position:', window.scrollY);
+
+    // Scroll to ctaSlideEnd instead of ctaStart to see the section fully positioned
+    const targetScroll = ctaSlideEnd;
+    const startScroll = window.scrollY;
+    const distance = targetScroll - startScroll;
+
+    console.log('Distance to travel:', distance);
+
+    // If already at or past CTA, don't scroll
+    if (distance <= 0) {
+      console.log('Already at or past CTA section');
+      return;
+    }
+
+    const duration = 6000; // 6 seconds
+    let startTime: number | null = null;
+
+    const easeInOutQuint = (t: number): number => {
+      return t < 0.5
+        ? 16 * t * t * t * t * t
+        : 1 - Math.pow(-2 * t + 2, 5) / 2;
+    };
+
+    const animation = (currentTime: number) => {
+      if (startTime === null) startTime = currentTime;
+      const timeElapsed = currentTime - startTime;
+      const progress = Math.min(timeElapsed / duration, 1);
+
+      const easedProgress = easeInOutQuint(progress);
+      const currentPosition = startScroll + distance * easedProgress;
+
+      window.scrollTo(0, currentPosition);
+
+      if (progress < 1) {
+        requestAnimationFrame(animation);
+      } else {
+        console.log('=== REACHED CTA SECTION ===');
+      }
+    };
+
+    requestAnimationFrame(animation);
+  };
 
   return (
     <div className="relative overflow-hidden bg-black">
       {/* Floating Navbar */}
       <div className="fixed inset-x-0 top-0 z-[100]">
-        <FloatingNavbar />
+        <FloatingNavbar onBeginStoryClick={scrollToCTA} />
       </div>
 
       {/* Scrollable container */}
       <main style={{ height: `${totalHeight}px` }} className="bg-black">
-        {/* Hero */}
+        {/* Hero - Pass navigation function as prop */}
         {heroVisible && (
           <div
             className="fixed inset-0 w-full"
@@ -193,7 +286,7 @@ function App() {
               transform: `translateY(${-heroOffset}px)`,
             }}
           >
-            <Hero />
+            <Hero onExploreClick={scrollToLatestProjects} />
           </div>
         )}
 
@@ -349,7 +442,7 @@ function App() {
           </div>
         )}
 
-        {/* Latest Projects Section (NEW) */}
+        {/* Latest Projects Section */}
         {latestProjectsVisible && (
           <div
             className="fixed inset-0 w-full"

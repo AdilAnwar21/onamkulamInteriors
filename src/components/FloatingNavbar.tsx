@@ -2,7 +2,12 @@ import { useState, useEffect } from 'react';
 import { Menu, X, Home, User, Briefcase, Mail, ArrowRight } from 'lucide-react';
 import logo from '../assets/images/LOGO 01.png';
 
-const FloatingNavbar = ({ activeSection }: { activeSection?: string }) => {
+interface FloatingNavbarProps {
+  activeSection?: string;
+  onBeginStoryClick?: () => void;
+}
+
+const FloatingNavbar = ({ activeSection, onBeginStoryClick }: FloatingNavbarProps) => {
   const [scrollY, setScrollY] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [deviceType, setDeviceType] = useState<'mobile' | 'tablet' | 'desktop'>('desktop');
@@ -13,12 +18,10 @@ const FloatingNavbar = ({ activeSection }: { activeSection?: string }) => {
       const height = window.innerHeight;
       const userAgent = navigator.userAgent;
       
-      // Check for iPad specifically (including iPad Pro)
       const isIPad = /iPad/.test(userAgent) || 
                    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) ||
                    (width >= 768 && width <= 1366 && 'ontouchstart' in window);
       
-      // Portrait mode detection for tablets
       const isPortrait = height > width;
       
       if (width < 768) {
@@ -26,7 +29,6 @@ const FloatingNavbar = ({ activeSection }: { activeSection?: string }) => {
       } else if ((width <= 1366 || isIPad) && (!isPortrait || width >= 768)) {
         setDeviceType('tablet');
       } else if (isPortrait && width >= 768 && width < 1024) {
-        // iPad in portrait mode - treat more like mobile for better UX
         setDeviceType('mobile');
       } else {
         setDeviceType('desktop');
@@ -47,7 +49,6 @@ const FloatingNavbar = ({ activeSection }: { activeSection?: string }) => {
     };
   }, []);
 
-  // Calculate navbar expansion based on scroll
   const heroHeight = window.innerHeight;
   const scrollProgress = Math.min(scrollY / (heroHeight * 0.6), 1);
 
@@ -58,14 +59,12 @@ const FloatingNavbar = ({ activeSection }: { activeSection?: string }) => {
     { name: 'Contact', icon: Mail },
   ];
 
-  // Easing function
   const easeInOutCubic = (t: number) => {
     return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
   };
 
   const smoothProgress = easeInOutCubic(scrollProgress);
 
-  // Responsive navbar calculations
   const getNavbarWidth = () => {
     if (scrollProgress === 0) return 'auto';
     
@@ -97,7 +96,6 @@ const FloatingNavbar = ({ activeSection }: { activeSection?: string }) => {
     return `translateX(-${moveDistance}px)`;
   };
 
-  // Crystal clear glass background with higher transparency
   const getNavbarBackground = () => {
     if (scrollProgress === 0) return 'transparent';
     return `linear-gradient(
@@ -125,10 +123,8 @@ const FloatingNavbar = ({ activeSection }: { activeSection?: string }) => {
   if (deviceType === 'mobile') {
     return (
       <>
-        {/* Mobile Sticky Navbar with crystal clear background */}
         <nav className="fixed top-0 left-0 right-0 z-50 bg-white/15 backdrop-blur-3xl border-white/30">
           <div className="flex items-center justify-between px-6 py-4">
-            {/* Logo */}
             <div className="text-black font-bold text-lg tracking-wider">
               <div className="flex items-center">
                 <img
@@ -139,7 +135,6 @@ const FloatingNavbar = ({ activeSection }: { activeSection?: string }) => {
               </div>
             </div>
 
-            {/* Hamburger Menu */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="text-black p-2 hover:bg-white/25 rounded-full transition-all duration-300 hover:scale-110 active:scale-95"
@@ -159,7 +154,6 @@ const FloatingNavbar = ({ activeSection }: { activeSection?: string }) => {
           </div>
         </nav>
 
-        {/* Mobile Dropdown */}
         {isMenuOpen && (
           <>
             <div
@@ -193,9 +187,14 @@ const FloatingNavbar = ({ activeSection }: { activeSection?: string }) => {
                   );
                 })}
 
-                {/* Say Hello Button */}
                 <div className="pt-3 border-t border-black/20 animate-in slide-in-from-bottom-2 fade-in duration-400 delay-400">
-                  <button className="w-full bg-black/10 text-black px-6 py-3 rounded-full flex items-center justify-center space-x-3 hover:bg-black/20 transition-all duration-300 hover:scale-105 active:scale-95">
+                  <button 
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      onBeginStoryClick?.();
+                    }}
+                    className="w-full bg-black/10 text-black px-6 py-3 rounded-full flex items-center justify-center space-x-3 hover:bg-black/20 transition-all duration-300 hover:scale-105 active:scale-95"
+                  >
                     <span className="font-medium">Begin Your Story</span>
                     <div className="bg-yellow-400 rounded-full p-1 transition-all duration-300 hover:rotate-12">
                       <ArrowRight className="w-4 h-4 text-black" />
@@ -229,7 +228,6 @@ const FloatingNavbar = ({ activeSection }: { activeSection?: string }) => {
             transition: 'all 1.5s cubic-bezier(0.23, 1, 0.32, 1)',
           }}
         >
-          {/* Enhanced noise texture overlay for crystal glass effect */}
           <div
             className="absolute inset-0"
             style={{
@@ -239,7 +237,6 @@ const FloatingNavbar = ({ activeSection }: { activeSection?: string }) => {
             }}
           />
           <div className="flex items-center h-full px-2 relative">
-            {/* Logo */}
             <div
               className="flex items-center overflow-hidden"
               style={{
@@ -261,7 +258,6 @@ const FloatingNavbar = ({ activeSection }: { activeSection?: string }) => {
               />
             </div>
 
-            {/* Nav Items */}
             <div
               className="flex items-center space-x-1 overflow-hidden"
               style={{
@@ -318,9 +314,9 @@ const FloatingNavbar = ({ activeSection }: { activeSection?: string }) => {
               })}
             </div>
 
-            {/* Say Hello Button */}
             <div className="ml-auto">
               <button
+                onClick={onBeginStoryClick}
                 className={`bg-white/20 text-black rounded-full flex items-center space-x-3 hover:bg-white/30 hover:scale-105 whitespace-nowrap transition-all duration-300
                   ${deviceType === 'tablet' ? 'px-5 py-2.5' : 'px-6 py-3'}`}
                 style={{ backdropFilter: 'blur(4px)' }}
