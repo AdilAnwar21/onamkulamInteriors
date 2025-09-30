@@ -7,10 +7,10 @@ const Achievements = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
 
   const achievements = [
-    { number: 27, title: "Years of Storytelling", subtitle: "Designing homes that resonate with heart and soul since 1998.", images: [ /* images... */ ] },
-    { number: 220, title: "Spaces Transformed", subtitle: "Each one a unique story we helped bring to life.", images: [ /* images... */ ] },
-    { number: 21, title: "Year Warranty Promise", subtitle: "Our promise of durability and trust, built into every detail.", images: [ /* images... */ ] },
-    { number: 45, title: "Days Avg. Turnaround", subtitle: "Average completion in just 45 days for a 2BHK, because your story can't wait.", images: [ /* images... */ ] }
+    { number: 27, title: "Years of Storytelling", subtitle: "Designing homes that resonate with heart and soul since 1998.", images: [ /* images... */ ], showPlus: true },
+    { number: 220, title: "Spaces Transformed", subtitle: "Each one a unique story we helped bring to life.", images: [ /* images... */ ], showPlus: true },
+    { number: 21, title: "Year Warranty Promise", subtitle: "Our promise of durability and trust, built into every detail.", images: [ /* images... */ ], showPlus: false },
+    { number: 45, title: "Days Avg. Turnaround", subtitle: "Average completion in just 45 days for a 2BHK, because your story can't wait.", images: [ /* images... */ ], showPlus: false }
   ];
 
   // Animate numbers
@@ -70,8 +70,8 @@ const Achievements = () => {
           {achievements.map((achievement, index) => (
             <div key={index} className={`transition-all duration-700`}>
               <div className="mb-3 sm:mb-6">
-                <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-black mb-1 sm:mb-2">
-                  {counts[index]} +
+                <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-medium text-black mb-1 sm:mb-2">
+                  {counts[index]}{achievement.showPlus ? ' +' : ''}
                 </h2>
                 <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl font-medium text-black mb-1 sm:mb-2">
                   {achievement.title}
