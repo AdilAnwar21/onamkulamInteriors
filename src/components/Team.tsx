@@ -75,7 +75,7 @@ const Team = () => {
         <div className="lg:hidden">
           {/* Section Header */}
           <div className="text-center mb-4 sm:mb-6">
-            <h2 className="text-base sm:text-lg font-medium text-gray-600 mb-1 tracking-wide">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-600 mb-1 tracking-wide">
               MEET OUR TEAM
             </h2>
             <p className="text-gray-600 leading-relaxed text-xs sm:text-sm px-2">
@@ -170,7 +170,7 @@ const Team = () => {
             
             {/* Section Header */}
             <div>
-              <h2 className="text-xl font-medium text-gray-600 mb-2 tracking-wide">
+              <h2 className="text-5xl font-semibold text-gray-600 mb-2 tracking-wide">
                 MEET OUR TEAM
               </h2>
               <p className="text-gray-600 leading-relaxed">
