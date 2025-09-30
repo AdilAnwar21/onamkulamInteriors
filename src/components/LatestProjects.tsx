@@ -5,6 +5,7 @@ const TeamSection = () => {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
 
+  console.log(hoveredProject)
   // const logoSvg = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23d4a574'/%3E%3Cpath d='M30 50 L50 35 L70 50 L50 65 Z' fill='white'/%3E%3C/svg%3E";
 
   const projects = [

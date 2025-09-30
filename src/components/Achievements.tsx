@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react';
-import { ArrowRight } from 'lucide-react';
 
 const Achievements = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -7,12 +6,7 @@ const Achievements = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
 
   // Sample images for demo
-  const sampleImages = [
-    'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=100&h=100&fit=crop',
-    'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=100&h=100&fit=crop',
-    'https://images.unsplash.com/photo-1600210492493-0946911123ea?w=100&h=100&fit=crop',
-    'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=100&h=100&fit=crop'
-  ];
+  
 
   const achievements = [
     { 
