@@ -6,53 +6,60 @@ const ServicesShowcase = () => {
   const services = [
     {
       id: '01',
-      title: 'Interior Design',
-      description: 'We create harmonious living spaces that reflect your personality while maximizing functionality and aesthetic appeal. Our team transforms ordinary rooms into extraordinary environments through thoughtful design, careful material selection, and attention to every detail.',
+      title: 'Consultation & Vision',
+      description: 'Your story begins with us listening. Our experts visit your space to understand your dreams, your needs, and the life you envision living there.',
       image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200&h=800&fit=crop',
       secondaryImage: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&h=800&fit=crop'
     },
     {
       id: '02',
-      title: 'Architecture',
-      description: 'From residential homes to commercial buildings, we design structures that stand the test of time. Our architectural approach combines innovative design with practical functionality, creating spaces that inspire and serve their purpose for generations to come.',
+      title: '3D Visualisation',
+      description: 'This is where your vision takes shape. We create detailed 3D renders, allowing you to walk through your future home and make sure every detail is a part of your story.',
       image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&h=800&fit=crop',
       secondaryImage: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&h=800&fit=crop'
     },
     {
       id: '03',
-      title: 'Project Management',
-      description: 'We ensure seamless project execution from conception to completion. Our experienced team coordinates every aspect of your project, managing timelines, budgets, and quality control to deliver exceptional results that exceed your expectations.',
+      title: 'Detailed Drawings & Approval',
+      description: 'We turn your dream into a solid plan. Once you love every detail, we finalize the drawings and sign the contract, officially beginning the creation of your story.',
+        image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&h=800&fit=crop',
+      secondaryImage: 'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=600&h=800&fit=crop'
+    },
+    {
+      id: '04',
+      title: 'Production & Quality Check',
+      description: 'Behind the scenes, our skilled artisans begin to craft the elements of your home. Each piece is meticulously made in-house and passes a rigorous quality check, ensuring every detail is perfect for your story.',
       image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200&h=800&fit=crop',
       secondaryImage: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&h=800&fit=crop'
     },
     {
-      id: '04',
-      title: 'Furniture Design',
-      description: 'Custom furniture pieces crafted to perfection for your unique space. We design and create bespoke furniture that not only complements your interior but also serves your specific functional needs with unmatched quality and attention to craftsmanship.',
+      id: '05',
+      title: 'Installation & Unboxing',
+      description: "The moment your story becomes a reality. Our professional team installs every piece with precision, transforming your space into the home you've always imagined.",
       image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=1200&h=800&fit=crop',
       secondaryImage: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600&h=800&fit=crop'
     },
     {
-      id: '05',
-      title: 'Landscape Design',
-      description: 'Transform outdoor spaces into stunning landscapes that harmonize with nature. We create beautiful gardens, patios, and outdoor living areas that extend your home into the natural environment with sustainable and aesthetic solutions.',
+      id: '06',
+      title: 'Handover & Walk-through',
+      description: 'This is your moment. We do a final walk-through with you to ensure every detail is just right before handing over the keys to your new home and all the warranty details.',
       image: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=1200&h=800&fit=crop',
       secondaryImage: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=600&h=800&fit=crop'
     },
     {
-      id: '06',
-      title: 'Renovation Services',
+      id: '07',
+      title: 'Post-Handover Support',
       description: 'Breathe new life into existing spaces with our comprehensive renovation services. We specialize in updating and modernizing homes and commercial spaces while preserving their unique character and maximizing their potential.',
       image: 'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=1200&h=800&fit=crop',
       secondaryImage: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=600&h=800&fit=crop'
     },
-    {
-      id: '07',
-      title: 'Consultation Services',
-      description: 'Professional design consultation to help you make informed decisions about your space. Our experts provide detailed analysis, recommendations, and design strategies tailored to your specific needs, budget, and lifestyle requirements.',
-      image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&h=800&fit=crop',
-      secondaryImage: 'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=600&h=800&fit=crop'
-    }
+    // {
+    //   id: '07',
+    //   title: 'Consultation Services',
+    //   description: 'Professional design consultation to help you make informed decisions about your space. Our experts provide detailed analysis, recommendations, and design strategies tailored to your specific needs, budget, and lifestyle requirements.',
+    //   image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&h=800&fit=crop',
+    //   secondaryImage: 'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=600&h=800&fit=crop'
+    // }
   ];
 
   return (
