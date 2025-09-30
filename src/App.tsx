@@ -1,38 +1,75 @@
-import { useState, useEffect } from 'react';
-import Hero from './components/Hero';
-import FloatingNavbar from './components/FloatingNavbar';
-import Achievements from './components/Achievements';
-import ExclusiveBrands from './components/partnersSection';
-import TestimonialScroll from './components/Testimonials';
-import ServicesScroll from './components/Services';
-import Quote from './components/Quote';
-import ServicesShowcase from './components/ServicesShowcase';
-import Founder from './components/Founder';
-import Team from './components/Team';
-import CTASection from './components/CTASection';
-import LatestProjects from './components/LatestProjects';
-import Footer from './components/Footer';
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+
+import Hero from "./components/Hero";
+import FloatingNavbar from "./components/FloatingNavbar";
+import Achievements from "./components/Achievements";
+import ExclusiveBrands from "./components/partnersSection";
+import TestimonialScroll from "./components/Testimonials";
+import ServicesScroll from "./components/Services";
+import Quote from "./components/Quote";
+import ServicesShowcase from "./components/ServicesShowcase";
+import Founder from "./components/Founder";
+import Team from "./components/Team";
+import CTASection from "./components/CTASection";
+import LatestProjects from "./components/LatestProjects";
+import Footer from "./components/Footer";
+
+// --- Preloader Component ---
+const Preloader = ({ onFinish }: { onFinish: () => void }) => {
+  const [show, setShow] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShow(false);
+      setTimeout(onFinish, 800); // wait for exit animation
+    }, 3000); // 3s preloader
+    return () => clearTimeout(timer);
+  }, [onFinish]);
+
+  return (
+    <AnimatePresence>
+      {show && (
+        <motion.div
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black text-white"
+          initial={{ scale: 1, opacity: 1 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 50, opacity: 0, transition: { duration: 0.8 } }}
+        >
+          <motion.h1
+            className="text-4xl font-bold tracking-widest"
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0, transition: { duration: 1 } }}
+          >
+            ONAMKULAM
+          </motion.h1>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
 
 function App() {
+  const [loading, setLoading] = useState(true);
   const [scrollY, setScrollY] = useState(0);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
     const handleResize = () => setWindowHeight(window.innerHeight);
-    window.addEventListener('scroll', handleScroll);
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("resize", handleResize);
     return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
   useEffect(() => {
-    document.documentElement.style.scrollBehavior = 'auto';
-    document.title = 'OnamKulam - Interior';
+    document.documentElement.style.scrollBehavior = "auto";
+    document.title = "OnamKulam - Interior";
     return () => {
-      document.documentElement.style.scrollBehavior = 'auto';
+      document.documentElement.style.scrollBehavior = "auto";
     };
   }, []);
 
@@ -40,12 +77,11 @@ function App() {
   const sectionDuration = heroHeight;
   const displayDuration = heroHeight;
 
-  // Hero section
+  // --- Section scroll math (same as before) ---
   const heroEnd = heroHeight * 0.9;
   const heroOffset = Math.min(scrollY * 0.4, heroHeight * 0.4);
   const heroVisible = scrollY < heroEnd + sectionDuration * 0.8;
 
-  // Achievements section
   const achievementsStart = heroHeight * 0.5;
   const achievementsSlideEnd = achievementsStart + sectionDuration;
   const achievementsDisplayEnd = achievementsSlideEnd + displayDuration;
@@ -55,21 +91,18 @@ function App() {
     scrollY >= achievementsStart &&
     scrollY < achievementsDisplayEnd + sectionDuration;
 
-  // Exclusive Brands section
   const brandsStart = achievementsDisplayEnd;
   const brandsSlideEnd = brandsStart + sectionDuration * 0.8;
   const brandsInternalScrollDuration = displayDuration * 12;
   const brandsDisplayEnd = brandsSlideEnd + brandsInternalScrollDuration;
   const brandsScroll = Math.max(0, scrollY - brandsStart);
   const brandsOffset = Math.min(heroHeight, brandsScroll);
-  
-  const rawBrandsProgress = Math.max(0, (scrollY - brandsSlideEnd)) / brandsInternalScrollDuration;
+  const rawBrandsProgress =
+    Math.max(0, scrollY - brandsSlideEnd) / brandsInternalScrollDuration;
   const brandsProgress = Math.min(1, rawBrandsProgress);
-  
   const brandsVisible =
     scrollY >= brandsStart && scrollY < brandsDisplayEnd + sectionDuration;
 
-  // Testimonials section
   const testimonialsStart = brandsDisplayEnd;
   const testimonialsSlideEnd = testimonialsStart + sectionDuration;
   const testimonialsDisplayEnd = testimonialsSlideEnd + displayDuration * 3;
@@ -83,7 +116,6 @@ function App() {
     scrollY >= testimonialsStart &&
     scrollY < testimonialsDisplayEnd + sectionDuration;
 
-  // ServicesScroll section
   const servicesScrollStart = testimonialsDisplayEnd;
   const servicesScrollSlideEnd = servicesScrollStart + sectionDuration;
   const servicesScrollInternalDuration = displayDuration * 3;
@@ -102,14 +134,12 @@ function App() {
     Math.max(0, scrollY - servicesScrollStart)
   );
 
-  // Quote section
   const quoteStart = servicesScrollDisplayEnd - sectionDuration * 0.5;
   const quoteSlideEnd = quoteStart + sectionDuration;
   const quoteInternalDuration = displayDuration * 2.5;
   const quoteDisplayEnd = quoteSlideEnd + quoteInternalDuration;
   const quoteHoldDuration = displayDuration * 1;
   const quoteCompleteEnd = quoteDisplayEnd + quoteHoldDuration;
-  
   const quoteScroll = Math.max(0, scrollY - quoteStart);
   const quoteOffset = Math.min(heroHeight, quoteScroll);
   const quoteProgress = Math.min(
@@ -117,87 +147,68 @@ function App() {
     Math.max(0, (scrollY - quoteSlideEnd)) / quoteInternalDuration
   );
   const quoteVisible =
-    scrollY >= quoteStart &&
-    scrollY < quoteCompleteEnd + sectionDuration;
+    scrollY >= quoteStart && scrollY < quoteCompleteEnd + sectionDuration;
 
-  // ServicesShowcase section
   const servicesShowcaseStart = quoteCompleteEnd;
   const servicesShowcaseSlideEnd = servicesShowcaseStart + sectionDuration;
-  const servicesShowcaseDisplayEnd = servicesShowcaseSlideEnd + displayDuration;
+  const servicesShowcaseDisplayEnd =
+    servicesShowcaseSlideEnd + displayDuration;
   const servicesShowcaseScroll = Math.max(0, scrollY - servicesShowcaseStart);
   const servicesShowcaseOffset = Math.min(heroHeight, servicesShowcaseScroll);
   const servicesShowcaseVisible =
     scrollY >= servicesShowcaseStart &&
     scrollY < servicesShowcaseDisplayEnd + sectionDuration;
 
-  // Founder section
   const founderStart = servicesShowcaseDisplayEnd;
   const founderSlideEnd = founderStart + sectionDuration;
   const founderDisplayEnd = founderSlideEnd + displayDuration;
   const founderScroll = Math.max(0, scrollY - founderStart);
   const founderOffset = Math.min(heroHeight, founderScroll);
   const founderVisible =
-    scrollY >= founderStart &&
-    scrollY < founderDisplayEnd + sectionDuration;
+    scrollY >= founderStart && scrollY < founderDisplayEnd + sectionDuration;
 
-  // Team section
   const teamStart = founderDisplayEnd;
   const teamSlideEnd = teamStart + sectionDuration;
   const teamDisplayEnd = teamSlideEnd + displayDuration;
   const teamScroll = Math.max(0, scrollY - teamStart);
   const teamOffset = Math.min(heroHeight, teamScroll);
-  const teamVisible = scrollY >= teamStart && scrollY < teamDisplayEnd + sectionDuration;
+  const teamVisible =
+    scrollY >= teamStart && scrollY < teamDisplayEnd + sectionDuration;
 
-  // CTA section
   const ctaStart = teamDisplayEnd;
   const ctaSlideEnd = ctaStart + sectionDuration;
   const ctaDisplayEnd = ctaSlideEnd + displayDuration;
   const ctaScroll = Math.max(0, scrollY - ctaStart);
   const ctaOffset = Math.min(heroHeight, ctaScroll);
-  const ctaVisible = scrollY >= ctaStart && scrollY < ctaDisplayEnd + sectionDuration;
+  const ctaVisible =
+    scrollY >= ctaStart && scrollY < ctaDisplayEnd + sectionDuration;
 
-  // Latest Projects section
   const latestProjectsStart = ctaDisplayEnd;
   const latestProjectsSlideEnd = latestProjectsStart + sectionDuration;
   const latestProjectsDisplayEnd = latestProjectsSlideEnd + displayDuration;
   const latestProjectsScroll = Math.max(0, scrollY - latestProjectsStart);
   const latestProjectsOffset = Math.min(heroHeight, latestProjectsScroll);
-  const latestProjectsVisible = scrollY >= latestProjectsStart && scrollY < latestProjectsDisplayEnd + sectionDuration;
+  const latestProjectsVisible =
+    scrollY >= latestProjectsStart &&
+    scrollY < latestProjectsDisplayEnd + sectionDuration;
 
-  // Footer section
   const footerStart = latestProjectsDisplayEnd;
   const footerScroll = Math.max(0, scrollY - footerStart);
   const footerOffset = Math.min(heroHeight, footerScroll);
   const footerVisible = scrollY >= footerStart;
 
-  // Total height
   const totalHeight = footerStart + heroHeight * 2;
 
-  // Debug: Log the scroll positions
-  useEffect(() => {
-    console.log('Latest Projects Start Position:', latestProjectsStart);
-    console.log('CTA Start Position:', ctaStart);
-    console.log('Total Height:', totalHeight);
-    console.log('Current Scroll:', scrollY);
-  }, [latestProjectsStart, ctaStart, totalHeight, scrollY]);
-
-  // Navigation function to scroll to LatestProjects with ultra-smooth animation
+  // --- Navigation Functions (same as before) ---
   const scrollToLatestProjects = () => {
-    console.log('=== SCROLLING TO LATEST PROJECTS ===');
-    console.log('Latest Projects Slide End Position:', latestProjectsSlideEnd);
-    console.log('Current position:', window.scrollY);
-
-    const targetScroll = latestProjectsSlideEnd; // Changed from latestProjectsStart
+    const targetScroll = latestProjectsSlideEnd;
     const startScroll = window.scrollY;
     const distance = targetScroll - startScroll;
-    const duration = 6000; // 6 seconds
+    const duration = 6000;
     let startTime: number | null = null;
 
-    const easeInOutQuint = (t: number): number => {
-      return t < 0.5
-        ? 16 * t * t * t * t * t
-        : 1 - Math.pow(-2 * t + 2, 5) / 2;
-    };
+    const easeInOutQuint = (t: number): number =>
+      t < 0.5 ? 16 * t * t * t * t * t : 1 - Math.pow(-2 * t + 2, 5) / 2;
 
     const animation = (currentTime: number) => {
       if (startTime === null) startTime = currentTime;
@@ -211,42 +222,23 @@ function App() {
 
       if (progress < 1) {
         requestAnimationFrame(animation);
-      } else {
-        console.log('=== REACHED LATEST PROJECTS ===');
       }
     };
 
     requestAnimationFrame(animation);
   };
 
-  // Navigation function to scroll to CTA Section with ultra-smooth animation
   const scrollToCTA = () => {
-    console.log('=== SCROLLING TO CTA SECTION ===');
-    console.log('CTA Start Position:', ctaStart);
-    console.log('CTA Slide End Position:', ctaSlideEnd);
-    console.log('Current Scroll Position:', window.scrollY);
-
-    // Scroll to ctaSlideEnd instead of ctaStart to see the section fully positioned
     const targetScroll = ctaSlideEnd;
     const startScroll = window.scrollY;
     const distance = targetScroll - startScroll;
+    if (distance <= 0) return;
 
-    console.log('Distance to travel:', distance);
-
-    // If already at or past CTA, don't scroll
-    if (distance <= 0) {
-      console.log('Already at or past CTA section');
-      return;
-    }
-
-    const duration = 6000; // 6 seconds
+    const duration = 6000;
     let startTime: number | null = null;
 
-    const easeInOutQuint = (t: number): number => {
-      return t < 0.5
-        ? 16 * t * t * t * t * t
-        : 1 - Math.pow(-2 * t + 2, 5) / 2;
-    };
+    const easeInOutQuint = (t: number): number =>
+      t < 0.5 ? 16 * t * t * t * t * t : 1 - Math.pow(-2 * t + 2, 5) / 2;
 
     const animation = (currentTime: number) => {
       if (startTime === null) startTime = currentTime;
@@ -260,14 +252,18 @@ function App() {
 
       if (progress < 1) {
         requestAnimationFrame(animation);
-      } else {
-        console.log('=== REACHED CTA SECTION ===');
       }
     };
 
     requestAnimationFrame(animation);
   };
 
+  // --- Show Preloader ---
+  if (loading) {
+    return <Preloader onFinish={() => setLoading(false)} />;
+  }
+
+  // --- Render Sections ---
   return (
     <div className="relative overflow-hidden bg-black">
       {/* Floating Navbar */}
@@ -277,7 +273,6 @@ function App() {
 
       {/* Scrollable container */}
       <main style={{ height: `${totalHeight}px` }} className="bg-black">
-        {/* Hero - Pass navigation function as prop */}
         {heroVisible && (
           <div
             className="fixed inset-0 w-full"
@@ -290,7 +285,6 @@ function App() {
           </div>
         )}
 
-        {/* Achievements */}
         {achievementsVisible && (
           <div
             className="fixed inset-0 w-full"
@@ -299,14 +293,13 @@ function App() {
               transform:
                 scrollY <= achievementsSlideEnd
                   ? `translateY(${heroHeight - achievementsOffset}px)`
-                  : `translateY(0px)`,
+                  : "translateY(0px)",
             }}
           >
             <Achievements />
           </div>
         )}
 
-        {/* Exclusive Brands */}
         {brandsVisible && (
           <div
             className="fixed inset-0 w-full"
@@ -315,15 +308,14 @@ function App() {
               transform:
                 scrollY <= brandsSlideEnd
                   ? `translateY(${heroHeight - brandsOffset}px)`
-                  : `translateY(0px)`,
-              transition: 'transform 0.05s linear',
+                  : "translateY(0px)",
+              transition: "transform 0.05s linear",
             }}
           >
             <ExclusiveBrands scrollProgress={brandsProgress} />
           </div>
         )}
 
-        {/* Testimonials */}
         {testimonialsVisible && (
           <div
             className="fixed inset-0 w-full bg-black"
@@ -332,15 +324,14 @@ function App() {
               transform:
                 scrollY <= testimonialsSlideEnd
                   ? `translateY(${heroHeight - testimonialsOffset}px)`
-                  : `translateY(0px)`,
-              transition: 'transform 0.08s ease-out',
+                  : "translateY(0px)",
+              transition: "transform 0.08s ease-out",
             }}
           >
             <TestimonialScroll scrollProgress={testimonialsProgress} />
           </div>
         )}
 
-        {/* ServicesScroll */}
         {servicesScrollVisible && (
           <div
             className="fixed inset-0 w-full bg-black"
@@ -349,15 +340,14 @@ function App() {
               transform:
                 scrollY <= servicesScrollSlideEnd
                   ? `translateY(${heroHeight - servicesScrollOffset}px)`
-                  : `translateY(0px)`,
-              transition: 'transform 0.08s ease-out',
+                  : "translateY(0px)",
+              transition: "transform 0.08s ease-out",
             }}
           >
             <ServicesScroll scrollProgress={servicesScrollProgress} />
           </div>
         )}
 
-        {/* Quote Section */}
         {quoteVisible && (
           <div
             className="fixed inset-0 w-full bg-white"
@@ -366,15 +356,14 @@ function App() {
               transform:
                 scrollY <= quoteSlideEnd
                   ? `translateY(${heroHeight - quoteOffset}px)`
-                  : `translateY(0px)`,
-              transition: 'transform 0.08s ease-out',
+                  : "translateY(0px)",
+              transition: "transform 0.08s ease-out",
             }}
           >
             <Quote scrollProgress={quoteProgress} />
           </div>
         )}
 
-        {/* ServicesShowcase */}
         {servicesShowcaseVisible && (
           <div
             className="fixed inset-0 w-full bg-black"
@@ -383,15 +372,14 @@ function App() {
               transform:
                 scrollY <= servicesShowcaseSlideEnd
                   ? `translateY(${heroHeight - servicesShowcaseOffset}px)`
-                  : `translateY(0px)`,
-              transition: 'transform 0.1s ease-out',
+                  : "translateY(0px)",
+              transition: "transform 0.1s ease-out",
             }}
           >
             <ServicesShowcase />
           </div>
         )}
 
-        {/* Founder */}
         {founderVisible && (
           <div
             className="fixed inset-0 w-full bg-white"
@@ -400,15 +388,14 @@ function App() {
               transform:
                 scrollY <= founderSlideEnd
                   ? `translateY(${heroHeight - founderOffset}px)`
-                  : `translateY(0px)`,
-              transition: 'transform 0.1s ease-out',
+                  : "translateY(0px)",
+              transition: "transform 0.1s ease-out",
             }}
           >
             <Founder />
           </div>
         )}
 
-        {/* Team */}
         {teamVisible && (
           <div
             className="fixed inset-0 w-full bg-gray-50"
@@ -417,15 +404,14 @@ function App() {
               transform:
                 scrollY <= teamSlideEnd
                   ? `translateY(${heroHeight - teamOffset}px)`
-                  : `translateY(0px)`,
-              transition: 'transform 0.1s ease-out',
+                  : "translateY(0px)",
+              transition: "transform 0.1s ease-out",
             }}
           >
             <Team />
           </div>
         )}
 
-        {/* CTA Section */}
         {ctaVisible && (
           <div
             className="fixed inset-0 w-full"
@@ -434,15 +420,14 @@ function App() {
               transform:
                 scrollY <= ctaSlideEnd
                   ? `translateY(${heroHeight - ctaOffset}px)`
-                  : `translateY(0px)`,
-              transition: 'transform 0.1s ease-out',
+                  : "translateY(0px)",
+              transition: "transform 0.1s ease-out",
             }}
           >
             <CTASection />
           </div>
         )}
 
-        {/* Latest Projects Section */}
         {latestProjectsVisible && (
           <div
             className="fixed inset-0 w-full"
@@ -451,8 +436,8 @@ function App() {
               transform:
                 scrollY <= latestProjectsSlideEnd
                   ? `translateY(${heroHeight - latestProjectsOffset}px)`
-                  : `translateY(0px)`,
-              transition: 'transform 0.1s ease-out',
+                  : "translateY(0px)",
+              transition: "transform 0.1s ease-out",
               opacity: scrollY >= latestProjectsStart ? 1 : 0,
             }}
           >
@@ -460,14 +445,13 @@ function App() {
           </div>
         )}
 
-        {/* Footer */}
         {footerVisible && (
           <div
             className="fixed inset-0 w-full"
             style={{
               zIndex: 100,
               transform: `translateY(${heroHeight - footerOffset}px)`,
-              transition: 'transform 0.1s ease-out',
+              transition: "transform 0.1s ease-out",
             }}
           >
             <Footer />
