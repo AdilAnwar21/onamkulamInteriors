@@ -251,7 +251,7 @@ const ExclusiveBrandsComplete: React.FC<{ scrollProgress?: number }> = ({ scroll
         >
           {/* Title with word-by-word reveal */}
           <div className="mb-6 md:mb-12 lg:mb-16 text-center mt-8 md:mt-0">
-            <h2 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl xl:text-6xl font-light tracking-wider leading-tight">
+            <h2 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-wider leading-tight">
               <div
                 className="smooth-transform"
                 style={{
@@ -303,11 +303,6 @@ const ExclusiveBrandsComplete: React.FC<{ scrollProgress?: number }> = ({ scroll
                   <h3 className="text-base sm:text-lg md:text-2xl font-light tracking-wide">
                     {brand.name}
                   </h3>
-                  <div className={`w-8 sm:w-10 md:w-12 h-0.5 mx-auto mt-3 md:mt-4 opacity-60 ${
-                    isWhiteMode 
-                      ? 'bg-gradient-to-r from-transparent via-black to-transparent' 
-                      : 'bg-gradient-to-r from-transparent via-white to-transparent'
-                  }`} />
                 </div>
               );
             })}
@@ -337,7 +332,7 @@ const ExclusiveBrandsComplete: React.FC<{ scrollProgress?: number }> = ({ scroll
               transform: `translateY(${Math.max(0, (1 - partnersProgress) * 25)}px)`
             }}
           >
-            <h2 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl xl:text-6xl font-light tracking-wider">
+            <h2 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-wider">
               OUR PARTNERS
             </h2>
           </div>
