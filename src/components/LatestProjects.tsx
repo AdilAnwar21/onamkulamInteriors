@@ -6,6 +6,7 @@ const TeamSection = () => {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
   
+  console.log(hoveredProject,'hoveredProject')
   const projects = [
     {
       id: 1,

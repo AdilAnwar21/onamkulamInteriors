@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { ArrowRight } from "lucide-react";
 
 interface TestimonialScrollProps {
   scrollProgress: number;
@@ -115,6 +116,14 @@ const TestimonialScroll = ({ scrollProgress }: TestimonialScrollProps) => {
                 <p className={`text-xs sm:text-sm ${isSecondSection ? 'opacity-70' : 'opacity-60'}`}>{testimonial.role}</p>
                 {/* Location only shown on desktop, already in mobile overlay */}
                 <p className={`hidden md:block text-xs sm:text-sm ${isSecondSection ? 'opacity-50' : 'opacity-40'}`}>{testimonial.location}</p>
+              </div>
+              
+              {/* Read More Icon - Visible on all slides */}
+              <div className="mt-6 lg:mt-8 flex items-center justify-center md:justify-start gap-2 cursor-pointer group">
+                <span className={`text-sm lg:text-base font-medium ${isSecondSection ? 'text-white' : 'text-black'}`}>
+                  Read More
+                </span>
+                <ArrowRight className={`w-5 h-5 lg:w-6 lg:h-6 ${isSecondSection ? 'text-white' : 'text-black'} transition-transform duration-300 group-hover:scale-125 group-hover:translate-x-1`} />
               </div>
             </div>
           </div>
