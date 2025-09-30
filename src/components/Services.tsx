@@ -52,14 +52,8 @@ const ServicesScroll = ({ scrollProgress }: ServicesScrollProps) => {
   const adjustedProgress = isActive ? Math.max(0, (progress - threshold) / (1 - threshold)) : 0;
   const smoothProgress = adjustedProgress * totalItems;
   const activeIndex = Math.min(Math.floor(smoothProgress), totalItems - 1);
-  // const nextIndex = Math.min(activeIndex + 1, totalItems - 1);
-  // const transitionProgress = smoothProgress - activeIndex;
   
   const currentItem = allItems[activeIndex] || allItems[0] || { title: 'Services', image: '', serviceId: 1 };
-  // const nextItem = allItems[nextIndex] || currentItem;
-
-  // Calculate smooth transition progress within current item
-//   const itemProgress = (progress * totalItems) % 1;
 
   return (
     <div 
@@ -68,21 +62,22 @@ const ServicesScroll = ({ scrollProgress }: ServicesScrollProps) => {
     >
       {/* Left Side - Text */}
       <div className="flex flex-col justify-center items-start w-full lg:w-1/2 px-6 sm:px-8 md:px-12 lg:px-16 py-8 lg:py-0 relative z-10">
-        {/* <span className="text-xs sm:text-sm text-gray-400 mb-2">
-          {String(activeIndex + 1).padStart(2, '0')} / {String(totalItems).padStart(2, '0')}
-        </span>
-        <span className="text-xs sm:text-sm text-gray-400 uppercase tracking-wider mb-4">
-          Services
-        </span> */}
         
-        <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light leading-tight mb-6 lg:mb-8 transition-all duration-1000 ease-out">
-          {currentItem?.title || 'Services'}
+        <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light leading-tight mb-6 lg:mb-8 transition-all duration-1000 ease-out" style={{ color: '#F0E5DA' }}>
+          {isActive ? (currentItem?.title || 'Services') : 'Our Services'}
         </h2>
         
-        <p className="text-sm sm:text-base text-gray-300 mb-6 lg:mb-8 max-w-md leading-relaxed transition-all duration-800 ease-out">
-          Transform your space with our expert {currentItem?.title?.toLowerCase() || 'design'} services. 
-          We bring creativity and precision to every project.
-        </p>
+        {!isActive ? (
+          <blockquote className="text-sm sm:text-base text-gray-300 mb-6 lg:mb-8 max-w-md leading-relaxed transition-all duration-800 ease-out border-l-2 pl-4 italic" style={{ borderColor: '#F0E5DA' }}>
+            "Design is not just what it looks like and feels like. Design is how it works."
+            <footer className="text-xs mt-2 text-gray-400">— Steve Jobs</footer>
+          </blockquote>
+        ) : (
+          <p className="text-sm sm:text-base text-gray-300 mb-6 lg:mb-8 max-w-md leading-relaxed transition-all duration-800 ease-out">
+            Transform your space with our expert {currentItem?.title?.toLowerCase() || 'design'} services. 
+            We bring creativity and precision to every project.
+          </p>
+        )}
         
         <button className="flex items-center gap-2 text-white hover:opacity-80 transition-opacity duration-300 text-sm sm:text-base group">
           <span>View All Projects</span>
@@ -107,13 +102,14 @@ const ServicesScroll = ({ scrollProgress }: ServicesScrollProps) => {
       {/* Right Side - Scrolling Images */}
       <div className="relative w-full h-1/2 lg:w-1/2 lg:h-full overflow-hidden">
         {/* Background for smooth transitions */}
-        <div className="absolute inset-0 bg-gray-900" />
+        <div className="absolute inset-0" style={{ backgroundColor: '#F0E5DA' }} />
         
-        {/* Image container with smoother transitions - only moves when section is active */}
+        {/* Image container with smoother transitions - pops from bottom */}
         <div
-          className="absolute inset-0 transition-transform duration-[1200ms] ease-[cubic-bezier(0.25,0.46,0.45,0.94)]"
+          className="absolute inset-0 transition-all duration-[1500ms] ease-[cubic-bezier(0.34,1.56,0.64,1)]"
           style={{
-            transform: isActive ? `translateY(-${smoothProgress * 100}%)` : `translateY(0%)`,
+            transform: isActive ? `translateY(-${smoothProgress * 100}%)` : `translateY(100%)`,
+            opacity: isActive ? 1 : 0,
           }}
         >
           {allItems.map((item, index) => (
@@ -156,8 +152,6 @@ const ServicesScroll = ({ scrollProgress }: ServicesScrollProps) => {
             />
           ))}
         </div>
-
-        
       </div>
     </div>
   );
