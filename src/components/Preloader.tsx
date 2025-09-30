@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const Preloader = ({ onFinish }: { onFinish: () => void }) => {
+interface PreloaderProps {
+  onFinish: () => void;
+}
+
+const Preloader = ({ onFinish }: PreloaderProps) => {
   const [show, setShow] = useState(true);
   const text = "ONAMKULAM";
 

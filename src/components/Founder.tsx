@@ -55,13 +55,13 @@ const Founder = () => {
           {/* Quote */}
           <div className="relative px-2 sm:px-4">
             <div className="absolute -left-2 -top-2 text-3xl sm:text-4xl text-amber-200 font-serif">
-              "
+              &ldquo;
             </div>
             <blockquote className="text-base sm:text-lg text-amber-800 leading-snug italic px-4">
               {founderData.quote}
             </blockquote>
             <div className="absolute -right-2 -bottom-3 text-3xl sm:text-4xl text-amber-200 font-serif">
-              "
+              &rdquo;
             </div>
           </div>
 
@@ -110,13 +110,13 @@ const Founder = () => {
             {/* Quote */}
             <div className="relative">
               <div className="absolute -left-4 -top-2 text-6xl text-amber-200 font-serif">
-                "
+                &ldquo;
               </div>
               <blockquote className="text-xl lg:text-2xl text-amber-800 leading-relaxed italic pl-8 pr-4">
                 {founderData.quote}
               </blockquote>
               <div className="absolute -right-4 -bottom-6 text-6xl text-amber-200 font-serif">
-                "
+                &rdquo;
               </div>
             </div>
 
