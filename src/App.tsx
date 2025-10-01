@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-
+import Preloader from "./components/Preloader";
 import Hero from "./components/Hero";
 import FloatingNavbar from "./components/FloatingNavbar";
 import Achievements from "./components/Achievements";
@@ -16,38 +16,38 @@ import LatestProjects from "./components/LatestProjects";
 import Footer from "./components/Footer";
 
 // --- Preloader Component ---
-const Preloader = ({ onFinish }: { onFinish: () => void }) => {
-  const [show, setShow] = useState(true);
+// const Preloader = ({ onFinish }: { onFinish: () => void }) => {
+//   const [show, setShow] = useState(true);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShow(false);
-      setTimeout(onFinish, 800); // wait for exit animation
-    }, 3000); // 3s preloader
-    return () => clearTimeout(timer);
-  }, [onFinish]);
+//   useEffect(() => {
+//     const timer = setTimeout(() => {
+//       setShow(false);
+//       setTimeout(onFinish, 800);
+//     }, 3000);
+//     return () => clearTimeout(timer);
+//   }, [onFinish]);
 
-  return (
-    <AnimatePresence>
-      {show && (
-        <motion.div
-          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black text-white"
-          initial={{ scale: 1, opacity: 1 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 50, opacity: 0, transition: { duration: 0.8 } }}
-        >
-          <motion.h1
-            className="text-4xl font-bold tracking-widest"
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0, transition: { duration: 1 } }}
-          >
-            ONAMKULAM
-          </motion.h1>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
-};
+//   return (
+//     <AnimatePresence>
+//       {show && (
+//         <motion.div
+//           className="fixed inset-0 z-[9999] flex items-center justify-center bg-black text-white"
+//           initial={{ scale: 1, opacity: 1 }}
+//           animate={{ scale: 1, opacity: 1 }}
+//           exit={{ scale: 50, opacity: 0, transition: { duration: 0.8 } }}
+//         >
+//           <motion.h1
+//             className="text-4xl font-bold tracking-widest"
+//             initial={{ opacity: 0, y: 40 }}
+//             animate={{ opacity: 1, y: 0, transition: { duration: 1 } }}
+//           >
+//             ONAMKULAM
+//           </motion.h1>
+//         </motion.div>
+//       )}
+//     </AnimatePresence>
+//   );
+// };
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -74,10 +74,11 @@ function App() {
   }, []);
 
   const heroHeight = Math.min(windowHeight, 800);
-  const sectionDuration = heroHeight;
-  const displayDuration = heroHeight;
+  // Balanced timing for smooth stacking with moderate speed
+  const sectionDuration = heroHeight * 0.65; // Smoother slide-in transitions
+  const displayDuration = heroHeight * 0.8; // Comfortable viewing time
 
-  // --- Section scroll math (same as before) ---
+  // --- Section scroll math ---
   const heroEnd = heroHeight * 0.9;
   const heroOffset = Math.min(scrollY * 0.4, heroHeight * 0.4);
   const heroVisible = scrollY < heroEnd + sectionDuration * 0.8;
@@ -93,7 +94,8 @@ function App() {
 
   const brandsStart = achievementsDisplayEnd;
   const brandsSlideEnd = brandsStart + sectionDuration * 0.8;
-  const brandsInternalScrollDuration = displayDuration * 12;
+  // Smooth brands scroll with good visibility
+  const brandsInternalScrollDuration = displayDuration * 8; // Balanced speed
   const brandsDisplayEnd = brandsSlideEnd + brandsInternalScrollDuration;
   const brandsScroll = Math.max(0, scrollY - brandsStart);
   const brandsOffset = Math.min(heroHeight, brandsScroll);
@@ -105,12 +107,13 @@ function App() {
 
   const testimonialsStart = brandsDisplayEnd;
   const testimonialsSlideEnd = testimonialsStart + sectionDuration;
-  const testimonialsDisplayEnd = testimonialsSlideEnd + displayDuration * 3;
+  // Smooth testimonials with better readability
+  const testimonialsDisplayEnd = testimonialsSlideEnd + displayDuration * 2.2; // Good reading pace
   const testimonialsScroll = Math.max(0, scrollY - testimonialsStart);
   const testimonialsOffset = Math.min(heroHeight, testimonialsScroll);
   const testimonialsProgress = Math.min(
     1,
-    Math.max(0, (scrollY - testimonialsSlideEnd)) / (displayDuration * 3)
+    Math.max(0, (scrollY - testimonialsSlideEnd)) / (displayDuration * 2.2)
   );
   const testimonialsVisible =
     scrollY >= testimonialsStart &&
@@ -118,7 +121,8 @@ function App() {
 
   const servicesScrollStart = testimonialsDisplayEnd;
   const servicesScrollSlideEnd = servicesScrollStart + sectionDuration;
-  const servicesScrollInternalDuration = displayDuration * 3;
+  // Balanced services scroll speed
+  const servicesScrollInternalDuration = displayDuration * 2; // Smooth viewing
   const servicesScrollDisplayEnd =
     servicesScrollSlideEnd + servicesScrollInternalDuration;
   const servicesScrollProgress = Math.min(
@@ -136,9 +140,10 @@ function App() {
 
   const quoteStart = servicesScrollDisplayEnd - sectionDuration * 0.5;
   const quoteSlideEnd = quoteStart + sectionDuration;
-  const quoteInternalDuration = displayDuration * 2.5;
+  // Smooth quote reveal with comfortable reading time
+  const quoteInternalDuration = displayDuration * 1.8; // Better pacing
   const quoteDisplayEnd = quoteSlideEnd + quoteInternalDuration;
-  const quoteHoldDuration = displayDuration * 1;
+  const quoteHoldDuration = displayDuration * 0.7; // Longer hold for impact
   const quoteCompleteEnd = quoteDisplayEnd + quoteHoldDuration;
   const quoteScroll = Math.max(0, scrollY - quoteStart);
   const quoteOffset = Math.min(heroHeight, quoteScroll);
@@ -199,23 +204,27 @@ function App() {
 
   const totalHeight = footerStart + heroHeight * 2;
 
-  // --- Navigation Functions (same as before) ---
+  // --- Navigation Functions ---
   const scrollToLatestProjects = () => {
-    const targetScroll = latestProjectsSlideEnd;
+    // Scroll to fully display Latest Projects section at the top
+    const targetScroll = latestProjectsStart + sectionDuration + displayDuration * 0.3;
     const startScroll = window.scrollY;
     const distance = targetScroll - startScroll;
-    const duration = 6000;
+    
+    if (Math.abs(distance) < 10) return; // Already there
+    
+    const duration = 2500;
     let startTime: number | null = null;
 
-    const easeInOutQuint = (t: number): number =>
-      t < 0.5 ? 16 * t * t * t * t * t : 1 - Math.pow(-2 * t + 2, 5) / 2;
+    const easeInOutCubic = (t: number): number =>
+      t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
     const animation = (currentTime: number) => {
       if (startTime === null) startTime = currentTime;
       const timeElapsed = currentTime - startTime;
       const progress = Math.min(timeElapsed / duration, 1);
 
-      const easedProgress = easeInOutQuint(progress);
+      const easedProgress = easeInOutCubic(progress);
       const currentPosition = startScroll + distance * easedProgress;
 
       window.scrollTo(0, currentPosition);
@@ -229,23 +238,25 @@ function App() {
   };
 
   const scrollToCTA = () => {
-    const targetScroll = ctaSlideEnd;
+    // Scroll to fully display CTA section at the top
+    const targetScroll = ctaStart + sectionDuration + displayDuration * 0.3;
     const startScroll = window.scrollY;
     const distance = targetScroll - startScroll;
-    if (distance <= 0) return;
+    
+    if (Math.abs(distance) < 10) return; // Already there or past it
 
-    const duration = 6000;
+    const duration = 2500;
     let startTime: number | null = null;
 
-    const easeInOutQuint = (t: number): number =>
-      t < 0.5 ? 16 * t * t * t * t * t : 1 - Math.pow(-2 * t + 2, 5) / 2;
+    const easeInOutCubic = (t: number): number =>
+      t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
     const animation = (currentTime: number) => {
       if (startTime === null) startTime = currentTime;
       const timeElapsed = currentTime - startTime;
       const progress = Math.min(timeElapsed / duration, 1);
 
-      const easedProgress = easeInOutQuint(progress);
+      const easedProgress = easeInOutCubic(progress);
       const currentPosition = startScroll + distance * easedProgress;
 
       window.scrollTo(0, currentPosition);
@@ -258,20 +269,16 @@ function App() {
     requestAnimationFrame(animation);
   };
 
-  // --- Show Preloader ---
   if (loading) {
     return <Preloader onFinish={() => setLoading(false)} />;
   }
 
-  // --- Render Sections ---
   return (
     <div className="relative overflow-hidden bg-black">
-      {/* Floating Navbar */}
       <div className="fixed inset-x-0 top-0 z-[100]">
         <FloatingNavbar onBeginStoryClick={scrollToCTA} />
       </div>
 
-      {/* Scrollable container */}
       <main style={{ height: `${totalHeight}px` }} className="bg-black">
         {heroVisible && (
           <div
@@ -280,6 +287,7 @@ function App() {
               zIndex: 10,
               transform: `translateY(${-heroOffset}px)`,
             }}
+            id='hero'
           >
             <Hero onExploreClick={scrollToLatestProjects} />
           </div>
@@ -295,6 +303,7 @@ function App() {
                   ? `translateY(${heroHeight - achievementsOffset}px)`
                   : "translateY(0px)",
             }}
+            id = "achievements"
           >
             <Achievements />
           </div>
@@ -311,6 +320,7 @@ function App() {
                   : "translateY(0px)",
               transition: "transform 0.05s linear",
             }}
+            id = "brands"
           >
             <ExclusiveBrands scrollProgress={brandsProgress} />
           </div>
@@ -327,6 +337,7 @@ function App() {
                   : "translateY(0px)",
               transition: "transform 0.08s ease-out",
             }}
+            id = "testimonials"
           >
             <TestimonialScroll scrollProgress={testimonialsProgress} />
           </div>
@@ -343,6 +354,7 @@ function App() {
                   : "translateY(0px)",
               transition: "transform 0.08s ease-out",
             }}
+            id = "services"
           >
             <ServicesScroll scrollProgress={servicesScrollProgress} />
           </div>
@@ -359,6 +371,7 @@ function App() {
                   : "translateY(0px)",
               transition: "transform 0.08s ease-out",
             }}
+            id = "quote"
           >
             <Quote scrollProgress={quoteProgress} />
           </div>
@@ -375,6 +388,7 @@ function App() {
                   : "translateY(0px)",
               transition: "transform 0.1s ease-out",
             }}
+            id = "servicesShowcase"
           >
             <ServicesShowcase />
           </div>
@@ -391,6 +405,7 @@ function App() {
                   : "translateY(0px)",
               transition: "transform 0.1s ease-out",
             }}
+            id = "founder"
           >
             <Founder />
           </div>
@@ -407,6 +422,7 @@ function App() {
                   : "translateY(0px)",
               transition: "transform 0.1s ease-out",
             }}
+            id = "team"
           >
             <Team />
           </div>
@@ -423,6 +439,7 @@ function App() {
                   : "translateY(0px)",
               transition: "transform 0.1s ease-out",
             }}
+            id = "cta"
           >
             <CTASection />
           </div>
@@ -453,6 +470,7 @@ function App() {
               transform: `translateY(${heroHeight - footerOffset}px)`,
               transition: "transform 0.1s ease-out",
             }}
+            id = "footer"
           >
             <Footer />
           </div>

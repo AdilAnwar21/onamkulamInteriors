@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const ServicesShowcase = () => {
   const [hoveredIndex, setHoveredIndex] = useState<number>(0);
+  const [isUserInteracting, setIsUserInteracting] = useState<boolean>(false);
 
   const services = [
     {
@@ -52,15 +53,28 @@ const ServicesShowcase = () => {
       description: 'Breathe new life into existing spaces with our comprehensive renovation services. We specialize in updating and modernizing homes and commercial spaces while preserving their unique character and maximizing their potential.',
       image: 'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=1200&h=800&fit=crop',
       secondaryImage: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=600&h=800&fit=crop'
-    },
-    // {
-    //   id: '07',
-    //   title: 'Consultation Services',
-    //   description: 'Professional design consultation to help you make informed decisions about your space. Our experts provide detailed analysis, recommendations, and design strategies tailored to your specific needs, budget, and lifestyle requirements.',
-    //   image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&h=800&fit=crop',
-    //   secondaryImage: 'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=600&h=800&fit=crop'
-    // }
+    }
   ];
+
+  // Auto-cycle through services every 3 seconds on desktop
+  useEffect(() => {
+    if (!isUserInteracting && window.innerWidth >= 1024) {
+      const interval = setInterval(() => {
+        setHoveredIndex((prev) => (prev + 1) % services.length);
+      }, 3000);
+
+      return () => clearInterval(interval);
+    }
+  }, [isUserInteracting, services.length]);
+
+  const handleMouseEnter = (index: number) => {
+    setIsUserInteracting(true);
+    setHoveredIndex(index);
+  };
+
+  const handleMouseLeave = () => {
+    setIsUserInteracting(false);
+  };
 
   return (
     <div className="min-h-screen bg-stone-50 flex items-center justify-center p-0">
@@ -68,7 +82,10 @@ const ServicesShowcase = () => {
         {/* Desktop Layout */}
         <div className="hidden lg:grid lg:grid-cols-5 h-full">
           {/* Left Side - Service List & Description */}
-          <div className="bg-stone-50 flex flex-col justify-center px-8 xl:px-16 py-16 col-span-2">
+          <div 
+            className="bg-stone-50 flex flex-col justify-center px-8 xl:px-16 py-16 col-span-2"
+            onMouseLeave={handleMouseLeave}
+          >
             <div className="space-y-3 xl:space-y-4 mb-8">
               {services.map((service, index) => (
                 <div
@@ -78,7 +95,7 @@ const ServicesShowcase = () => {
                       ? 'text-gray-800' 
                       : 'text-gray-400 hover:text-gray-600'
                   }`}
-                  onMouseEnter={() => setHoveredIndex(index)}
+                  onMouseEnter={() => handleMouseEnter(index)}
                 >
                   <div className="text-sm font-light min-w-[2rem]">
                     {service.id}
