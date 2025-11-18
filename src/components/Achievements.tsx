@@ -1,45 +1,38 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, memo } from 'react';
 
-const Achievements = () => {
+// 1. Wrap in memo
+const Achievements = memo(() => {
   const [isVisible, setIsVisible] = useState(false);
   const [counts, setCounts] = useState<number[]>([0, 0, 0, 0]);
   const sectionRef = useRef<HTMLDivElement>(null);
-
-  // Sample images for demo
-  
 
   const achievements = [
     { 
       number: 27, 
       title: "Years of Storytelling", 
       subtitle: "Designing homes that resonate with heart and soul since 1998.", 
-      // images: sampleImages, 
       showPlus: true 
     },
     { 
       number: 220, 
       title: "Spaces Transformed", 
       subtitle: "Each one a unique story we helped bring to life.", 
-      // images: sampleImages, 
       showPlus: true 
     },
     { 
       number: 21, 
       title: "Year Warranty Promise", 
       subtitle: "Our promise of durability and trust, built into every detail.", 
-      // images: sampleImages, 
       showPlus: false 
     },
     { 
       number: 45, 
       title: "Days Avg. Turnaround", 
       subtitle: "Average completion in just 45 days for a 2BHK, because your story can't wait.", 
-      // images: sampleImages, 
       showPlus: false 
     }
   ];
 
-  // Animate numbers
   useEffect(() => {
     let raf: number;
     if (isVisible) {
@@ -56,13 +49,12 @@ const Achievements = () => {
       setCounts(achievements.map(() => 0));
     }
     return () => cancelAnimationFrame(raf);
-  }, [isVisible]);
+  }, [isVisible]); // Depend only on isVisible
 
-  // Watch section visibility
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => setIsVisible(entry.isIntersecting),
-      { threshold: 0.3 }
+      { threshold: 0.1 } // Lowered threshold slightly for better mobile triggering
     );
     if (sectionRef.current) {
       observer.observe(sectionRef.current);
@@ -98,24 +90,6 @@ const Achievements = () => {
                   {achievement.subtitle}
                 </p>
               </div>
-              
-              {/* Images - Commented out as in your code */}
-              {/* <div className="flex -space-x-2 sm:-space-x-3 mb-6 sm:mb-0">
-                {achievement.images.map((image, imgIndex) => (
-                  <div
-                    key={imgIndex}
-                    className="relative w-10 h-10 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full overflow-hidden border-2 sm:border-3 border-white shadow-lg"
-                    style={{ zIndex: achievement.images.length - imgIndex }}
-                  >
-                    <img 
-                      src={image} 
-                      alt={`Project ${imgIndex + 1}`} 
-                      className="w-full h-full object-cover" 
-                    />
-                  </div>
-                ))}
-              </div> */}
-
               <div className="w-full h-px bg-gray-200 mt-6 sm:mt-8"></div>
             </div>
           ))}
@@ -123,6 +97,6 @@ const Achievements = () => {
       </div>
     </section>
   );
-};
+});
 
 export default Achievements;
