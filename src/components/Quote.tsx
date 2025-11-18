@@ -1,53 +1,71 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 interface QuoteProps {
   scrollProgress: number;
 }
 
-const Quote: React.FC<QuoteProps> = ({ scrollProgress }) => {
+const Quote: React.FC<QuoteProps> = memo(({ scrollProgress }) => {
   const quote = "How Your Story Unfolds";
   
-  // Calculate how many characters should be visible based on scroll progress
-  // Use 70% of scroll progress for quote, leave 30% for author and hold time
+  // Logic: Use 70% of scroll progress for the quote animation
   const totalChars = quote.length;
-  const quoteProgress = Math.min(1, scrollProgress / 0.7);
+  // Clamp progress between 0 and 1 based on the 0.7 threshold
+  const quoteProgress = Math.min(1, Math.max(0, scrollProgress / 0.7));
   const visibleChars = Math.floor(quoteProgress * totalChars);
   
-  // Calculate author visibility (starts after quote is complete, at 70% scroll progress)
-//   const authorProgress = Math.max(0, (scrollProgress - 0.7) / 0.2);
+  // Helper to reconstruct the text into words to prevent mobile line-break issues
+  const words = quote.split(' ');
+  let globalCharIndex = 0;
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-white px-8">
+    <div className="flex items-center justify-center min-h-screen bg-white px-6 sm:px-8">
       <div className="max-w-4xl mx-auto text-center">
-        {/* Main Quote */}
-        <blockquote className="text-4xl md:text-5xl lg:text-6xl font-light leading-tight text-black mb-8">
-          {quote.split('').map((char, index) => {
-            const isVisible = index < visibleChars;
-            // const charProgress = Math.max(0, Math.min(1, (visibleChars - index) / 5));
+        
+        <blockquote className="text-4xl md:text-5xl lg:text-6xl font-light leading-tight text-black mb-8 flex flex-wrap justify-center gap-y-2">
+          {words.map((word, wordIndex) => {
             
+            // Render the word wrapper
             return (
-              <span
-                key={index}
-                className={`inline-block transition-all duration-300 ease-out ${
-                  char === ' ' ? 'w-4' : ''
-                }`}
-                style={{
-                  opacity: isVisible ? 1 : 0,
-                  transform: `translateY(${isVisible ? 0 : 20}px)`,
-                  transitionDelay: `${index * 20}ms`,
-                }}
+              <span 
+                key={wordIndex} 
+                // 'whitespace-nowrap' prevents the word from breaking in the middle
+                // 'inline-block' allows transforms
+                className="inline-block whitespace-nowrap mr-[0.25em]" 
               >
-                {char === ' ' ? '\u00A0' : char}
+                {word.split('').map((char, charIndex) => {
+                  // Determine if this specific character should be visible
+                  const isVisible = globalCharIndex < visibleChars;
+                  const currentIndex = globalCharIndex;
+                  
+                  // Increment the global counter so the animation flows through the whole sentence
+                  globalCharIndex++;
+
+                  return (
+                    <span
+                      key={charIndex}
+                      className="inline-block"
+                      style={{
+                        opacity: isVisible ? 1 : 0,
+                        // Use translate3d for hardware acceleration
+                        transform: isVisible ? 'translate3d(0,0,0)' : 'translate3d(0, 20px, 0)',
+                        transition: 'opacity 0.3s ease-out, transform 0.3s ease-out',
+                        // Stagger delay slightly for a "typing" effect
+                        transitionDelay: `${currentIndex * 30}ms`,
+                        willChange: 'opacity, transform'
+                      }}
+                    >
+                      {char}
+                    </span>
+                  );
+                })}
               </span>
             );
           })}
         </blockquote>
         
-        {/* Author */}
-        
       </div>
     </div>
   );
-};
+});
 
 export default Quote;
