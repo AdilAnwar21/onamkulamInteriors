@@ -1,46 +1,46 @@
-import { useRef } from "react";
+import { useRef, memo } from "react";
 import { ArrowRight } from "lucide-react";
 
 interface TestimonialScrollProps {
   scrollProgress: number;
 }
 
-const TestimonialScroll = ({ scrollProgress }: TestimonialScrollProps) => {
+// --- STATIC DATA ---
+const testimonials = [
+  {
+    id: 1,
+    quote: "This interior design studio transformed our home into a masterpiece. The attention to detail and creativity exceeded all expectations.",
+    author: "Sarah Johnson",
+    role: "Homeowner",
+    project: "Sanur House",
+    location: "San Francisco, CA",
+    projectImage: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=1920&h=1080&fit=crop",
+    number: "01",
+  },
+  {
+    id: 2,
+    quote: "Working with HouseMood was an incredible experience. They understood our vision perfectly and brought it to life beautifully.",
+    author: "Michael Chen",
+    role: "Business Owner",
+    project: "Modern Loft",
+    location: "New York, NY",
+    projectImage: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1920&h=1080&fit=crop",
+    number: "02",
+  },
+  {
+    id: 3,
+    quote: "The team's professionalism and innovative approach to design made our renovation process smooth and enjoyable.",
+    author: "Emily Rodriguez",
+    role: "Architect",
+    project: "Urban Retreat",
+    location: "Los Angeles, CA",
+    projectImage: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1920&h=1080&fit=crop",
+    number: "03",
+  },
+];
+
+const TestimonialScroll = memo(({ scrollProgress }: TestimonialScrollProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
-
-  const testimonials = [
-    {
-      id: 1,
-      quote: "This interior design studio transformed our home into a masterpiece. The attention to detail and creativity exceeded all expectations.",
-      author: "Sarah Johnson",
-      role: "Homeowner",
-      project: "Sanur House",
-      location: "San Francisco, CA",
-      projectImage: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=1920&h=1080&fit=crop",
-      number: "01",
-    },
-    {
-      id: 2,
-      quote: "Working with HouseMood was an incredible experience. They understood our vision perfectly and brought it to life beautifully.",
-      author: "Michael Chen",
-      role: "Business Owner",
-      project: "Modern Loft",
-      location: "New York, NY",
-      projectImage: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1920&h=1080&fit=crop",
-      number: "02",
-    },
-    {
-      id: 3,
-      quote: "The team's professionalism and innovative approach to design made our renovation process smooth and enjoyable.",
-      author: "Emily Rodriguez",
-      role: "Architect",
-      project: "Urban Retreat",
-      location: "Los Angeles, CA",
-      projectImage: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1920&h=1080&fit=crop",
-      number: "03",
-    },
-  ];
-
   const totalCards = testimonials.length;
   const progress = Math.max(0, Math.min(1, scrollProgress));
 
@@ -53,73 +53,78 @@ const TestimonialScroll = ({ scrollProgress }: TestimonialScrollProps) => {
       {testimonials.map((testimonial, index) => {
         const sectionStart = index / totalCards;
         const sectionEnd = (index + 1) / totalCards;
-        const sectionProgress = Math.max(
-          0,
-          Math.min(1, (progress - sectionStart) / (sectionEnd - sectionStart))
-        );
-
-        // Each card scrolls up over the previous
+        
+        const rawSectionProgress = (progress - sectionStart) / (sectionEnd - sectionStart);
+        const sectionProgress = Math.max(0, Math.min(1, rawSectionProgress));
         const translateY = (1 - sectionProgress) * 100;
 
-        // Determine colors based on section index
         const isSecondSection = index === 1;
         const textColor = isSecondSection ? 'text-white' : 'text-black';
         const bgColor = isSecondSection ? 'bg-black' : 'bg-white';
-        const mobileOverlayBg = isSecondSection ? 'bg-black/50' : 'bg-white/50';
+        // Adjusted overlay opacity for better tablet readability
+        const mobileOverlayBg = isSecondSection ? 'bg-black/70' : 'bg-white/70'; 
         const mobileTextColor = isSecondSection ? 'text-white' : 'text-black';
 
         return (
           <div
             key={testimonial.id}
-            className="absolute inset-0 w-full h-full flex flex-col md:flex-row"
+            // FIX: Changed 'md:flex-row' to 'lg:flex-row'
+            // This ensures iPads/Tablets stack vertically for better readability
+            className="absolute inset-0 w-full h-full flex flex-col lg:flex-row"
             style={{
-              transform: `translateY(${translateY}%)`,
+              transform: `translate3d(0, ${translateY}%, 0)`,
               zIndex: index + 1,
-              transition: "transform 0.3s ease-out",
+              willChange: 'transform'
             }}
           >
             {/* Image Section */}
-            <div
-              className="w-full h-1/2 md:w-2/3 md:h-full bg-cover bg-center relative"
-              style={{
-                backgroundImage: `url(${testimonial.projectImage})`,
-              }}
-            >
-              {/* Mobile Content Overlay */}
-              <div className={`md:hidden absolute inset-0 ${mobileOverlayBg} flex flex-col justify-end p-6 ${mobileTextColor}`}>
-                <h1 className="text-4xl sm:text-5xl font-bold mb-2">{testimonial.number}</h1>
-                <h2 className="text-xl sm:text-2xl font-semibold mb-2">
+            {/* FIX: Adjusted heights. Mobile/Tablet = 50% height. Desktop = 100% height. */}
+            <div className="w-full h-1/2 lg:w-2/3 lg:h-full relative overflow-hidden">
+               <div 
+                  className="absolute inset-0 bg-cover bg-center"
+                  style={{
+                    backgroundImage: `url(${testimonial.projectImage})`,
+                    transform: `scale(${1 + (1 - sectionProgress) * 0.1})`, 
+                    transition: 'transform 0.1s linear',
+                    willChange: 'transform'
+                  }}
+               />
+
+              {/* Mobile/Tablet Overlay Content */}
+              {/* Visible on small screens and tablets (hidden on lg/desktop) */}
+              <div className={`lg:hidden absolute inset-0 ${mobileOverlayBg} flex flex-col justify-end p-6 md:p-10 ${mobileTextColor}`}>
+                <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-2">{testimonial.number}</h1>
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold mb-2">
                   {testimonial.project}
                 </h2>
-                <p className="text-sm opacity-70">{testimonial.location}</p>
+                <p className="text-sm md:text-base opacity-80">{testimonial.location}</p>
               </div>
             </div>
 
-            {/* Desktop Content Section */}
-            <div className={`flex flex-col justify-center w-full h-1/2 md:w-1/3 md:h-full ${bgColor} ${textColor} p-6 sm:p-8 lg:p-12`}>
-              {/* Desktop Number - Hidden on mobile since it's in overlay */}
-              <h1 className="hidden md:block text-5xl lg:text-7xl font-bold mb-4 lg:mb-6">{testimonial.number}</h1>
+            {/* Content Section */}
+            {/* FIX: Adjusted width/height for tablet stacking */}
+            <div className={`flex flex-col justify-center w-full h-1/2 lg:w-1/3 lg:h-full ${bgColor} ${textColor} p-6 sm:p-8 md:p-12 lg:p-12`}>
               
-              {/* Desktop Project Title - Hidden on mobile since it's in overlay */}
-              <h2 className="hidden md:block text-2xl lg:text-4xl font-semibold mb-3 lg:mb-4">
+              {/* Desktop-Only Headers (Hidden on Mobile/Tablet to avoid duplication) */}
+              <h1 className="hidden lg:block text-5xl lg:text-7xl font-bold mb-4 lg:mb-6">{testimonial.number}</h1>
+              <h2 className="hidden lg:block text-2xl lg:text-4xl font-semibold mb-3 lg:mb-4">
                 {testimonial.project}
               </h2>
               
-              {/* Quote - Visible on both */}
-              <p className="text-sm sm:text-base lg:text-lg italic mb-4 lg:mb-6 leading-relaxed">
+              {/* Quote - Increased text size for tablets (md:text-xl) */}
+              <p className="text-sm sm:text-base md:text-xl lg:text-lg italic mb-4 lg:mb-6 leading-relaxed">
                 "{testimonial.quote}"
               </p>
               
               {/* Author Info */}
               <div className="space-y-1">
-                <p className="font-medium text-sm sm:text-base">{testimonial.author}</p>
-                <p className={`text-xs sm:text-sm ${isSecondSection ? 'opacity-70' : 'opacity-60'}`}>{testimonial.role}</p>
-                {/* Location only shown on desktop, already in mobile overlay */}
-                <p className={`hidden md:block text-xs sm:text-sm ${isSecondSection ? 'opacity-50' : 'opacity-40'}`}>{testimonial.location}</p>
+                <p className="font-medium text-sm sm:text-base md:text-lg">{testimonial.author}</p>
+                <p className={`text-xs sm:text-sm md:text-base ${isSecondSection ? 'opacity-70' : 'opacity-60'}`}>{testimonial.role}</p>
+                <p className={`hidden lg:block text-xs sm:text-sm ${isSecondSection ? 'opacity-50' : 'opacity-40'}`}>{testimonial.location}</p>
               </div>
               
-              {/* Read More Icon - Visible on all slides */}
-              <div className="mt-6 lg:mt-8 flex items-center justify-center md:justify-start gap-2 cursor-pointer group">
+              {/* Read More Icon */}
+              <div className="mt-6 lg:mt-8 flex items-center justify-center lg:justify-start gap-2 cursor-pointer group">
                 <span className={`text-sm lg:text-base font-medium ${isSecondSection ? 'text-white' : 'text-black'}`}>
                   Read More
                 </span>
@@ -131,7 +136,7 @@ const TestimonialScroll = ({ scrollProgress }: TestimonialScrollProps) => {
       })}
       
       {/* Progress indicator */}
-      <div className="absolute bottom-6 right-6 z-50">
+      <div className="absolute bottom-6 right-6 z-[60]">
         <div className="flex space-x-2">
           {testimonials.map((_, index) => {
             const sectionStart = index / totalCards;
@@ -151,6 +156,6 @@ const TestimonialScroll = ({ scrollProgress }: TestimonialScrollProps) => {
       </div>
     </div>
   );
-};
+});
 
 export default TestimonialScroll;
