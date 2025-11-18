@@ -15,21 +15,11 @@ const FloatingNavbar = ({ activeSection, onBeginStoryClick }: FloatingNavbarProp
   useEffect(() => {
     const checkDeviceType = () => {
       const width = window.innerWidth;
-      const height = window.innerHeight;
-      const userAgent = navigator.userAgent;
-      
-      const isIPad = /iPad/.test(userAgent) || 
-                   (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) ||
-                   (width >= 768 && width <= 1366 && 'ontouchstart' in window);
-      
-      const isPortrait = height > width;
       
       if (width < 768) {
         setDeviceType('mobile');
-      } else if ((width <= 1366 || isIPad) && (!isPortrait || width >= 768)) {
+      } else if (width >= 768 && width < 1280) {
         setDeviceType('tablet');
-      } else if (isPortrait && width >= 768 && width < 1024) {
-        setDeviceType('mobile');
       } else {
         setDeviceType('desktop');
       }
@@ -76,10 +66,10 @@ const FloatingNavbar = ({ activeSection, onBeginStoryClick }: FloatingNavbarProp
         final: 880
       },
       tablet: {
-        initial: 180,
-        step1: 320,
-        step2: 480,
-        final: 600
+        initial: 160,
+        step1: 340,
+        step2: 540,
+        final: 720 // Fits iPad Mini (768px) with 24px margin on sides
       }
     };
     
@@ -92,7 +82,11 @@ const FloatingNavbar = ({ activeSection, onBeginStoryClick }: FloatingNavbarProp
   };
 
   const getNavbarTransform = () => {
-    const moveDistance = deviceType === 'tablet' ? smoothProgress * 150 : smoothProgress * 300;
+    // FIX: Tablet uses Flex centering now, so we remove translateX animation for it.
+    // Desktop still slides from right to left.
+    if (deviceType === 'tablet') return 'none';
+    
+    const moveDistance = smoothProgress * 300;
     return `translateX(-${moveDistance}px)`;
   };
 
@@ -123,21 +117,21 @@ const FloatingNavbar = ({ activeSection, onBeginStoryClick }: FloatingNavbarProp
   if (deviceType === 'mobile') {
     return (
       <>
-        <nav className="fixed top-0 left-0 right-0 z-50 bg-white/15 backdrop-blur-3xl border-white/30">
-          <div className="flex items-center justify-between px-6 py-4">
+        <nav className="fixed top-4 left-4 right-4 z-50 bg-white/20 backdrop-blur-xl border border-white/20 rounded-2xl shadow-lg overflow-hidden">
+          <div className="flex items-center justify-between px-4 py-2.5">
             <div className="text-black font-bold text-lg tracking-wider">
               <div className="flex items-center">
                 <img
                   src={logo}
                   alt="Logo"
-                  className="h-8 w-auto object-contain"
+                  className="h-6 w-auto object-contain"
                 />
               </div>
             </div>
 
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-black p-2 hover:bg-white/25 rounded-full transition-all duration-300 hover:scale-110 active:scale-95"
+              className="text-black p-1.5 hover:bg-white/25 rounded-full transition-all duration-300 active:scale-95"
             >
               <div
                 className={`transition-transform duration-300 ${
@@ -145,9 +139,9 @@ const FloatingNavbar = ({ activeSection, onBeginStoryClick }: FloatingNavbarProp
                 }`}
               >
                 {isMenuOpen ? (
-                  <X className="w-6 h-6" />
+                  <X className="w-5 h-5" />
                 ) : (
-                  <Menu className="w-6 h-6" />
+                  <Menu className="w-5 h-5" />
                 )}
               </div>
             </button>
@@ -161,8 +155,8 @@ const FloatingNavbar = ({ activeSection, onBeginStoryClick }: FloatingNavbarProp
               onClick={() => setIsMenuOpen(false)}
             />
 
-            <div className="fixed top-16 left-4 right-4 z-50 bg-white/98 backdrop-blur-3xl rounded-2xl border border-white/40 shadow-2xl p-6 animate-in slide-in-from-top-4 fade-in duration-300">
-              <div className="space-y-3">
+            <div className="fixed top-20 left-4 right-4 z-50 bg-white/95 backdrop-blur-3xl rounded-2xl border border-white/40 shadow-2xl p-5 animate-in slide-in-from-top-4 fade-in duration-300">
+              <div className="space-y-2">
                 {navItems.map((item, index) => {
                   const Icon = item.icon;
                   const isActive = activeSection === item.name;
@@ -210,10 +204,16 @@ const FloatingNavbar = ({ activeSection, onBeginStoryClick }: FloatingNavbarProp
   }
 
   // -------------------- TABLET & DESKTOP NAVBAR --------------------
+  // FIX: Determine layout class based on device type
+  // Desktop: Fixed right. Tablet: Fixed center (using flex justify-center on w-full wrapper).
+  const navLayoutClass = deviceType === 'tablet' 
+    ? 'fixed z-50 top-4 left-0 w-full flex justify-center pointer-events-none' 
+    : 'fixed z-50 top-6 right-6';
+
   return (
-    <nav className={`fixed z-50 ${deviceType === 'tablet' ? 'top-4 right-4' : 'top-6 right-6'}`}>
+    <nav className={navLayoutClass}>
       <div
-        className="relative"
+        className={`relative ${deviceType === 'tablet' ? 'pointer-events-auto' : ''}`}
         style={{
           width: getNavbarWidth(),
           transform: getNavbarTransform(),
@@ -224,7 +224,7 @@ const FloatingNavbar = ({ activeSection, onBeginStoryClick }: FloatingNavbarProp
           className={`rounded-full ${getBorderStyle()} ${getBackdropBlur()} ${getShadow()} overflow-hidden relative`}
           style={{
             background: getNavbarBackground(),
-            height: scrollProgress > 0.2 ? (deviceType === 'tablet' ? '64px' : '68px') : (deviceType === 'tablet' ? '52px' : '56px'),
+            height: scrollProgress > 0.2 ? (deviceType === 'tablet' ? '60px' : '68px') : (deviceType === 'tablet' ? '50px' : '56px'),
             transition: 'all 1.5s cubic-bezier(0.23, 1, 0.32, 1)',
           }}
         >
@@ -237,12 +237,13 @@ const FloatingNavbar = ({ activeSection, onBeginStoryClick }: FloatingNavbarProp
             }}
           />
           <div className="flex items-center h-full px-2 relative">
+            {/* Logo Section */}
             <div
               className="flex items-center overflow-hidden"
               style={{
                 width:
                   scrollProgress > 0.3
-                    ? `${Math.min(deviceType === 'tablet' ? 160 : 200, (scrollProgress - 0.3) * (deviceType === 'tablet' ? 260 : 320))}px`
+                    ? `${Math.min(deviceType === 'tablet' ? 130 : 200, (scrollProgress - 0.3) * (deviceType === 'tablet' ? 260 : 320))}px`
                     : '0px',
                 opacity:
                   scrollProgress > 0.4
@@ -254,16 +255,17 @@ const FloatingNavbar = ({ activeSection, onBeginStoryClick }: FloatingNavbarProp
               <img
                 src={logo}
                 alt="Logo"
-                className={`${deviceType === 'tablet' ? 'h-7' : 'h-8'} w-auto object-contain px-4`}
+                className={`${deviceType === 'tablet' ? 'h-6 pl-3' : 'h-8 px-4'} w-auto object-contain`}
               />
             </div>
 
+            {/* Nav Items */}
             <div
               className="flex items-center space-x-1 overflow-hidden"
               style={{
                 width:
                   scrollProgress > 0.1
-                    ? `${Math.min(deviceType === 'tablet' ? 280 : 450, (scrollProgress - 0.1) * (deviceType === 'tablet' ? 340 : 520))}px`
+                    ? `${Math.min(deviceType === 'tablet' ? 350 : 450, (scrollProgress - 0.1) * (deviceType === 'tablet' ? 380 : 520))}px`
                     : '0px',
                 opacity:
                   scrollProgress > 0.2
@@ -286,7 +288,7 @@ const FloatingNavbar = ({ activeSection, onBeginStoryClick }: FloatingNavbarProp
                   <button
                     key={item.name}
                     className={`flex items-center space-x-2 rounded-full group whitespace-nowrap font-medium transition-all duration-300
-                      ${deviceType === 'tablet' ? 'px-3 py-2 text-sm' : 'px-4 py-2.5 text-sm'}
+                      ${deviceType === 'tablet' ? 'px-2.5 py-2 text-xs' : 'px-4 py-2.5 text-sm'}
                       ${
                         isActive
                           ? 'bg-black text-white shadow-md'
@@ -302,7 +304,7 @@ const FloatingNavbar = ({ activeSection, onBeginStoryClick }: FloatingNavbarProp
                     }}
                   >
                     <Icon
-                      className={`${deviceType === 'tablet' ? 'w-4 h-4' : 'w-4 h-4'} transition-transform duration-300 ${
+                      className={`${deviceType === 'tablet' ? 'w-3.5 h-3.5' : 'w-4 h-4'} transition-transform duration-300 ${
                         isActive ? 'scale-110' : 'group-hover:scale-110'
                       }`}
                     />
@@ -314,18 +316,19 @@ const FloatingNavbar = ({ activeSection, onBeginStoryClick }: FloatingNavbarProp
               })}
             </div>
 
+            {/* Call to Action Button */}
             <div className="ml-auto">
               <button
                 onClick={onBeginStoryClick}
                 className={`bg-white/20 text-black rounded-full flex items-center space-x-3 hover:bg-white/30 hover:scale-105 whitespace-nowrap transition-all duration-300
-                  ${deviceType === 'tablet' ? 'px-5 py-2.5' : 'px-6 py-3'}`}
+                  ${deviceType === 'tablet' ? 'px-4 py-2' : 'px-6 py-3'}`}
                 style={{ backdropFilter: 'blur(4px)' }}
               >
-                <span className={`font-medium italic ${deviceType === 'tablet' ? 'text-sm' : 'text-base'}`}>
+                <span className={`font-medium italic ${deviceType === 'tablet' ? 'text-xs' : 'text-base'}`}>
                   Begin Your Story
                 </span>
                 <div className="bg-yellow-400 rounded-full p-1 transition-all duration-300">
-                  <ArrowRight className={`${deviceType === 'tablet' ? 'w-3.5 h-3.5' : 'w-4 h-4'} text-black`} />
+                  <ArrowRight className={`${deviceType === 'tablet' ? 'w-3 h-3' : 'w-4 h-4'} text-black`} />
                 </div>
               </button>
             </div>
