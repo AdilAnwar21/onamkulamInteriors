@@ -59,10 +59,11 @@ const ServicesScroll = memo(({ scrollProgress }: ServicesScrollProps) => {
       className="flex flex-col lg:flex-row w-full h-screen bg-black text-white overflow-hidden"
     >
       {/* --- LEFT SIDE (Text) --- */}
-      <div className="flex flex-col justify-center items-start w-full lg:w-1/2 px-6 sm:px-8 md:px-12 lg:px-16 py-8 lg:py-0 relative z-10">
+      {/* FIX: Added 'pt-24' for mobile to clear the floating navbar */}
+      {/* FIX: Added 'lg:pt-0' to reset it on desktop */}
+      <div className="flex flex-col justify-center items-start w-full lg:w-1/2 px-6 sm:px-8 md:px-12 lg:px-16 py-8 pt-24 lg:py-0 lg:pt-0 relative z-10">
         
         {/* Title */}
-        {/* Fixed min-height prevents jumping when title length changes */}
         <div className="mb-4 lg:mb-6 min-h-[4rem] flex items-center w-full">
            <h2 
              key={isActive ? currentItem.title : 'default'}
@@ -73,7 +74,7 @@ const ServicesScroll = memo(({ scrollProgress }: ServicesScrollProps) => {
            </h2>
         </div>
         
-        {/* Description Block - REMOVED ABSOLUTE POSITIONING to fix layout */}
+        {/* Description Block */}
         <div className="w-full mb-8 min-h-[6rem]">
             {!isActive ? (
                 <blockquote className="w-full text-sm sm:text-base text-gray-300 max-w-md leading-relaxed border-l-2 pl-4 italic animate-fade-in" style={{ borderColor: '#F0E5DA' }}>
@@ -88,7 +89,7 @@ const ServicesScroll = memo(({ scrollProgress }: ServicesScrollProps) => {
             )}
         </div>
         
-        {/* Button - Now sits naturally below text */}
+        {/* Button */}
         <button className="flex items-center gap-2 text-white hover:opacity-80 transition-opacity duration-300 text-sm sm:text-base group">
           <span>View All Projects</span>
           <span className="transform transition-transform group-hover:translate-x-1">→</span>
