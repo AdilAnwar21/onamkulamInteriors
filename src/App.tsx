@@ -14,14 +14,63 @@ import CTASection from "./components/CTASection";
 import LatestProjects from "./components/LatestProjects";
 import Footer from "./components/Footer";
 
-// --- OPTIMIZATION: Hardware Acceleration ---
+// --- TYPES ---
+interface ScrollCalculations {
+  heroOffset: number;
+  heroVisible: boolean;
+  achievementsOffset: number;
+  achievementsVisible: boolean;
+  achievementsSlideEnd: number;
+  brandsOffset: number;
+  brandsVisible: boolean;
+  brandsSlideEnd: number;
+  brandsProgress: number;
+  testimonialsOffset: number;
+  testimonialsVisible: boolean;
+  testimonialsSlideEnd: number;
+  testimonialsProgress: number;
+  servicesScrollOffset: number;
+  servicesScrollVisible: boolean;
+  servicesScrollSlideEnd: number;
+  servicesScrollProgress: number;
+  quoteOffset: number;
+  quoteVisible: boolean;
+  quoteSlideEnd: number;
+  quoteProgress: number;
+  servicesShowcaseOffset: number;
+  servicesShowcaseVisible: boolean;
+  servicesShowcaseSlideEnd: number;
+  founderOffset: number;
+  founderVisible: boolean;
+  founderSlideEnd: number;
+  teamOffset: number;
+  teamVisible: boolean;
+  teamSlideEnd: number;
+  ctaOffset: number;
+  ctaVisible: boolean;
+  ctaSlideEnd: number;
+  ctaStart: number;
+  latestProjectsOffset: number;
+  latestProjectsVisible: boolean;
+  latestProjectsSlideEnd: number;
+  latestProjectsStart: number;
+  footerOffset: number;
+  footerVisible: boolean;
+  totalHeight: number;
+  heroHeight: number;
+  sectionDuration: number;
+  displayDuration: number;
+}
+
+// --- STYLES ---
+// Hardware acceleration styles to prevent mobile lag
 const layerStyle: React.CSSProperties = {
   position: 'fixed',
   top: 0,
   left: 0,
   width: '100%',
   height: '100%',
-  willChange: 'transform', // Hints browser to use GPU
+  willChange: 'transform', 
   backfaceVisibility: 'hidden',
   WebkitBackfaceVisibility: 'hidden',
   perspective: 1000,
@@ -33,7 +82,8 @@ function App() {
   const [scrollY, setScrollY] = useState(0);
   const [windowHeight, setWindowHeight] = useState(typeof window !== 'undefined' ? window.innerHeight : 800);
 
-  // --- OPTIMIZATION: Scroll Loop ---
+  // --- SCROLL LOOP ---
+  // Throttled using requestAnimationFrame for 60fps performance
   useEffect(() => {
     let ticking = false;
 
@@ -70,7 +120,7 @@ function App() {
     };
   }, []);
 
-  // --- LOGIC FIX: Clean 1:1 Scrolling Math ---
+  // --- CALCULATIONS ---
   const {
     heroOffset, heroVisible,
     achievementsOffset, achievementsVisible, achievementsSlideEnd,
@@ -86,20 +136,18 @@ function App() {
     footerOffset, footerVisible,
     totalHeight, heroHeight,
     sectionDuration, displayDuration
-  } = useMemo(() => {
+  } = useMemo<ScrollCalculations>(() => {
     const heroHeightVal = Math.min(windowHeight, 800);
-    const sectionDurationVal = heroHeightVal; // FIX: Duration must equal height for 1:1 scroll
+    const sectionDurationVal = heroHeightVal; // Fixed: Duration equals height for 1:1 scroll
     const displayDurationVal = heroHeightVal * 0.8;
 
     const heroEnd = heroHeightVal * 0.9;
     const heroOffsetVal = Math.min(scrollY * 0.4, heroHeightVal * 0.4);
     const heroVisibleVal = scrollY < heroEnd + sectionDurationVal;
 
-    // Helper to calculate offsets purely based on math, no arbitrary cutting
+    // Helper: Calculates strictly clamped offset (0 to heroHeight)
     const calculateOffset = (start: number) => {
       const relativeScroll = scrollY - start;
-      // If we haven't reached start, offset is 0.
-      // If we scroll past, it clamps at heroHeightVal (effectively 0 transform)
       return Math.min(heroHeightVal, Math.max(0, relativeScroll));
     };
 
@@ -256,7 +304,6 @@ function App() {
           <Hero onExploreClick={scrollToLatestProjects} />
         </div>
 
-        {/* KEY FIX: Removed ternary logic inside transform. Relying on pure offset math. */}
         <div
           style={{
             ...layerStyle,
