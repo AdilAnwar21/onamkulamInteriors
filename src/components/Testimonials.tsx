@@ -1,4 +1,4 @@
-import { useRef, memo } from "react";
+import { useRef, memo, useMemo } from "react";
 import { ArrowRight } from "lucide-react";
 
 interface TestimonialScrollProps {
@@ -39,10 +39,23 @@ const testimonials = [
   },
 ];
 
+// Reusable styles to prevent object creation on every render
+const LAYER_STYLE: React.CSSProperties = {
+  willChange: 'transform',
+  backfaceVisibility: 'hidden',
+  WebkitBackfaceVisibility: 'hidden',
+  perspective: 1000,
+};
+
 const TestimonialScroll = memo(({ scrollProgress }: TestimonialScrollProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const totalCards = testimonials.length;
+  // Clamp progress to ensure we don't go out of bounds
   const progress = Math.max(0, Math.min(1, scrollProgress));
+  
+  // FIX: Check window width once per render to disable scale on mobile
+  // Accessing window.innerWidth is fast enough for this check
+  const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 1024;
 
   return (
     <div
@@ -56,42 +69,50 @@ const TestimonialScroll = memo(({ scrollProgress }: TestimonialScrollProps) => {
         
         const rawSectionProgress = (progress - sectionStart) / (sectionEnd - sectionStart);
         const sectionProgress = Math.max(0, Math.min(1, rawSectionProgress));
+        
+        // Calculate translation
         const translateY = (1 - sectionProgress) * 100;
+
+        // Optimization: If card is completely below screen (translate 100%), 
+        // effectively hide it from paint to save GPU resources
+        if (sectionProgress === 0 && index !== 0) {
+            return null; // or display: none via style
+        }
 
         const isSecondSection = index === 1;
         const textColor = isSecondSection ? 'text-white' : 'text-black';
         const bgColor = isSecondSection ? 'bg-black' : 'bg-white';
-        // Adjusted overlay opacity for better tablet readability
         const mobileOverlayBg = isSecondSection ? 'bg-black/70' : 'bg-white/70'; 
         const mobileTextColor = isSecondSection ? 'text-white' : 'text-black';
 
         return (
           <div
             key={testimonial.id}
-            // FIX: Changed 'md:flex-row' to 'lg:flex-row'
-            // This ensures iPads/Tablets stack vertically for better readability
             className="absolute inset-0 w-full h-full flex flex-col lg:flex-row"
             style={{
+              ...LAYER_STYLE,
               transform: `translate3d(0, ${translateY}%, 0)`,
               zIndex: index + 1,
-              willChange: 'transform'
             }}
           >
             {/* Image Section */}
-            {/* FIX: Adjusted heights. Mobile/Tablet = 50% height. Desktop = 100% height. */}
             <div className="w-full h-1/2 lg:w-2/3 lg:h-full relative overflow-hidden">
                <div 
                   className="absolute inset-0 bg-cover bg-center"
                   style={{
                     backgroundImage: `url(${testimonial.projectImage})`,
-                    transform: `scale(${1 + (1 - sectionProgress) * 0.1})`, 
-                    transition: 'transform 0.1s linear',
-                    willChange: 'transform'
+                    // FIX: Only apply Scale Animation on Desktop.
+                    // On mobile, scaling + translating simultaneously causes the stutter.
+                    transform: isDesktop 
+                        ? `scale(${1 + (1 - sectionProgress) * 0.1}) translateZ(0)` 
+                        : 'translateZ(0)', 
+                    transition: isDesktop ? 'transform 0.1s linear' : 'none',
+                    willChange: isDesktop ? 'transform' : 'auto',
+                    backfaceVisibility: 'hidden', // Hardware acceleration
                   }}
                />
 
               {/* Mobile/Tablet Overlay Content */}
-              {/* Visible on small screens and tablets (hidden on lg/desktop) */}
               <div className={`lg:hidden absolute inset-0 ${mobileOverlayBg} flex flex-col justify-end p-6 md:p-10 ${mobileTextColor}`}>
                 <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-2">{testimonial.number}</h1>
                 <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold mb-2">
@@ -102,28 +123,23 @@ const TestimonialScroll = memo(({ scrollProgress }: TestimonialScrollProps) => {
             </div>
 
             {/* Content Section */}
-            {/* FIX: Adjusted width/height for tablet stacking */}
             <div className={`flex flex-col justify-center w-full h-1/2 lg:w-1/3 lg:h-full ${bgColor} ${textColor} p-6 sm:p-8 md:p-12 lg:p-12`}>
               
-              {/* Desktop-Only Headers (Hidden on Mobile/Tablet to avoid duplication) */}
               <h1 className="hidden lg:block text-5xl lg:text-7xl font-bold mb-4 lg:mb-6">{testimonial.number}</h1>
               <h2 className="hidden lg:block text-2xl lg:text-4xl font-semibold mb-3 lg:mb-4">
                 {testimonial.project}
               </h2>
               
-              {/* Quote - Increased text size for tablets (md:text-xl) */}
               <p className="text-sm sm:text-base md:text-xl lg:text-lg italic mb-4 lg:mb-6 leading-relaxed">
                 "{testimonial.quote}"
               </p>
               
-              {/* Author Info */}
               <div className="space-y-1">
                 <p className="font-medium text-sm sm:text-base md:text-lg">{testimonial.author}</p>
                 <p className={`text-xs sm:text-sm md:text-base ${isSecondSection ? 'opacity-70' : 'opacity-60'}`}>{testimonial.role}</p>
                 <p className={`hidden lg:block text-xs sm:text-sm ${isSecondSection ? 'opacity-50' : 'opacity-40'}`}>{testimonial.location}</p>
               </div>
               
-              {/* Read More Icon */}
               <div className="mt-6 lg:mt-8 flex items-center justify-center lg:justify-start gap-2 cursor-pointer group">
                 <span className={`text-sm lg:text-base font-medium ${isSecondSection ? 'text-white' : 'text-black'}`}>
                   Read More
