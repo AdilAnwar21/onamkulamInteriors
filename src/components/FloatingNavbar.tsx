@@ -238,7 +238,7 @@ const FloatingNavbar = ({ activeSection, onBeginStoryClick, onNavClick }: Floati
               mixBlendMode: 'overlay',
             }}
           />
-          <div className="flex items-center h-full px-2 relative">
+          <div className="flex items-center justify-between h-full px-2 relative">
             {/* Logo Section */}
             <div
               className="flex items-center overflow-hidden"
@@ -263,7 +263,7 @@ const FloatingNavbar = ({ activeSection, onBeginStoryClick, onNavClick }: Floati
 
             {/* Nav Items */}
             <div
-              className="flex items-center space-x-1 overflow-hidden"
+              className="flex items-center justify-center space-x-1 overflow-hidden"
               style={{
                 width:
                   scrollProgress > 0.1
@@ -317,7 +317,7 @@ const FloatingNavbar = ({ activeSection, onBeginStoryClick, onNavClick }: Floati
             </div>
 
             {/* Call to Action Button */}
-            <div className="ml-auto">
+            <div>
               <button
                 onClick={onBeginStoryClick}
                 className={`bg-white/20 text-black rounded-full flex items-center justify-center space-x-3 hover:bg-white/30 hover:scale-105 whitespace-nowrap transition-all duration-300
