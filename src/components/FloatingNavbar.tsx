@@ -19,7 +19,7 @@ const FloatingNavbar = ({ activeSection, onBeginStoryClick, onNavClick }: Floati
 
       if (width < 768) {
         setDeviceType('mobile');
-      } else if (width >= 768 && width < 1280) {
+      } else if (width >= 768 && width < 1024) {
         setDeviceType('tablet');
       } else {
         setDeviceType('desktop');
@@ -63,23 +63,26 @@ const FloatingNavbar = ({ activeSection, onBeginStoryClick, onNavClick }: Floati
       desktop: {
         initial: 260,
         step1: 480,
-        step2: 740,
-        final: 980
+        step2: 720,
+        final: 950
       },
       tablet: {
-        initial: 180,
-        step1: 380,
-        step2: 600,
-        final: 780 // Fits iPad Mini (768px) with 24px margin on sides
+        initial: 160,
+        step1: 320,
+        step2: 520,
+        final: 680 // Fits iPad Mini (768px) comfortably
       }
     };
 
     const widths = deviceType === 'desktop' ? baseWidths.desktop : baseWidths.tablet;
+    const maxWidth = window.innerWidth - 48; // Ensure 24px padding on each side
 
-    if (scrollProgress < 0.2) return `${widths.initial + smoothProgress * (widths.step1 - widths.initial)}px`;
-    if (scrollProgress < 0.4) return `${widths.step1 + smoothProgress * (widths.step2 - widths.step1)}px`;
-    if (scrollProgress < 0.7) return `${widths.step2 + smoothProgress * (widths.final - widths.step2)}px`;
-    return `${widths.final}px`;
+    let calculatedWidth = widths.final;
+    if (scrollProgress < 0.2) calculatedWidth = widths.initial + smoothProgress * (widths.step1 - widths.initial);
+    else if (scrollProgress < 0.4) calculatedWidth = widths.step1 + smoothProgress * (widths.step2 - widths.step1);
+    else if (scrollProgress < 0.7) calculatedWidth = widths.step2 + smoothProgress * (widths.final - widths.step2);
+
+    return `${Math.min(calculatedWidth, maxWidth)}px`;
   };
 
   const getNavbarTransform = () => {
@@ -206,15 +209,13 @@ const FloatingNavbar = ({ activeSection, onBeginStoryClick, onNavClick }: Floati
   }
 
   // -------------------- TABLET & DESKTOP NAVBAR --------------------
-  // Desktop: Fixed right. Tablet: Fixed center (using flex justify-center on w-full wrapper).
-  const navLayoutClass = deviceType === 'tablet'
-    ? 'fixed z-50 top-4 left-0 w-full flex justify-center pointer-events-none'
-    : 'fixed z-50 top-6 right-6';
+  // Fixed right for both tablet and desktop
+  const navLayoutClass = 'fixed z-50 top-6 right-6';
 
   return (
     <nav className={navLayoutClass}>
       <div
-        className={`relative ${deviceType === 'tablet' ? 'pointer-events-auto' : ''}`}
+        className="relative pointer-events-auto"
         style={{
           width: getNavbarWidth(),
           transform: getNavbarTransform(),
@@ -244,7 +245,7 @@ const FloatingNavbar = ({ activeSection, onBeginStoryClick, onNavClick }: Floati
               style={{
                 width:
                   scrollProgress > 0.3
-                    ? `${Math.min(deviceType === 'tablet' ? 130 : 200, (scrollProgress - 0.3) * (deviceType === 'tablet' ? 260 : 320))}px`
+                    ? `${Math.min(deviceType === 'tablet' ? 130 : 140, (scrollProgress - 0.3) * (deviceType === 'tablet' ? 260 : 250))}px`
                     : '0px',
                 opacity:
                   scrollProgress > 0.4
@@ -256,7 +257,7 @@ const FloatingNavbar = ({ activeSection, onBeginStoryClick, onNavClick }: Floati
               <img
                 src={logo}
                 alt="Logo"
-                className={`${deviceType === 'tablet' ? 'h-6 pl-3' : 'h-8 px-4'} w-auto object-contain`}
+                className={`${deviceType === 'tablet' ? 'h-6 pl-3' : 'h-8 pl-2 pr-3'} w-auto object-contain`}
               />
             </div>
 
@@ -319,7 +320,7 @@ const FloatingNavbar = ({ activeSection, onBeginStoryClick, onNavClick }: Floati
             <div className="ml-auto">
               <button
                 onClick={onBeginStoryClick}
-                className={`bg-white/20 text-black rounded-full flex items-center space-x-3 hover:bg-white/30 hover:scale-105 whitespace-nowrap transition-all duration-300
+                className={`bg-white/20 text-black rounded-full flex items-center justify-center space-x-3 hover:bg-white/30 hover:scale-105 whitespace-nowrap transition-all duration-300
                   ${deviceType === 'tablet' ? 'px-4 py-2' : 'px-6 py-3'}`}
                 style={{ backdropFilter: 'blur(4px)' }}
               >
