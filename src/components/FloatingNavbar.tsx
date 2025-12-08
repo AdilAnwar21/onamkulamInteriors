@@ -61,16 +61,16 @@ const FloatingNavbar = ({ activeSection, onBeginStoryClick, onNavClick }: Floati
 
     const baseWidths = {
       desktop: {
-        initial: 220,
-        step1: 420,
-        step2: 650,
-        final: 880
+        initial: 260,
+        step1: 480,
+        step2: 740,
+        final: 980
       },
       tablet: {
-        initial: 160,
-        step1: 340,
-        step2: 540,
-        final: 720 // Fits iPad Mini (768px) with 24px margin on sides
+        initial: 180,
+        step1: 380,
+        step2: 600,
+        final: 780 // Fits iPad Mini (768px) with 24px margin on sides
       }
     };
 
