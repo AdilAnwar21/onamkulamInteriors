@@ -1,4 +1,5 @@
 import React, { useEffect, useState, memo } from 'react';
+import { motion, useTransform, MotionValue } from 'framer-motion';
 
 type Brand = {
   name: string;
@@ -21,30 +22,84 @@ const marqueeStyle = `
   }
 `;
 
-const ExclusiveBrandsComplete: React.FC<{ scrollProgress?: number }> = memo(({ scrollProgress = 0 }) => {
+const AnimatedChar = ({ char, index, progress, totalChars }: { char: string, index: number, progress: MotionValue<number>, totalChars: number }) => {
+  const opacity = useTransform(progress, (p) => {
+    const scrollTypingProgress = Math.min(1, Math.max(0, p / 0.23));
+    const t = scrollTypingProgress;
+    const easedProgress = t * t * (3 - 2 * t);
+    const letterProgress = Math.max(0, Math.min(1, (easedProgress * totalChars - index) * 0.5));
+    return letterProgress;
+  });
+
+  const transform = useTransform(opacity, (letterProgress) => {
+    return `translate3d(0, ${Math.max(0, (1 - letterProgress) * 15)}px, 0)`;
+  });
+
+  return (
+    <motion.span style={{ opacity, transform }} className="inline-block transition-opacity duration-200">
+      {char}
+    </motion.span>
+  );
+};
+
+// Extracted Component for Title Words
+const TitleWord = ({ text, index, progress }: { text: string, index: number, progress: MotionValue<number> }) => {
+  const threshold = 0.1 + (index * 0.2);
+  const opacity = useTransform(progress, p => p > threshold ? 1 : 0);
+  const transform = useTransform(progress, p => `translate3d(0, ${p > threshold ? 0 : 20}px, 0)`);
+
+  return (
+    <motion.div
+      style={{
+        opacity,
+        transform,
+        transition: 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.5s ease-out'
+      }}
+    >
+      {text}
+    </motion.div>
+  );
+};
+
+// Extracted Component for Brand Cards
+const BrandCard = ({ brand, index, progress, backgroundColor }: { brand: Brand, index: number, progress: MotionValue<number>, backgroundColor: MotionValue<string> }) => {
+  const stagger = 0.05;
+  const start = index * stagger;
+
+  const brandProg = useTransform(progress, p => {
+    const val = Math.max(0, p - start);
+    return Math.min(1, val * 3);
+  });
+
+  const opacity = useTransform(brandProg, p => Math.min(1, p * 1.2));
+  const transform = useTransform(brandProg, p => `translate3d(0, ${Math.max(0, (1 - p) * 25)}px, 0) scale(${0.94 + p * 0.06})`);
+  const borderColor = useTransform(backgroundColor, c => c === '#ffffff' ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.5)');
+
+  return (
+    <motion.div
+      className="border rounded-lg p-4 sm:p-5 md:p-6 lg:p-8 text-center min-h-[120px] sm:min-h-[160px] md:min-h-[180px] flex flex-col justify-center transition-colors duration-200"
+      style={{
+        opacity,
+        transform,
+        willChange: 'transform, opacity',
+        borderColor
+      }}
+    >
+      <h3 className="text-base sm:text-lg md:text-2xl font-light tracking-wide">
+        {brand.name}
+      </h3>
+    </motion.div>
+  );
+};
+
+
+const ExclusiveBrandsComplete: React.FC<{ scrollProgress: MotionValue<number> }> = memo(({ scrollProgress }) => {
   const [mounted, setMounted] = useState(false);
   const fullQuote = "From your vision to our hands: The simple journey to soul.";
 
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  // Optimized letter style calculation
-  const getLetterStyle = (index: number): React.CSSProperties => {
-    const scrollTypingProgress = Math.min(1, Math.max(0, scrollProgress / 0.23));
-    const t = scrollTypingProgress;
-    const easedProgress = t * t * (3 - 2 * t); 
-    
-    const letterProgress = Math.max(0, Math.min(1, (easedProgress * fullQuote.length - index) * 0.5));
-    
-    return {
-      opacity: letterProgress,
-      transform: `translate3d(0, ${Math.max(0, (1 - letterProgress) * 15)}px, 0)`,
-      transition: 'opacity 0.2s ease-out, transform 0.3s ease-out',
-      display: 'inline-block',
-      willChange: 'opacity, transform',
-    };
-  };
 
   const exclusiveBrands: Brand[] = [
     { name: 'MERIDIANI', position: 'top-left' },
@@ -64,63 +119,100 @@ const ExclusiveBrandsComplete: React.FC<{ scrollProgress?: number }> = memo(({ s
     { name: 'smeg', logo: '•••smeg' },
   ];
 
-  // --- Section Logic ---
-  let currentSection = 3;
-  if (scrollProgress < 0.22) currentSection = 0;
-  else if (scrollProgress < 0.24) currentSection = 0.5;
-  else if (scrollProgress < 0.47) currentSection = 1;
-  else if (scrollProgress < 0.49) currentSection = 1.5;
-  else if (scrollProgress < 0.77) currentSection = 2;
-  else if (scrollProgress < 0.79) currentSection = 2.5;
+  // --- TOP LEVEL HOOKS ---
+  // Define all MotionValues and transforms here, unconditionally.
 
-  const quoteProgress = scrollProgress < 0.24 ? Math.min(1, scrollProgress / 0.22) : 1;
-  
-  const titleGridProgress = (scrollProgress >= 0.22 && scrollProgress < 0.49) ? 
-    Math.min(1, Math.max(0, (scrollProgress - 0.24) / 0.23)) : 0;
-    
-  const partnersProgress = (scrollProgress >= 0.47 && scrollProgress < 0.79) ? 
-    Math.min(1, Math.max(0, (scrollProgress - 0.49) / 0.28)) : 0;
-    
-  const finalQuoteProgress = scrollProgress >= 0.77 ? 
-    Math.min(1, Math.max(0, (scrollProgress - 0.79) / 0.21)) : 0;
-  
-  const titleProgress = Math.min(1, titleGridProgress * 1.5);
-  const gridProgress = titleGridProgress > 0.2 ? Math.min(1, (titleGridProgress - 0.2) * 2) : 0;
-  const colorTransitionProgress = scrollProgress > 0.8 ? Math.min(1, (scrollProgress - 0.8) * 5) : 0;
+  // 1. Current Section Logic
+  const currentSection = useTransform(scrollProgress, (p) => {
+    if (p < 0.22) return 0;
+    if (p < 0.24) return 0.5;
+    if (p < 0.47) return 1;
+    if (p < 0.49) return 1.5;
+    if (p < 0.77) return 2;
+    if (p < 0.79) return 2.5;
+    return 3;
+  });
 
-  const marqueeDuration = partnersProgress > 0 ? Math.max(10, 20 - partnersProgress * 10) : 20;
-  const isWhiteMode = colorTransitionProgress > 0.5;
-  const sweepTransform = `translate3d(${-100 + colorTransitionProgress * 200}%, 0, 0)`;
+  // 2. Main Progress Values
+  const quoteProgress = useTransform(scrollProgress, p => p < 0.24 ? Math.min(1, p / 0.22) : 1);
+  const titleGridProgress = useTransform(scrollProgress, p => (p >= 0.22 && p < 0.49) ?
+    Math.min(1, Math.max(0, (p - 0.24) / 0.23)) : 0);
+  const partnersProgress = useTransform(scrollProgress, p => (p >= 0.47 && p < 0.79) ?
+    Math.min(1, Math.max(0, (p - 0.49) / 0.28)) : 0);
+  const finalQuoteProgress = useTransform(scrollProgress, p => p >= 0.77 ?
+    Math.min(1, Math.max(0, (p - 0.79) / 0.21)) : 0);
+
+  // 3. Derived Sub-Progress
+  const titleProgress = useTransform(titleGridProgress, p => Math.min(1, p * 1.5));
+  const gridProgress = useTransform(titleGridProgress, p => p > 0.2 ? Math.min(1, (p - 0.2) * 2) : 0);
+  const colorTransitionProgress = useTransform(scrollProgress, p => p > 0.8 ? Math.min(1, (p - 0.8) * 5) : 0);
+
+  // 4. Styles & Backgrounds
+  const backgroundColor = useTransform(colorTransitionProgress, [0, 1], ['#000000', '#ffffff']);
+  const textColor = useTransform(colorTransitionProgress, [0, 1], ['#ffffff', '#000000']);
+  const sweepTransform = useTransform(colorTransitionProgress, p => `translate3d(${-100 + p * 200}%, 0, 0)`);
+  const sweepOpacity = useTransform(colorTransitionProgress, p => p > 0 ? Math.min(1, p * 2) : 0);
+
+  // 5. Container Transforms (Moved out of JSX)
+  // Section 1: Opening Quote
+  const section1Opacity = useTransform(currentSection, s => s <= 0.5 ? 1 : Math.max(0, 1 - ((s - 0.5) * 4)));
+  const section1Transform = useTransform(currentSection, s => `translate3d(0, ${s <= 0.5 ? 0 : -(s - 0.5) * 100}px, 0)`);
+  const section1ZIndex = useTransform(currentSection, s => s <= 0.8 ? 10 : 1);
+  const section1ContentOpacity = useTransform(quoteProgress, p => Math.min(1, p * 1.2));
+  const section1ContentTransform = useTransform(quoteProgress, p => `translate3d(0, ${Math.max(0, (1 - p) * 20)}px, 0) scale(${0.96 + p * 0.04})`);
+
+  // Section 2: Brands Grid
+  const section2Opacity = useTransform(currentSection, s => s >= 0.5 && s <= 1.5 ? 1 :
+    (s > 1.5 ? Math.max(0, 1 - ((s - 1.5) * 4)) :
+      (s < 0.5 ? 0 : Math.min(1, (s - 0.5) * 4))));
+  const section2Transform = useTransform(currentSection, s => `translate3d(0, ${s < 0.5 ? 80 : s <= 1.5 ? 0 : -(s - 1.5) * 100}px, 0)`);
+  const section2ZIndex = useTransform(currentSection, s => s >= 0.5 && s <= 1.8 ? 10 : 1);
+
+  // Section 3: Partners
+  const section3Opacity = useTransform(currentSection, s => s >= 1.5 && s <= 2.5 ? 1 :
+    (s > 2.5 ? Math.max(0, 1 - ((s - 2.5) * 4)) :
+      (s < 1.5 ? 0 : Math.min(1, (s - 1.5) * 4))));
+  const section3Transform = useTransform(currentSection, s => `translate3d(0, ${s < 1.5 ? 80 : s <= 2.5 ? 0 : -(s - 2.5) * 100}px, 0)`);
+  const section3ZIndex = useTransform(currentSection, s => s >= 1.5 && s <= 2.8 ? 10 : 1);
+  const section3TitleOpacity = useTransform(partnersProgress, p => Math.min(1, p * 1.5));
+  const section3TitleTransform = useTransform(partnersProgress, p => `translate3d(0, ${Math.max(0, ((1 - p) * 25))}px, 0)`);
+  const section3MarqueeOpacity = useTransform(partnersProgress, p => Math.min(1, p * 1.2));
+  const section3MarqueeTransform = useTransform(partnersProgress, p => `scale(${0.95 + p * 0.05}) translate3d(0,0,0)`);
+
+  // Section 4: Final Quote
+  const section4Opacity = useTransform(currentSection, s => s >= 2.5 ? Math.min(1, (s - 2.5) * 2) : 0);
+  const section4Transform = useTransform(currentSection, s => `translate3d(0, ${s < 2.5 ? 80 : Math.max(0, (1 - (s - 2.5) * 1.5) * 40)}px, 0)`);
+  const section4ZIndex = useTransform(currentSection, s => s >= 2.5 ? 10 : 1);
+  const section4ContentOpacity = useTransform(finalQuoteProgress, p => Math.min(1, p * 1.5));
+  const section4ContentTransform = useTransform(finalQuoteProgress, p => `translate3d(0, ${Math.max(0, (1 - p) * 30)}px, 0) scale(${0.95 + p * 0.05})`);
 
   // --- Helper to render text word-by-word ---
-  // This prevents words from splitting in the middle (the "hand s" bug)
   const renderAnimatedText = (text: string) => {
     const words = text.split(' ');
     let globalCharIndex = 0;
 
     return words.map((word, wordIndex) => {
-      // Render the word wrapper
       const wordEl = (
-        <span 
-          key={wordIndex} 
-          // whitespace-nowrap ensures the word stays together
-          className="inline-block whitespace-nowrap" 
-          style={{ marginRight: '0.25em' }} // Add space between words
+        <span
+          key={wordIndex}
+          className="inline-block whitespace-nowrap"
+          style={{ marginRight: '0.25em' }}
         >
           {word.split('').map((char, charIndex) => {
-            const style = getLetterStyle(globalCharIndex);
-            globalCharIndex++; // Increment counter for continuous wave animation
-            return (
-              <span key={charIndex} style={style}>
-                {char}
-              </span>
-            );
+            const el = <AnimatedChar
+              key={charIndex}
+              char={char}
+              index={globalCharIndex}
+              progress={scrollProgress}
+              totalChars={fullQuote.length}
+            />;
+            globalCharIndex++;
+            return el;
           })}
         </span>
       );
-      
-      // Account for the space character in the index count so timing stays correct
-      globalCharIndex++; 
+
+      globalCharIndex++;
       return wordEl;
     });
   };
@@ -128,214 +220,173 @@ const ExclusiveBrandsComplete: React.FC<{ scrollProgress?: number }> = memo(({ s
   if (!mounted) return null;
 
   return (
-    <div 
-      className={`relative w-full h-screen overflow-hidden ${
-        isWhiteMode ? 'bg-white text-black' : 'bg-black text-white'
-      }`}
-      style={{ transition: 'background-color 0.6s ease, color 0.6s ease' }}
+    <motion.div
+      className="relative w-full h-screen overflow-hidden"
+      style={{
+        backgroundColor,
+        color: textColor,
+        transition: 'background-color 0.6s ease, color 0.6s ease'
+      }}
     >
       <style>{marqueeStyle}</style>
 
       {/* Color Sweep */}
-      <div 
+      <motion.div
         className="absolute top-0 left-0 w-full h-full pointer-events-none z-[1]"
         style={{
           background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.95) 50%, transparent 100%)',
-          opacity: colorTransitionProgress > 0 ? Math.min(1, colorTransitionProgress * 2) : 0,
+          opacity: sweepOpacity,
           transform: sweepTransform,
           willChange: 'transform'
         }}
       />
 
       <div className="relative z-10 w-full h-full">
-        
-        {/* --- SECTION 1: OPENING QUOTE (FIXED) --- */}
-        <div 
+
+        {/* --- SECTION 1: OPENING QUOTE --- */}
+        <motion.div
           className="absolute inset-0 flex flex-col justify-center items-center px-6 pt-20 sm:pt-0"
           style={{
-            opacity: currentSection <= 0.5 ? 1 : Math.max(0, 1 - ((currentSection - 0.5) * 4)),
-            transform: `translate3d(0, ${currentSection <= 0.5 ? 0 : -(currentSection - 0.5) * 100}px, 0)`,
-            pointerEvents: currentSection <= 0.8 ? 'auto' : 'none',
-            zIndex: currentSection <= 0.8 ? 10 : 1,
-            transition: 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.5s ease-out'
+            opacity: section1Opacity,
+            transform: section1Transform,
+            zIndex: section1ZIndex,
+            pointerEvents: 'none',
           }}
         >
-          <div
+          <motion.div
             className="text-center max-w-4xl mx-auto"
             style={{
-              opacity: Math.min(1, quoteProgress * 1.2),
-              transform: `translate3d(0, ${Math.max(0, (1 - quoteProgress) * 20)}px, 0) scale(${0.96 + quoteProgress * 0.04})`
+              opacity: section1ContentOpacity,
+              transform: section1ContentTransform
             }}
           >
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-light leading-relaxed tracking-wide">
-              {/* Calls the new helper to keep words together */}
               {renderAnimatedText(fullQuote)}
             </h2>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
         {/* --- SECTION 2: BRANDS GRID --- */}
-        <div 
+        <motion.div
           className="absolute inset-0 flex flex-col justify-center items-center px-4 pt-20 sm:pt-0"
           style={{
-            opacity: currentSection >= 0.5 && currentSection <= 1.5 ? 1 : 
-              (currentSection > 1.5 ? Math.max(0, 1 - ((currentSection - 1.5) * 4)) : 
-              (currentSection < 0.5 ? 0 : Math.min(1, (currentSection - 0.5) * 4))),
-            transform: `translate3d(0, ${currentSection < 0.5 ? 80 : currentSection <= 1.5 ? 0 : -(currentSection - 1.5) * 100}px, 0)`,
-            pointerEvents: currentSection >= 0.5 && currentSection <= 1.8 ? 'auto' : 'none',
-            zIndex: currentSection >= 0.5 && currentSection <= 1.8 ? 10 : 1,
-            transition: 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.5s ease-out'
+            opacity: section2Opacity,
+            transform: section2Transform,
+            zIndex: section2ZIndex,
           }}
         >
           <div className="mb-6 md:mb-12 lg:mb-16 text-center w-full">
             <h2 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-wider leading-tight flex flex-col items-center">
-              {['OUR', 'EXCLUSIVE', 'BRANDS'].map((text, idx) => {
-                const threshold = 0.1 + (idx * 0.2);
-                const show = titleProgress > threshold;
-                return (
-                  <div
-                    key={text}
-                    style={{
-                      opacity: show ? 1 : 0,
-                      transform: `translate3d(0, ${show ? 0 : 20}px, 0)`,
-                      transition: 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.5s ease-out'
-                    }}
-                  >
-                    {text}
-                  </div>
-                );
-              })}
+              {['OUR', 'EXCLUSIVE', 'BRANDS'].map((text, idx) => (
+                <TitleWord
+                  key={text}
+                  text={text}
+                  index={idx}
+                  progress={titleProgress}
+                />
+              ))}
             </h2>
           </div>
 
           <div className="w-full max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-6 lg:gap-8">
-            {exclusiveBrands.map((brand, i) => {
-              const stagger = 0.05;
-              const start = i * stagger;
-              const adjustedProgress = Math.max(0, gridProgress - start);
-              const brandProg = Math.min(1, adjustedProgress * 3);
-              
-              return (
-                <div
-                  key={brand.name}
-                  className={`border rounded-lg p-4 sm:p-5 md:p-6 lg:p-8 text-center min-h-[120px] sm:min-h-[160px] md:min-h-[180px] flex flex-col justify-center transition-colors duration-200 ${
-                    isWhiteMode 
-                      ? 'bg-gray-50 border-gray-300' 
-                      : 'bg-gray-900/50 border-gray-800/50'
-                  }`}
-                  style={{
-                    opacity: Math.min(1, brandProg * 1.2),
-                    transform: `translate3d(0, ${Math.max(0, (1 - brandProg) * 25)}px, 0) scale(${0.94 + brandProg * 0.06})`,
-                    willChange: 'transform, opacity'
-                  }}
-                >
-                  <h3 className="text-base sm:text-lg md:text-2xl font-light tracking-wide">
-                    {brand.name}
-                  </h3>
-                </div>
-              );
-            })}
+            {exclusiveBrands.map((brand, i) => (
+              <BrandCard
+                key={brand.name}
+                brand={brand}
+                index={i}
+                progress={gridProgress}
+                backgroundColor={backgroundColor}
+              />
+            ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* --- SECTION 3: PARTNERS --- */}
-        <div 
+        <motion.div
           className="absolute inset-0 flex flex-col justify-center items-center pt-20 sm:pt-0"
           style={{
-            opacity: currentSection >= 1.5 && currentSection <= 2.5 ? 1 : 
-              (currentSection > 2.5 ? Math.max(0, 1 - ((currentSection - 2.5) * 4)) : 
-              (currentSection < 1.5 ? 0 : Math.min(1, (currentSection - 1.5) * 4))),
-            transform: `translate3d(0, ${currentSection < 1.5 ? 80 : currentSection <= 2.5 ? 0 : -(currentSection - 2.5) * 100}px, 0)`,
-            pointerEvents: currentSection >= 1.5 && currentSection <= 2.8 ? 'auto' : 'none',
-            zIndex: currentSection >= 1.5 && currentSection <= 2.8 ? 10 : 1,
-            transition: 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.5s ease-out'
+            opacity: section3Opacity,
+            transform: section3Transform,
+            zIndex: section3ZIndex,
           }}
         >
-          <div
+          <motion.div
             className="mb-8 md:mb-12 lg:mb-16 text-center px-4"
             style={{
-              opacity: Math.min(1, partnersProgress * 1.5),
-              transform: `translate3d(0, ${Math.max(0, (1 - partnersProgress) * 25)}px, 0)`,
-              transition: 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.5s ease-out'
+              opacity: section3TitleOpacity,
+              transform: section3TitleTransform,
             }}
           >
             <h2 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-wider">
               OUR PARTNERS
             </h2>
-          </div>
-          
-          {partnersProgress > 0 && (
+          </motion.div>
+
+          <motion.div
+            className="w-full overflow-hidden"
+            style={{
+              opacity: section3MarqueeOpacity,
+              transform: section3MarqueeTransform,
+            }}
+          >
             <div
-              className="w-full overflow-hidden"
-              style={{ 
-                opacity: Math.min(1, partnersProgress * 1.2),
-                transform: `scale(${0.95 + partnersProgress * 0.05}) translate3d(0,0,0)`,
-                transition: 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.5s ease-out'
+              className="marquee-inner gap-4 md:gap-8"
+              style={{
+                animation: `marquee 20s linear infinite`
               }}
             >
-              <div 
-                className="marquee-inner"
-                style={{ 
-                    gap: window.innerWidth < 768 ? '1rem' : '2rem',
-                    animation: `marquee ${marqueeDuration}s linear infinite`
-                }}
-              >
-                {[...partners, ...partners].map((p, i) => (
-                  <div
-                    key={`${p.name}-${i}`}
-                    className={`min-w-[180px] sm:min-w-[220px] md:min-w-[260px] lg:min-w-[280px] h-24 sm:h-28 md:h-32 lg:h-40 border rounded-lg flex flex-col items-center justify-center flex-shrink-0 transition-colors duration-200 ${
-                      isWhiteMode 
-                        ? 'bg-transparent border-black/60' 
-                        : 'bg-transparent border-white/60'
-                    }`}
-                  >
-                    {p.name === 'BANG & OLUFSEN' ? (
-                      <div className="text-center">
-                        <h3 className="text-base sm:text-lg md:text-xl font-light tracking-wide">B&O</h3>
-                        <p className={`text-xs sm:text-sm mt-1 tracking-wider ${isWhiteMode ? 'text-gray-600' : 'text-gray-400'}`}>
-                          BANG & OLUFSEN
-                        </p>
-                      </div>
-                    ) : p.name === 'WOLF' ? (
-                      <div className={`border px-3 py-1.5 ${isWhiteMode ? 'border-black' : 'border-white'}`}>
-                        <h3 className="text-sm sm:text-base md:text-lg font-light tracking-wider">{p.logo}</h3>
-                      </div>
-                    ) : (
-                      <h3 className="text-sm sm:text-base md:text-lg font-light tracking-wide px-2">{p.logo}</h3>
-                    )}
-                  </div>
-                ))}
-              </div>
+              {[...partners, ...partners].map((p, i) => (
+                <div
+                  key={`${p.name}-${i}`}
+                  className="min-w-[180px] sm:min-w-[220px] md:min-w-[260px] lg:min-w-[280px] h-24 sm:h-28 md:h-32 lg:h-40 border rounded-lg flex flex-col items-center justify-center flex-shrink-0 transition-colors duration-200 bg-transparent"
+                  style={{
+                    borderColor: 'inherit'
+                  }}
+                >
+                  {p.name === 'BANG & OLUFSEN' ? (
+                    <div className="text-center">
+                      <h3 className="text-base sm:text-lg md:text-xl font-light tracking-wide">B&O</h3>
+                      <p className="text-xs sm:text-sm mt-1 tracking-wider opacity-60">
+                        BANG & OLUFSEN
+                      </p>
+                    </div>
+                  ) : p.name === 'WOLF' ? (
+                    <div className="border px-3 py-1.5 border-current">
+                      <h3 className="text-sm sm:text-base md:text-lg font-light tracking-wider">{p.logo}</h3>
+                    </div>
+                  ) : (
+                    <h3 className="text-sm sm:text-base md:text-lg font-light tracking-wide px-2">{p.logo}</h3>
+                  )}
+                </div>
+              ))}
             </div>
-          )}
-        </div>
+          </motion.div>
+        </motion.div>
 
         {/* --- SECTION 4: FINAL QUOTE --- */}
-        <div 
+        <motion.div
           className="absolute inset-0 flex flex-col justify-center items-center px-6 pt-20 sm:pt-0"
           style={{
-            opacity: currentSection >= 2.5 ? Math.min(1, (currentSection - 2.5) * 2) : 0,
-            transform: `translate3d(0, ${currentSection < 2.5 ? 80 : Math.max(0, (1 - (currentSection - 2.5) * 1.5) * 40)}px, 0)`,
-            pointerEvents: currentSection >= 2.5 ? 'auto' : 'none',
-            zIndex: currentSection >= 2.5 ? 10 : 1,
-            transition: 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.5s ease-out'
+            opacity: section4Opacity,
+            transform: section4Transform,
+            zIndex: section4ZIndex,
           }}
         >
-          <div
+          <motion.div
             className="text-center max-w-4xl mx-auto"
             style={{
-              opacity: Math.min(1, finalQuoteProgress * 1.5),
-              transform: `translate3d(0, ${Math.max(0, (1 - finalQuoteProgress) * 30)}px, 0) scale(${0.95 + finalQuoteProgress * 0.05})`
+              opacity: section4ContentOpacity,
+              transform: section4ContentTransform
             }}
           >
             <h3 className="text-lg sm:text-xl md:text-3xl lg:text-4xl font-light leading-relaxed">
               With unlimited creativity,{' '}
               <span className="italic">we transform your vision</span>
             </h3>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 });
 

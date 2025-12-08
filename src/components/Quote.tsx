@@ -1,68 +1,75 @@
 import React, { memo } from 'react';
+import { motion, useTransform, MotionValue } from 'framer-motion';
 
 interface QuoteProps {
-  scrollProgress: number;
+  scrollProgress: MotionValue<number>;
 }
+
+const QuoteChar = ({ char, index, progress, totalChars }: { char: string, index: number, progress: MotionValue<number>, totalChars: number }) => {
+  // Logic: Use 70% of scroll progress for the quote animation
+  // Check if this char index is less than visible count
+  const opacity = useTransform(progress, p => {
+    const quoteProgress = Math.min(1, Math.max(0, p / 0.7));
+    const visibleChars = Math.floor(quoteProgress * totalChars);
+    return index < visibleChars ? 1 : 0;
+  });
+
+  const transform = useTransform(progress, p => {
+    const quoteProgress = Math.min(1, Math.max(0, p / 0.7));
+    const visibleChars = Math.floor(quoteProgress * totalChars);
+    return index < visibleChars ? 'translate3d(0,0,0)' : 'translate3d(0, 20px, 0)';
+  });
+
+  return (
+    <motion.span
+      className="inline-block"
+      style={{
+        opacity,
+        transform,
+        transition: 'opacity 0.3s ease-out, transform 0.3s ease-out', // Keep for smoothing/fallback
+        willChange: 'opacity, transform'
+      }}
+    >
+      {char}
+    </motion.span>
+  );
+};
 
 const Quote: React.FC<QuoteProps> = memo(({ scrollProgress }) => {
   const quote = "How Your Story Unfolds";
-  
-  // Logic: Use 70% of scroll progress for the quote animation
-  const totalChars = quote.length;
-  // Clamp progress between 0 and 1 based on the 0.7 threshold
-  const quoteProgress = Math.min(1, Math.max(0, scrollProgress / 0.7));
-  const visibleChars = Math.floor(quoteProgress * totalChars);
-  
-  // Helper to reconstruct the text into words to prevent mobile line-break issues
   const words = quote.split(' ');
   let globalCharIndex = 0;
+  const totalChars = quote.length;
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-white px-6 sm:px-8">
       <div className="max-w-4xl mx-auto text-center">
-        
+
         <blockquote className="text-4xl md:text-5xl lg:text-6xl font-light leading-tight text-black mb-8 flex flex-wrap justify-center gap-y-2">
           {words.map((word, wordIndex) => {
-            
-            // Render the word wrapper
             return (
-              <span 
-                key={wordIndex} 
-                // 'whitespace-nowrap' prevents the word from breaking in the middle
-                // 'inline-block' allows transforms
-                className="inline-block whitespace-nowrap mr-[0.25em]" 
+              <span
+                key={wordIndex}
+                className="inline-block whitespace-nowrap mr-[0.25em]"
               >
                 {word.split('').map((char, charIndex) => {
-                  // Determine if this specific character should be visible
-                  const isVisible = globalCharIndex < visibleChars;
-                  const currentIndex = globalCharIndex;
-                  
-                  // Increment the global counter so the animation flows through the whole sentence
-                  globalCharIndex++;
-
-                  return (
-                    <span
+                  const el = (
+                    <QuoteChar
                       key={charIndex}
-                      className="inline-block"
-                      style={{
-                        opacity: isVisible ? 1 : 0,
-                        // Use translate3d for hardware acceleration
-                        transform: isVisible ? 'translate3d(0,0,0)' : 'translate3d(0, 20px, 0)',
-                        transition: 'opacity 0.3s ease-out, transform 0.3s ease-out',
-                        // Stagger delay slightly for a "typing" effect
-                        transitionDelay: `${currentIndex * 30}ms`,
-                        willChange: 'opacity, transform'
-                      }}
-                    >
-                      {char}
-                    </span>
+                      char={char}
+                      index={globalCharIndex}
+                      progress={scrollProgress}
+                      totalChars={totalChars}
+                    />
                   );
+                  globalCharIndex++;
+                  return el;
                 })}
               </span>
             );
           })}
         </blockquote>
-        
+
       </div>
     </div>
   );

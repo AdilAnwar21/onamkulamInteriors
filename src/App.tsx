@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { useMotionValue } from "framer-motion";
 import Preloader from "./components/Preloader";
 import Hero from "./components/Hero";
 import FloatingNavbar from "./components/FloatingNavbar";
@@ -38,12 +39,11 @@ function App() {
   const scrollTargets = useRef({ cta: 0, latestProjects: 0 });
 
   // --- STATE ---
-  const [progress, setProgress] = useState({
-    brands: 0,
-    testimonials: 0,
-    services: 0,
-    quote: 0
-  });
+  // --- MOTION VALUES ---
+  const brandsProgress = useMotionValue(0);
+  const testimonialsProgress = useMotionValue(0);
+  const servicesProgress = useMotionValue(0);
+  const quoteProgress = useMotionValue(0);
 
   // --- HEIGHT CALCULATION ---
   const { totalHeight } = useMemo(() => {
@@ -53,7 +53,7 @@ function App() {
 
     const achievementsStart = heroHeightVal * 0.5;
     const achievementsDisplayEnd = achievementsStart + sectionDurationVal + displayDurationVal;
-    
+
     const brandsStart = achievementsDisplayEnd;
     const brandsDisplayEnd = brandsStart + sectionDurationVal + (displayDurationVal * 8);
 
@@ -80,7 +80,7 @@ function App() {
 
     const latestProjectsStart = ctaDisplayEnd;
     const latestProjectsDisplayEnd = latestProjectsStart + sectionDurationVal + displayDurationVal;
-    
+
     // Total height ends after footer
     const footerEnd = latestProjectsDisplayEnd + heroHeightVal * 2;
 
@@ -90,9 +90,18 @@ function App() {
   // --- ANIMATION LOOP ---
   useEffect(() => {
     let rafId: number;
+    let lastWidth = window.innerWidth;
 
     const handleResize = () => {
-      setWindowHeight(window.innerHeight);
+      // FIX: Only update if width changes (orientation change) or height changes significantly (>150px)
+      // This ignores mobile address bar retracting/expanding (~60-100px)
+      const newWidth = window.innerWidth;
+      const newHeight = window.innerHeight;
+
+      if (newWidth !== lastWidth || Math.abs(newHeight - windowHeight) > 150) {
+        lastWidth = newWidth;
+        setWindowHeight(newHeight);
+      }
     };
 
     const loop = () => {
@@ -132,17 +141,19 @@ function App() {
       // 3. BRANDS
       const brandsStart = achievementsDisplayEnd;
       const brandsSlideEndVal = brandsStart + sectionDurationVal;
-      const brandsInternalScrollDuration = displayDurationVal * 8; 
+      const brandsInternalScrollDuration = displayDurationVal * 8;
       const brandsDisplayEnd = brandsSlideEndVal + brandsInternalScrollDuration;
       const rawBrandsProgress = Math.max(0, scrollY - brandsSlideEndVal) / brandsInternalScrollDuration;
-      const brandsProgressVal = Math.min(1, rawBrandsProgress);
+      // Update MotionValue directly - NO RE-RENDER
+      brandsProgress.set(Math.min(1, rawBrandsProgress));
       updateEl('brands', calculateOffset(brandsStart), scrollY >= brandsStart && scrollY < brandsDisplayEnd + sectionDurationVal, 30);
 
       // 4. TESTIMONIALS
       const testimonialsStart = brandsDisplayEnd;
       const testimonialsSlideEndVal = testimonialsStart + sectionDurationVal;
       const testimonialsDisplayEnd = testimonialsSlideEndVal + displayDurationVal * 2.2;
-      const testimonialsProgressVal = Math.min(1, Math.max(0, (scrollY - testimonialsSlideEndVal)) / (displayDurationVal * 2.2));
+      const rawTestimonialsProgress = Math.min(1, Math.max(0, (scrollY - testimonialsSlideEndVal)) / (displayDurationVal * 2.2));
+      testimonialsProgress.set(rawTestimonialsProgress);
       updateEl('testimonials', calculateOffset(testimonialsStart), scrollY >= testimonialsStart && scrollY < testimonialsDisplayEnd + sectionDurationVal, 40);
 
       // 5. SERVICES SCROLL
@@ -150,7 +161,8 @@ function App() {
       const servicesScrollSlideEndVal = servicesScrollStart + sectionDurationVal;
       const servicesScrollInternalDuration = displayDurationVal * 2;
       const servicesScrollDisplayEnd = servicesScrollSlideEndVal + servicesScrollInternalDuration;
-      const servicesScrollProgressVal = Math.min(1, Math.max(0, (scrollY - servicesScrollSlideEndVal)) / servicesScrollInternalDuration);
+      const rawServicesProgress = Math.min(1, Math.max(0, (scrollY - servicesScrollSlideEndVal)) / servicesScrollInternalDuration);
+      servicesProgress.set(rawServicesProgress);
       updateEl('services', calculateOffset(servicesScrollStart), scrollY >= servicesScrollStart && scrollY < servicesScrollDisplayEnd + sectionDurationVal, 50);
 
       // 6. QUOTE
@@ -159,7 +171,8 @@ function App() {
       const quoteInternalDuration = displayDurationVal * 1.8;
       const quoteDisplayEnd = quoteSlideEndVal + quoteInternalDuration;
       const quoteCompleteEnd = quoteDisplayEnd + (displayDurationVal * 0.7);
-      const quoteProgressVal = Math.min(1, Math.max(0, (scrollY - quoteSlideEndVal)) / quoteInternalDuration);
+      const rawQuoteProgress = Math.min(1, Math.max(0, (scrollY - quoteSlideEndVal)) / quoteInternalDuration);
+      quoteProgress.set(rawQuoteProgress);
       updateEl('quote', calculateOffset(quoteStart), scrollY >= quoteStart && scrollY < quoteCompleteEnd + sectionDurationVal, 55);
 
       // 7. SERVICES SHOWCASE
@@ -188,21 +201,21 @@ function App() {
       const latestProjectsSlideEndVal = latestProjectsStartVal + sectionDurationVal;
       const latestProjectsDisplayEnd = latestProjectsSlideEndVal + displayDurationVal;
       const latestProjectsOffsetVal = calculateOffset(latestProjectsStartVal);
-      
+
       // Extended visibility buffer
       const latestProjectsVisibleVal = scrollY >= latestProjectsStartVal && scrollY < latestProjectsDisplayEnd + (sectionDurationVal * 3);
-      
+
       const lpEl = sectionsRef.current['latestProjects'];
       if (lpEl) {
         lpEl.style.transform = `translate3d(0, ${heroHeightVal - latestProjectsOffsetVal}px, 0)`;
         lpEl.style.zIndex = '95';
-        
+
         const opacity = scrollY >= latestProjectsStartVal ? '1' : '0';
         if (lpEl.style.opacity !== opacity) lpEl.style.opacity = opacity;
-        
+
         const display = latestProjectsVisibleVal ? 'block' : 'none';
         if (lpEl.style.display !== display) lpEl.style.display = display;
-        
+
         lpEl.style.pointerEvents = latestProjectsVisibleVal ? 'auto' : 'none';
       }
       scrollTargets.current.latestProjects = latestProjectsStartVal;
@@ -213,31 +226,12 @@ function App() {
       const footerVisibleVal = scrollY >= footerStart;
       updateEl('footer', footerOffsetVal, footerVisibleVal, 100);
 
-      // --- STATE UPDATES ---
-      setProgress(prev => {
-        const threshold = 0.001;
-        if (
-          Math.abs(prev.brands - brandsProgressVal) < threshold &&
-          Math.abs(prev.testimonials - testimonialsProgressVal) < threshold &&
-          Math.abs(prev.services - servicesScrollProgressVal) < threshold &&
-          Math.abs(prev.quote - quoteProgressVal) < threshold
-        ) {
-          return prev;
-        }
-        return {
-          brands: brandsProgressVal,
-          testimonials: testimonialsProgressVal,
-          services: servicesScrollProgressVal,
-          quote: quoteProgressVal
-        };
-      });
-
       rafId = requestAnimationFrame(loop);
     };
 
     window.addEventListener("resize", handleResize);
     rafId = requestAnimationFrame(loop);
-    
+
     return () => {
       window.removeEventListener("resize", handleResize);
       cancelAnimationFrame(rafId);
@@ -278,7 +272,7 @@ function App() {
       </div>
 
       <main style={{ height: `${totalHeight}px` }} className="bg-black">
-        
+
         {/* HERO */}
         <div ref={(el) => (sectionsRef.current['hero'] = el)} style={layerStyle} id='hero'>
           <Hero onExploreClick={() => smoothScrollTo(scrollTargets.current.latestProjects + 640)} />
@@ -291,22 +285,22 @@ function App() {
 
         {/* BRANDS */}
         <div ref={(el) => (sectionsRef.current['brands'] = el)} style={layerStyle} id="brands">
-          <ExclusiveBrands scrollProgress={progress.brands} />
+          <ExclusiveBrands scrollProgress={brandsProgress} />
         </div>
 
         {/* TESTIMONIALS */}
         <div className="bg-black" ref={(el) => (sectionsRef.current['testimonials'] = el)} style={layerStyle} id="testimonials">
-          <TestimonialScroll scrollProgress={progress.testimonials} />
+          <TestimonialScroll scrollProgress={testimonialsProgress} />
         </div>
 
         {/* SERVICES */}
         <div className="bg-black" ref={(el) => (sectionsRef.current['services'] = el)} style={layerStyle} id="services">
-          <ServicesScroll scrollProgress={progress.services} />
+          <ServicesScroll scrollProgress={servicesProgress} />
         </div>
 
         {/* QUOTE */}
         <div className="bg-white" ref={(el) => (sectionsRef.current['quote'] = el)} style={layerStyle} id="quote">
-          <Quote scrollProgress={progress.quote} />
+          <Quote scrollProgress={quoteProgress} />
         </div>
 
         {/* SERVICES SHOWCASE */}
