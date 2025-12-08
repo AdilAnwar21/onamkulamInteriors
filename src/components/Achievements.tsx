@@ -1,38 +1,56 @@
 import { useState, useEffect, useRef, memo } from 'react';
+import { motion, useTransform, MotionValue } from 'framer-motion';
 
-// 1. Wrap in memo
-const Achievements = memo(() => {
+// 1. Define Props Interface
+interface AchievementsProps {
+  scrollProgress: MotionValue<number>;
+}
+
+// 2. Wrap in memo and accept props
+const Achievements = memo(({ scrollProgress }: AchievementsProps) => {
   const [isVisible, setIsVisible] = useState(false);
+  // Using generic useState for counts instead of animation frame within component 
+  // because counts are purely visual entrance, not scroll driven.
   const [counts, setCounts] = useState<number[]>([0, 0, 0, 0]);
   const sectionRef = useRef<HTMLDivElement>(null);
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  // Measure if desktop - if < 1024, we assume mobile/tablet and apply scroll
+  useEffect(() => {
+    const checkDesktop = () => setIsDesktop(window.innerWidth >= 1024);
+    checkDesktop();
+    window.addEventListener('resize', checkDesktop);
+    return () => window.removeEventListener('resize', checkDesktop);
+  }, []);
 
   const achievements = [
-    { 
-      number: 27, 
-      title: "Years of Storytelling", 
-      subtitle: "Designing homes that resonate with heart and soul since 1998.", 
-      showPlus: true 
+    {
+      number: 27,
+      title: "Years of Storytelling",
+      subtitle: "Designing homes that resonate with heart and soul since 1998.",
+      showPlus: true
     },
-    { 
-      number: 220, 
-      title: "Spaces Transformed", 
-      subtitle: "Each one a unique story we helped bring to life.", 
-      showPlus: true 
+    {
+      number: 220,
+      title: "Spaces Transformed",
+      subtitle: "Each one a unique story we helped bring to life.",
+      showPlus: true
     },
-    { 
-      number: 21, 
-      title: "Year Warranty Promise", 
-      subtitle: "Our promise of durability and trust, built into every detail.", 
-      showPlus: false 
+    {
+      number: 21,
+      title: "Year Warranty Promise",
+      subtitle: "Our promise of durability and trust, built into every detail.",
+      showPlus: false
     },
-    { 
-      number: 45, 
-      title: "Days Avg. Turnaround", 
-      subtitle: "Average completion in just 45 days for a 2BHK, because your story can't wait.", 
-      showPlus: false 
+    {
+      number: 45,
+      title: "Days Avg. Turnaround",
+      subtitle: "Average completion in just 45 days for a 2BHK, because your story can't wait.",
+      showPlus: false
     }
   ];
 
+  // Number counting animation logic
   useEffect(() => {
     let raf: number;
     if (isVisible) {
@@ -49,12 +67,12 @@ const Achievements = memo(() => {
       setCounts(achievements.map(() => 0));
     }
     return () => cancelAnimationFrame(raf);
-  }, [isVisible]); // Depend only on isVisible
+  }, [isVisible]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => setIsVisible(entry.isIntersecting),
-      { threshold: 0.1 } // Lowered threshold slightly for better mobile triggering
+      { threshold: 0.1 }
     );
     if (sectionRef.current) {
       observer.observe(sectionRef.current);
@@ -62,12 +80,33 @@ const Achievements = memo(() => {
     return () => observer.disconnect();
   }, []);
 
+  // --- Scroll Transform Logic ---
+  // On mobile, the content is tall (~1200px vs 700px viewport).
+  // We need to translate it up by the difference as we scroll.
+  // Estimated excess height is ~500px.
+  // We map scrollProgress (0 to 1 during the "hold" phase) to translateY.
+  const contentTranslateY = useTransform(scrollProgress, (p) => {
+    if (isDesktop) return 0;
+    // Translate up by 40% of viewport height or a fixed pixel amount?
+    // Let's try 500px which should be enough for most phones to see the bottom.
+    // Actually, let's go with percentage to be safe? say -50%.
+    // No, pixels are safer for text content.
+    return -Math.min(p * 600, 600); // reduced from 800 to 600 based on estimate
+  });
+
   return (
     <section
       ref={sectionRef}
-      className="relative h-screen bg-gray-50 overflow-y-auto lg:overflow-y-hidden"
+      className="relative h-screen bg-gray-50 overflow-hidden"
     >
-      <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-12 pt-32 sm:pt-24 md:pt-28 lg:pt-32 pb-16 sm:pb-12 md:pb-16 lg:pb-20 h-full lg:flex lg:flex-col lg:justify-center">
+      {/* 
+         On Mobile: We apply the transform to this container.
+         On Desktop: No transform.
+      */}
+      <motion.div
+        className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-12 pt-32 sm:pt-24 md:pt-28 lg:pt-32 pb-16 sm:pb-12 md:pb-16 lg:pb-20 h-full lg:flex lg:flex-col lg:justify-center"
+        style={{ y: contentTranslateY }}
+      >
         {/* Header */}
         <div className="mb-10 sm:mb-12 md:mb-16">
           <p className="text-base sm:text-base md:text-lg lg:text-xl text-gray-800 leading-relaxed max-w-4xl">
@@ -94,7 +133,7 @@ const Achievements = memo(() => {
             </div>
           ))}
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 });

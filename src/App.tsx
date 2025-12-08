@@ -40,6 +40,7 @@ function App() {
 
   // --- STATE ---
   // --- MOTION VALUES ---
+  const achievementsProgress = useMotionValue(0);
   const brandsProgress = useMotionValue(0);
   const testimonialsProgress = useMotionValue(0);
   const servicesProgress = useMotionValue(0);
@@ -135,7 +136,12 @@ function App() {
 
       // 2. ACHIEVEMENTS
       const achievementsStart = heroHeightVal * 0.5;
-      const achievementsDisplayEnd = achievementsStart + sectionDurationVal + displayDurationVal;
+      const achievementsSlideEnd = achievementsStart + sectionDurationVal;
+      const achievementsDisplayEnd = achievementsSlideEnd + displayDurationVal;
+
+      const rawAchievementsProgress = Math.max(0, scrollY - achievementsSlideEnd) / displayDurationVal;
+      achievementsProgress.set(Math.min(1, rawAchievementsProgress));
+
       updateEl('achievements', calculateOffset(achievementsStart), scrollY >= achievementsStart && scrollY < achievementsDisplayEnd + sectionDurationVal, 20);
 
       // 3. BRANDS
@@ -280,7 +286,7 @@ function App() {
 
         {/* ACHIEVEMENTS */}
         <div ref={(el) => (sectionsRef.current['achievements'] = el)} style={layerStyle} id="achievements">
-          <Achievements />
+          <Achievements scrollProgress={achievementsProgress} />
         </div>
 
         {/* BRANDS */}
