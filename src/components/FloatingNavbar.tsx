@@ -5,9 +5,10 @@ import logo from '../assets/images/LOGO 01.png';
 interface FloatingNavbarProps {
   activeSection?: string;
   onBeginStoryClick?: () => void;
+  onNavClick?: (section: string) => void;
 }
 
-const FloatingNavbar = ({ activeSection, onBeginStoryClick }: FloatingNavbarProps) => {
+const FloatingNavbar = ({ activeSection, onBeginStoryClick, onNavClick }: FloatingNavbarProps) => {
   const [scrollY, setScrollY] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [deviceType, setDeviceType] = useState<'mobile' | 'tablet' | 'desktop'>('desktop');
@@ -15,7 +16,7 @@ const FloatingNavbar = ({ activeSection, onBeginStoryClick }: FloatingNavbarProp
   useEffect(() => {
     const checkDeviceType = () => {
       const width = window.innerWidth;
-      
+
       if (width < 768) {
         setDeviceType('mobile');
       } else if (width >= 768 && width < 1280) {
@@ -57,7 +58,7 @@ const FloatingNavbar = ({ activeSection, onBeginStoryClick }: FloatingNavbarProp
 
   const getNavbarWidth = () => {
     if (scrollProgress === 0) return 'auto';
-    
+
     const baseWidths = {
       desktop: {
         initial: 220,
@@ -72,9 +73,9 @@ const FloatingNavbar = ({ activeSection, onBeginStoryClick }: FloatingNavbarProp
         final: 720 // Fits iPad Mini (768px) with 24px margin on sides
       }
     };
-    
+
     const widths = deviceType === 'desktop' ? baseWidths.desktop : baseWidths.tablet;
-    
+
     if (scrollProgress < 0.2) return `${widths.initial + smoothProgress * (widths.step1 - widths.initial)}px`;
     if (scrollProgress < 0.4) return `${widths.step1 + smoothProgress * (widths.step2 - widths.step1)}px`;
     if (scrollProgress < 0.7) return `${widths.step2 + smoothProgress * (widths.final - widths.step2)}px`;
@@ -85,7 +86,7 @@ const FloatingNavbar = ({ activeSection, onBeginStoryClick }: FloatingNavbarProp
     // FIX: Tablet uses Flex centering now, so we remove translateX animation for it.
     // Desktop still slides from right to left.
     if (deviceType === 'tablet') return 'none';
-    
+
     const moveDistance = smoothProgress * 300;
     return `translateX(-${moveDistance}px)`;
   };
@@ -134,9 +135,8 @@ const FloatingNavbar = ({ activeSection, onBeginStoryClick }: FloatingNavbarProp
               className="text-black p-1.5 hover:bg-white/25 rounded-full transition-all duration-300 active:scale-95"
             >
               <div
-                className={`transition-transform duration-300 ${
-                  isMenuOpen ? 'rotate-180' : 'rotate-0'
-                }`}
+                className={`transition-transform duration-300 ${isMenuOpen ? 'rotate-180' : 'rotate-0'
+                  }`}
               >
                 {isMenuOpen ? (
                   <X className="w-5 h-5" />
@@ -164,16 +164,18 @@ const FloatingNavbar = ({ activeSection, onBeginStoryClick }: FloatingNavbarProp
                   return (
                     <button
                       key={item.name}
-                      className={`flex items-center space-x-3 w-full text-left px-4 py-3 rounded-lg transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] ${
-                        isActive
-                          ? 'bg-black text-white'
-                          : 'text-black hover:text-[#8B4513] hover:bg-black/5'
-                      }`}
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        onNavClick?.(item.name);
+                      }}
+                      className={`flex items-center space-x-3 w-full text-left px-4 py-3 rounded-lg transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] ${isActive
+                        ? 'bg-[#f0f0f0] text-[#8B4513] shadow-sm'
+                        : 'text-black hover:text-[#8B4513] hover:bg-black/5'
+                        }`}
                       style={{
                         animationDelay: `${index * 50 + 100}ms`,
                         animationFillMode: 'both',
                       }}
-                      onClick={() => setIsMenuOpen(false)}
                     >
                       <Icon className="w-5 h-5" />
                       <span className="font-medium">{item.name}</span>
@@ -182,7 +184,7 @@ const FloatingNavbar = ({ activeSection, onBeginStoryClick }: FloatingNavbarProp
                 })}
 
                 <div className="pt-3 border-t border-black/20 animate-in slide-in-from-bottom-2 fade-in duration-400 delay-400">
-                  <button 
+                  <button
                     onClick={() => {
                       setIsMenuOpen(false);
                       onBeginStoryClick?.();
@@ -204,10 +206,9 @@ const FloatingNavbar = ({ activeSection, onBeginStoryClick }: FloatingNavbarProp
   }
 
   // -------------------- TABLET & DESKTOP NAVBAR --------------------
-  // FIX: Determine layout class based on device type
   // Desktop: Fixed right. Tablet: Fixed center (using flex justify-center on w-full wrapper).
-  const navLayoutClass = deviceType === 'tablet' 
-    ? 'fixed z-50 top-4 left-0 w-full flex justify-center pointer-events-none' 
+  const navLayoutClass = deviceType === 'tablet'
+    ? 'fixed z-50 top-4 left-0 w-full flex justify-center pointer-events-none'
     : 'fixed z-50 top-6 right-6';
 
   return (
@@ -287,26 +288,24 @@ const FloatingNavbar = ({ activeSection, onBeginStoryClick }: FloatingNavbarProp
                 return (
                   <button
                     key={item.name}
+                    onClick={() => onNavClick?.(item.name)}
                     className={`flex items-center space-x-2 rounded-full group whitespace-nowrap font-medium transition-all duration-300
                       ${deviceType === 'tablet' ? 'px-2.5 py-2 text-xs' : 'px-4 py-2.5 text-sm'}
-                      ${
-                        isActive
-                          ? 'bg-black text-white shadow-md'
-                          : 'text-black hover:text-[#8B4513] hover:bg-white/15'
+                      ${isActive
+                        ? 'bg-[#f0f0f0] text-[#8B4513] shadow-sm'
+                        : 'text-black hover:text-[#8B4513] hover:bg-white/15'
                       }`}
                     style={{
                       opacity: smoothItemProgress,
-                      transform: `translateY(${
-                        (1 - smoothItemProgress) * 2
-                      }px)`,
+                      transform: `translateY(${(1 - smoothItemProgress) * 2
+                        }px)`,
                       transition:
                         'all 1.2s cubic-bezier(0.23, 1, 0.32, 1)',
                     }}
                   >
                     <Icon
-                      className={`${deviceType === 'tablet' ? 'w-3.5 h-3.5' : 'w-4 h-4'} transition-transform duration-300 ${
-                        isActive ? 'scale-110' : 'group-hover:scale-110'
-                      }`}
+                      className={`${deviceType === 'tablet' ? 'w-3.5 h-3.5' : 'w-4 h-4'} transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'
+                        }`}
                     />
                     <span className="group-hover:translate-x-0.5 transition-transform duration-200">
                       {item.name}

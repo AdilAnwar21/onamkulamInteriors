@@ -34,11 +34,22 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [windowHeight, setWindowHeight] = useState(typeof window !== 'undefined' ? window.innerHeight : 800);
 
+  // --- NAV STATE ---
+  const [activeSection, setActiveSection] = useState('Home');
+  const activeSectionRef = useRef('Home'); // Ref to access in loop without re-triggering effect
+
   // --- REFS ---
   const sectionsRef = useRef<{ [key: string]: HTMLDivElement | null }>({});
-  const scrollTargets = useRef({ cta: 0, latestProjects: 0 });
+  // Add new keys for nav targets
+  const scrollTargets = useRef<{ [key: string]: number }>({
+    cta: 0,
+    latestProjects: 0,
+    home: 0,
+    about: 0,
+    projects: 0,
+    contact: 0
+  });
 
-  // --- STATE ---
   // --- MOTION VALUES ---
   const achievementsProgress = useMotionValue(0);
   const brandsProgress = useMotionValue(0);
@@ -95,7 +106,6 @@ function App() {
 
     const handleResize = () => {
       // FIX: Only update if width changes (orientation change) or height changes significantly (>150px)
-      // This ignores mobile address bar retracting/expanding (~60-100px)
       const newWidth = window.innerWidth;
       const newHeight = window.innerHeight;
 
@@ -133,6 +143,7 @@ function App() {
       // 1. HERO
       const heroEnd = heroHeightVal * 0.9;
       updateEl('hero', Math.min(scrollY * 0.4, heroHeightVal * 0.4), scrollY < heroEnd + sectionDurationVal, 10, true);
+      scrollTargets.current.home = 0;
 
       // 2. ACHIEVEMENTS
       const achievementsStart = heroHeightVal * 0.5;
@@ -150,7 +161,6 @@ function App() {
       const brandsInternalScrollDuration = displayDurationVal * 8;
       const brandsDisplayEnd = brandsSlideEndVal + brandsInternalScrollDuration;
       const rawBrandsProgress = Math.max(0, scrollY - brandsSlideEndVal) / brandsInternalScrollDuration;
-      // Update MotionValue directly - NO RE-RENDER
       brandsProgress.set(Math.min(1, rawBrandsProgress));
       updateEl('brands', calculateOffset(brandsStart), scrollY >= brandsStart && scrollY < brandsDisplayEnd + sectionDurationVal, 30);
 
@@ -186,23 +196,25 @@ function App() {
       const servicesShowcaseDisplayEnd = servicesShowcaseStart + sectionDurationVal + displayDurationVal;
       updateEl('servicesShowcase', calculateOffset(servicesShowcaseStart), scrollY >= servicesShowcaseStart && scrollY < servicesShowcaseDisplayEnd + sectionDurationVal, 60);
 
-      // 8. FOUNDER
+      // 8. FOUNDER (Start of ABOUT)
       const founderStart = servicesShowcaseDisplayEnd;
       const founderDisplayEnd = founderStart + sectionDurationVal + displayDurationVal;
       updateEl('founder', calculateOffset(founderStart), scrollY >= founderStart && scrollY < founderDisplayEnd + sectionDurationVal, 70);
+      scrollTargets.current.about = founderStart;
 
       // 9. TEAM
       const teamStart = founderDisplayEnd;
       const teamDisplayEnd = teamStart + sectionDurationVal + displayDurationVal;
       updateEl('team', calculateOffset(teamStart), scrollY >= teamStart && scrollY < teamDisplayEnd + sectionDurationVal, 80);
 
-      // 10. CTA
+      // 10. CTA (Start of CONTACT)
       const ctaStartVal = teamDisplayEnd;
       const ctaDisplayEnd = ctaStartVal + sectionDurationVal + displayDurationVal;
       updateEl('cta', calculateOffset(ctaStartVal), scrollY >= ctaStartVal && scrollY < ctaDisplayEnd + sectionDurationVal, 90);
       scrollTargets.current.cta = ctaStartVal;
+      scrollTargets.current.contact = ctaStartVal;
 
-      // 11. LATEST PROJECTS (FIXED for opacity and black background)
+      // 11. LATEST PROJECTS (Start of PROJECTS)
       const latestProjectsStartVal = ctaDisplayEnd;
       const latestProjectsSlideEndVal = latestProjectsStartVal + sectionDurationVal;
       const latestProjectsDisplayEnd = latestProjectsSlideEndVal + displayDurationVal;
@@ -225,12 +237,31 @@ function App() {
         lpEl.style.pointerEvents = latestProjectsVisibleVal ? 'auto' : 'none';
       }
       scrollTargets.current.latestProjects = latestProjectsStartVal;
+      scrollTargets.current.projects = latestProjectsStartVal;
 
       // 12. FOOTER
       const footerStart = latestProjectsDisplayEnd;
       const footerOffsetVal = calculateOffset(footerStart);
       const footerVisibleVal = scrollY >= footerStart;
       updateEl('footer', footerOffsetVal, footerVisibleVal, 100);
+
+      // --- CALCULATE ACTIVE SECTION ---
+      // Determine which section is currently active for Navbar
+      let currentSection = 'Home';
+      if (scrollY >= founderStart && scrollY < ctaStartVal) {
+        currentSection = 'About';
+      } else if (scrollY >= ctaStartVal && scrollY < latestProjectsStartVal) {
+        currentSection = 'Contact';
+      } else if (scrollY >= latestProjectsStartVal) {
+        currentSection = 'Projects';
+      }
+      // Default remains 'Home' for everything before Founder
+
+      // Check if changed before updating state to avoid re-renders
+      if (currentSection !== activeSectionRef.current) {
+        activeSectionRef.current = currentSection;
+        setActiveSection(currentSection);
+      }
 
       rafId = requestAnimationFrame(loop);
     };
@@ -253,10 +284,15 @@ function App() {
   }, []);
 
   const smoothScrollTo = useCallback((target: number) => {
+    // Add offset for sticky headers if any, or just scroll to target.
+    // Since sections are stacking cards, scrolling to 'target' usually reveals the TOP of the card.
+    // However, cards stick. So scrolling to 'start' value puts that card at the top.
     const startScroll = window.scrollY;
-    const distance = target - startScroll;
+    // Small offset to ensure it triggers the sticking
+    const distance = (target + 5) - startScroll;
+
     if (Math.abs(distance) < 10) return;
-    const duration = 2500;
+    const duration = 2000; // Slightly faster than 2500
     let startTime: number | null = null;
     const easeInOutCubic = (t: number): number => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
     const animation = (currentTime: number) => {
@@ -269,19 +305,31 @@ function App() {
     requestAnimationFrame(animation);
   }, []);
 
+  const handleNavClick = useCallback((section: string) => {
+    const key = section.toLowerCase();
+    const target = scrollTargets.current[key];
+    if (typeof target === 'number') {
+      smoothScrollTo(target);
+    }
+  }, [smoothScrollTo]);
+
   if (loading) return <Preloader onFinish={() => setLoading(false)} />;
 
   return (
     <div className="relative overflow-hidden bg-black">
       <div className="fixed inset-x-0 top-0 z-[100]">
-        <FloatingNavbar onBeginStoryClick={() => smoothScrollTo(scrollTargets.current.cta + 640)} />
+        <FloatingNavbar
+          activeSection={activeSection}
+          onBeginStoryClick={() => smoothScrollTo(scrollTargets.current.cta + 50)}
+          onNavClick={handleNavClick}
+        />
       </div>
 
       <main style={{ height: `${totalHeight}px` }} className="bg-black">
 
         {/* HERO */}
         <div ref={(el) => (sectionsRef.current['hero'] = el)} style={layerStyle} id='hero'>
-          <Hero onExploreClick={() => smoothScrollTo(scrollTargets.current.latestProjects + 640)} />
+          <Hero onExploreClick={() => smoothScrollTo(scrollTargets.current.latestProjects + 50)} />
         </div>
 
         {/* ACHIEVEMENTS */}
@@ -337,7 +385,7 @@ function App() {
             transition: "opacity 0.3s ease-out",
             opacity: 0,
             pointerEvents: 'none',
-            backgroundColor: 'white', // Important for black screen fix
+            backgroundColor: 'white',
           }}
         >
           <LatestProjects />
