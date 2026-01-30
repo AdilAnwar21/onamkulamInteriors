@@ -1,5 +1,5 @@
 import { useState, useEffect, memo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import logoSvg from '../assets/images/LOGO 03.png';
 
 // --- Static Data ---
@@ -75,7 +75,7 @@ const ProjectCard = memo(({ project, heightClass, extraContent, delay, isVisible
 
 const TeamSection = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const navigate = useNavigate();
+  const router = useRouter();
 
   useEffect(() => {
     const timer = requestAnimationFrame(() => {
@@ -110,7 +110,7 @@ const TeamSection = () => {
             <div className="space-y-4 mb-6 lg:mb-0">
               <div className="flex items-center justify-start">
                 <img
-                  src={logoSvg}
+                  src={logoSvg.src}
                   alt="Logo"
                   className="h-8 sm:h-10 w-8 sm:w-10 object-contain"
                 />
@@ -123,7 +123,7 @@ const TeamSection = () => {
 
                 {/* View All Projects Button */}
                 <button
-                  onClick={() => navigate('/portfolio')}
+                  onClick={() => router.push('/portfolio')}
                   className="group inline-flex items-center gap-3 px-8 py-4 bg-[#8B4513] hover:bg-[#6d3410] text-white rounded-full transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
                 >
                   <span className="text-sm font-semibold">View All Projects</span>
@@ -207,7 +207,7 @@ const TeamSection = () => {
                 </div>
 
                 <div
-                  onClick={() => navigate('/portfolio')}
+                  onClick={() => router.push('/portfolio')}
                   className="bg-[#F0E5DA] rounded-lg sm:rounded-xl h-24 sm:h-24 md:h-26 flex flex-col justify-center items-center text-center shadow-sm border border-[#8B4513]/20 hover:shadow-xl hover:border-[#8B4513] hover:scale-105 transition-all duration-300 cursor-pointer group"
                 >
                   <div className="text-lg sm:text-xl font-bold text-[#8B4513] group-hover:scale-110 transition-transform duration-300">

@@ -126,7 +126,7 @@ const FloatingNavbar = ({ activeSection, onBeginStoryClick, onNavClick }: Floati
             <div className="text-black font-bold text-lg tracking-wider">
               <div className="flex items-center">
                 <img
-                  src={logo}
+                  src={logo.src}
                   alt="Logo"
                   className="h-6 w-auto object-contain"
                 />
@@ -255,7 +255,7 @@ const FloatingNavbar = ({ activeSection, onBeginStoryClick, onNavClick }: Floati
               }}
             >
               <img
-                src={logo}
+                src={logo.src}
                 alt="Logo"
                 className={`${deviceType === 'tablet' ? 'h-6 pl-3' : 'h-8 pl-2 pr-3'} w-auto object-contain`}
               />

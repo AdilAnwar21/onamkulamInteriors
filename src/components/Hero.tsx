@@ -21,7 +21,7 @@ const Hero = memo(({ onExploreClick }: HeroProps) => {
       <div className="relative z-10 px-4 sm:px-6 lg:px-16 pt-6">
         <div className="flex justify-between items-center">
           <div className="text-white">
-            <img src={logo} alt="ONAMKULAM" className="h-12" />
+            <img src={logo.src} alt="ONAMKULAM" className="h-12" />
             INTERIORS
           </div>
         </div>

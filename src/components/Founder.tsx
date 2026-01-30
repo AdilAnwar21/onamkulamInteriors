@@ -15,8 +15,8 @@ const Founder = () => {
     name: "Mr. Noby Onamkulam",
     quote:
       "A home is the most honest story a person can tell. My work is simply to listen deeply and design a space where that story—your story—can unfold beautifully, year after year",
-    signature: signatureImg,
-    image: founderImg,
+    signature: signatureImg.src,
+    image: founderImg.src,
   };
 
   return (
