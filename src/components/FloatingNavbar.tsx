@@ -40,7 +40,15 @@ const FloatingNavbar = ({ activeSection, onBeginStoryClick, onNavClick }: Floati
     };
   }, []);
 
-  const heroHeight = window.innerHeight;
+  const [heroHeight, setHeroHeight] = useState(800); // Default to a reasonable height
+
+  useEffect(() => {
+    setHeroHeight(window.innerHeight);
+    const handleResize = () => setHeroHeight(window.innerHeight);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const scrollProgress = Math.min(scrollY / (heroHeight * 0.6), 1);
 
   const navItems = [

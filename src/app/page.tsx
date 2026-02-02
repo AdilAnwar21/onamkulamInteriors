@@ -315,89 +315,90 @@ export default function HomePage() {
         }
     }, [smoothScrollTo]);
 
-    if (loading) return <Preloader onFinish={() => setLoading(false)} />;
-
     return (
-        <div className="relative overflow-hidden bg-black">
-            <div className="fixed inset-x-0 top-0 z-[100]">
-                <FloatingNavbar
-                    activeSection={activeSection}
-                    onBeginStoryClick={() => smoothScrollTo(scrollTargets.current.cta + 50)}
-                    onNavClick={handleNavClick}
-                />
+        <>
+            {loading && <Preloader onFinish={() => setLoading(false)} />}
+            <div className="relative overflow-hidden bg-black">
+                <div className="fixed inset-x-0 top-0 z-[100]">
+                    <FloatingNavbar
+                        activeSection={activeSection}
+                        onBeginStoryClick={() => smoothScrollTo(scrollTargets.current.cta + 50)}
+                        onNavClick={handleNavClick}
+                    />
+                </div>
+
+                <main style={{ height: `${totalHeight}px` }} className="bg-black">
+
+                    {/* HERO */}
+                    <div ref={(el) => { sectionsRef.current['hero'] = el; }} style={layerStyle} id='hero'>
+                        <Hero onExploreClick={() => smoothScrollTo(scrollTargets.current.latestProjects + 50)} />
+                    </div>
+
+                    {/* ACHIEVEMENTS */}
+                    <div ref={(el) => { sectionsRef.current['achievements'] = el; }} style={layerStyle} id="achievements">
+                        <Achievements scrollProgress={achievementsProgress} />
+                    </div>
+
+                    {/* BRANDS */}
+                    <div ref={(el) => { sectionsRef.current['brands'] = el; }} style={layerStyle} id="brands">
+                        <ExclusiveBrands scrollProgress={brandsProgress} />
+                    </div>
+
+                    {/* TESTIMONIALS */}
+                    <div className="bg-black" ref={(el) => { sectionsRef.current['testimonials'] = el; }} style={layerStyle} id="testimonials">
+                        <TestimonialScroll scrollProgress={testimonialsProgress} />
+                    </div>
+
+                    {/* SERVICES */}
+                    <div className="bg-black" ref={(el) => { sectionsRef.current['services'] = el; }} style={layerStyle} id="services">
+                        <ServicesScroll scrollProgress={servicesProgress} />
+                    </div>
+
+                    {/* QUOTE */}
+                    <div className="bg-white" ref={(el) => { sectionsRef.current['quote'] = el; }} style={layerStyle} id="quote">
+                        <Quote scrollProgress={quoteProgress} />
+                    </div>
+
+                    {/* SERVICES SHOWCASE */}
+                    <div className="bg-black" ref={(el) => { sectionsRef.current['servicesShowcase'] = el; }} style={layerStyle} id="servicesShowcase">
+                        <ServicesShowcase />
+                    </div>
+
+                    {/* FOUNDER */}
+                    <div className="bg-white" ref={(el) => { sectionsRef.current['founder'] = el; }} style={layerStyle} id="founder">
+                        <Founder />
+                    </div>
+
+                    {/* TEAM */}
+                    <div className="bg-gray-50" ref={(el) => { sectionsRef.current['team'] = el; }} style={layerStyle} id="team">
+                        <Team />
+                    </div>
+
+                    {/* CTA */}
+                    <div ref={(el) => { sectionsRef.current['cta'] = el; }} style={layerStyle} id="cta">
+                        <CTASection />
+                    </div>
+
+                    {/* LATEST PROJECTS - Fixed with White Background */}
+                    <div
+                        ref={(el) => { sectionsRef.current['latestProjects'] = el; }}
+                        style={{
+                            ...layerStyle,
+                            transition: "opacity 0.3s ease-out",
+                            opacity: 0,
+                            pointerEvents: 'none',
+                            backgroundColor: 'white',
+                        }}
+                    >
+                        <LatestProjects />
+                    </div>
+
+                    {/* FOOTER */}
+                    <div ref={(el) => { sectionsRef.current['footer'] = el; }} style={layerStyle} id="footer">
+                        <Footer />
+                    </div>
+                </main>
             </div>
-
-            <main style={{ height: `${totalHeight}px` }} className="bg-black">
-
-                {/* HERO */}
-                <div ref={(el) => { sectionsRef.current['hero'] = el; }} style={layerStyle} id='hero'>
-                    <Hero onExploreClick={() => smoothScrollTo(scrollTargets.current.latestProjects + 50)} />
-                </div>
-
-                {/* ACHIEVEMENTS */}
-                <div ref={(el) => { sectionsRef.current['achievements'] = el; }} style={layerStyle} id="achievements">
-                    <Achievements scrollProgress={achievementsProgress} />
-                </div>
-
-                {/* BRANDS */}
-                <div ref={(el) => { sectionsRef.current['brands'] = el; }} style={layerStyle} id="brands">
-                    <ExclusiveBrands scrollProgress={brandsProgress} />
-                </div>
-
-                {/* TESTIMONIALS */}
-                <div className="bg-black" ref={(el) => { sectionsRef.current['testimonials'] = el; }} style={layerStyle} id="testimonials">
-                    <TestimonialScroll scrollProgress={testimonialsProgress} />
-                </div>
-
-                {/* SERVICES */}
-                <div className="bg-black" ref={(el) => { sectionsRef.current['services'] = el; }} style={layerStyle} id="services">
-                    <ServicesScroll scrollProgress={servicesProgress} />
-                </div>
-
-                {/* QUOTE */}
-                <div className="bg-white" ref={(el) => { sectionsRef.current['quote'] = el; }} style={layerStyle} id="quote">
-                    <Quote scrollProgress={quoteProgress} />
-                </div>
-
-                {/* SERVICES SHOWCASE */}
-                <div className="bg-black" ref={(el) => { sectionsRef.current['servicesShowcase'] = el; }} style={layerStyle} id="servicesShowcase">
-                    <ServicesShowcase />
-                </div>
-
-                {/* FOUNDER */}
-                <div className="bg-white" ref={(el) => { sectionsRef.current['founder'] = el; }} style={layerStyle} id="founder">
-                    <Founder />
-                </div>
-
-                {/* TEAM */}
-                <div className="bg-gray-50" ref={(el) => { sectionsRef.current['team'] = el; }} style={layerStyle} id="team">
-                    <Team />
-                </div>
-
-                {/* CTA */}
-                <div ref={(el) => { sectionsRef.current['cta'] = el; }} style={layerStyle} id="cta">
-                    <CTASection />
-                </div>
-
-                {/* LATEST PROJECTS - Fixed with White Background */}
-                <div
-                    ref={(el) => { sectionsRef.current['latestProjects'] = el; }}
-                    style={{
-                        ...layerStyle,
-                        transition: "opacity 0.3s ease-out",
-                        opacity: 0,
-                        pointerEvents: 'none',
-                        backgroundColor: 'white',
-                    }}
-                >
-                    <LatestProjects />
-                </div>
-
-                {/* FOOTER */}
-                <div ref={(el) => { sectionsRef.current['footer'] = el; }} style={layerStyle} id="footer">
-                    <Footer />
-                </div>
-            </main>
-        </div>
+        </>
     );
 }
